@@ -4,6 +4,8 @@
 gsd-core/
 *.gsd
 *gsd*
+CLAUDE.md
+*.CLAUDE.md
 
 # Dependencies
 node_modules/
