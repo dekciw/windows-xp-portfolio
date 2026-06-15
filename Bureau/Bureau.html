@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Windows XPortfolio</title>
+    <link
+      rel="icon"
+      type="image/ico"
+      sizes="32x32"
+      href="/Assets/Images/Windows_XP-min.ico"
+    />
+
+    <link
+      rel="preload"
+      as="image"
+      href="/Assets/Images/Background.webp"
+      type="image/webp"
+    />
+
+    <link
+      rel="preload"
+      href="/Start_Menu/Log_Off/Base/Log_Off.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet';"
+    />
+    <link
+      rel="preload"
+      href="/Start_Menu/Base/Start_Menu.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet';"
+    />
+    <link
+      rel="preload"
+      href="/Open_Windows/Base/OpenWindow_Tooltip.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet';"
+    />
+    <link
+      rel="preload"
+      href="/Start_Menu/All_Programs/Tooltip/Tooltip.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet';"
+    />
+    <link
+      rel="preload"
+      href="/Bureau/Taskbar.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet';"
+    />
+    <link
+      rel="preload"
+      href="/Open_Windows/Base/Open_Window.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet';"
+    />
+
+    <link rel="stylesheet" href="/Bureau/Bureau.css" />
+    <link rel="stylesheet" href="/Bureau/Notification/notification.css?v=14" />
+
+    <script src="/Bureau/Bureau.js"></script>
+    <script src="/Open_Windows/Minesweeper/Minesweeper.js"></script>
+    <script src="/Bureau/Notification/notification.js?v=13"></script>
+    <script>
+      // Глобальная переменная для отслеживания текущего уведомления
+      let currentNotification = null;
+
+      // Функция для показа уведомления
+      function showWelcomeNotification(delay = 7000) {
+        // Проверяем, не показывается ли уже уведомление
+        if (currentNotification && currentNotification.isShowing) {
+          console.log('Уведомление уже показывается');
+          return;
+        }
+
+        const notification = new XPNotification({
+          title: 'Добро пожаловать в Atanov XP',
+          message: 'Это мое портфолио фронтенд-разработчика в ностальгическом стиле Windows XP.',
+          actionText: 'Начать: <a href="#about">Обо мне</a> | <a href="#projects">Мои проекты</a>',
+          iconUrl: '/Assets/Images/info-icon.png',
+          soundUrl: '/Assets/Sounds/notification-balloon.mp3',
+          startAfter: delay,
+          duration: 15000,
+          position: { bottom: '44px', right: '69px' }
+        });
+
+        currentNotification = notification;
+        notification.show();
+      }
+
+      // Показать уведомление после загрузки страницы
+      document.addEventListener('DOMContentLoaded', () => {
+        showWelcomeNotification();
+
+        // Добавить обработчик клика на иконку в футере
+        const infoIcons = document.querySelectorAll('.footer__icon[src="/Assets/Images/info-icon.png"]');
+        infoIcons.forEach(icon => {
+          icon.style.cursor = 'pointer';
+          icon.addEventListener('click', () => {
+            showWelcomeNotification(0); // Показать сразу при клике
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div
+      id="main-content"
+      style="
+        background: url('/Assets/Images/Background.webp') no-repeat center
+          center fixed;
+        background-size: cover;
+        min-height: 100vh;
+      "
+    >
+      <div id="desktop">
+        <div class="icon" ondblclick="openWindow('My Computer')">
+          <img
+            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/My Computer.png"
+            alt="My Computer"
+          />
+          <span>Мой компьютер</span>
+        </div>
+        <div class="icon" ondblclick="openWindow('Recycle Bin (empty)')">
+          <img
+            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Recycle Bin (empty).png"
+            alt="Recycle Bin"
+          />
+          <span>Корзина</span>
+        </div>
+        <div class="icon" ondblclick="openWindow('Internet Explorer 6')">
+          <img
+            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Internet Explorer 6.png"
+            alt="Internet Explorer"
+          />
+          <span>Internet Explorer</span>
+        </div>
+        <div
+          class="icon"
+          ondblclick="openWindow('Minesweeper'), SetLvl('Beginner')"
+        >
+          <img
+            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Minesweeper.png"
+            alt="Minesweeper"
+          />
+          <span>Сапёр</span>
+        </div>
+        <div class="icon" ondblclick="openWindow('Space Cadet Pinball')">
+          <img
+            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Space Cadet Pinball.png"
+            alt="Pinball"
+          />
+          <span>Pinball</span>
+        </div>
+        <div class="icon" ondblclick="openWindow('Paint')">
+          <img
+            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Paint.png"
+            alt="Paint"
+          />
+          <span>Paint</span>
+        </div>
+        <div class="icon" ondblclick="openWindow('Notepad')">
+          <img
+            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Notepad.png"
+            alt="Paint"
+          />
+          <span>Блокнот</span>
+        </div>
+        <div class="icon" ondblclick="openRawWinamp()">
+          <img src="/Assets/Images/Winamp-logo.png" alt="Winamp" />
+          <span>Winamp</span>
+        </div>
+      </div>
+      <footer id="Desktop_Footer" class="footer_original">
+        <div class="footer__items left">
+          <div class="footer__start_menu" onclick="openStartMenu()">
+            <img
+              src="/Assets/Images/windows_xp_start_button_normal.png"
+              id="start-button"
+              class="footer__start"
+              alt="start"
+            />
+          </div>
+        </div>
+        <div class="footer__items right">
+          <img
+            class="footer__icon"
+            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Volume.png"
+            alt=""
+          />
+          <img
+            class="footer__icon"
+            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Safely Remove Hardware.png"
+            alt=""
+          />
+          <img
+            class="footer__icon"
+            src="/Assets/Images/info-icon.png"
+            alt=""
+          />
+          <div class="footer__time" id="footer-time"></div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
