@@ -146,7 +146,7 @@ function openWindow(appName) {
 
   createTaskbar();
   injectStyle("bureau-styles", "/Open_Windows/Base/Open_Window.css");
-  injectStyle("taskbar-styles", "/Bureau/Taskbar.css");
+  injectStyle("taskbar-styles", "/Bureau/Taskbar/Taskbar.css");
   injectStyle(`window-${appName}`, `/Open_Windows/${appName}/${appName}.css`);
 
   let taskbar = document.getElementById("taskbar");

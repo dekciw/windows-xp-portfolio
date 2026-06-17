@@ -1,0 +1,32 @@
+/* Selection Box - пунктирная рамка выделения (точная копия Windows XP) */
+.selection-box {
+  position: absolute;
+  border: 1px dotted #000000;
+  background-color: rgba(49, 106, 197, 0.3);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Стилизация выделенных иконок (аутентичные цвета Windows XP) */
+.icon.selected .selection-text {
+  background-color: #316AC5 !important;
+  color: white !important;
+  display: inline;
+  line-height: inherit;
+}
+
+/* Убираем стандартный text-shadow для выделенного текста */
+.icon.selected span {
+  text-shadow: none;
+}
+
+/* Предотвращаем смещение иконок */
+.icon.selected {
+  transform: translateZ(0);
+}
+
+.icon.selected img {
+  filter: brightness(1.05) drop-shadow(0 0 2px rgba(49, 106, 197, 0.6));
+  opacity: 1;
+}
+

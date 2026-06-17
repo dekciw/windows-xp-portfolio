@@ -54,8 +54,9 @@
   display: flex;
   -webkit-box-align: center;
   align-items: center;
-  justify-content: space-around;
-  padding: 0px 30px;
+  justify-content: center;
+  gap: 35px;
+  padding: 0px 20px;
   position: relative;
 }
 
@@ -82,6 +83,8 @@
   -webkit-box-align: center;
   align-items: center;
   color: rgb(255, 255, 255);
+  width: 105px;
+  text-align: center;
 }
 
 .hAvTsp .button-img {
@@ -106,6 +109,9 @@ element.style {
   padding-top: 3px;
   font-weight: bold;
   font-size: 11px;
+  min-height: 26px;
+  display: flex;
+  align-items: flex-start;
 }
 
 .hAvTsp .Log_Off_Footer {

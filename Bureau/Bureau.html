@@ -44,7 +44,7 @@
     />
     <link
       rel="preload"
-      href="/Bureau/Taskbar.css"
+      href="/Bureau/Taskbar/Taskbar.css?v=2"
       as="style"
       onload="this.onload=null;this.rel='stylesheet';"
     />
@@ -55,18 +55,21 @@
       onload="this.onload=null;this.rel='stylesheet';"
     />
 
-    <link rel="stylesheet" href="/Bureau/Bureau.css" />
+    <link rel="stylesheet" href="/Bureau/Bureau.css?v=2" />
     <link rel="stylesheet" href="/Bureau/Notification/notification.css?v=14" />
+    <link rel="stylesheet" href="/Bureau/DesktopFeatures/Selection.css?v=2" />
 
-    <script src="/Bureau/Bureau.js"></script>
+    <script src="/Bureau/Bureau.js?v=2"></script>
     <script src="/Open_Windows/Minesweeper/Minesweeper.js"></script>
     <script src="/Bureau/Notification/notification.js?v=13"></script>
+    <script src="/Bureau/DesktopFeatures/Selection.js?v=2"></script>
+    <script src="/Bureau/DesktopFeatures/desktop-icons-draggable.js?v=2"></script>
     <script>
       // Глобальная переменная для отслеживания текущего уведомления
       let currentNotification = null;
 
       // Функция для показа уведомления
-      function showWelcomeNotification(delay = 7000) {
+      function showWelcomeNotification(delay = 5000) {
         // Проверяем, не показывается ли уже уведомление
         if (currentNotification && currentNotification.isShowing) {
           console.log('Уведомление уже показывается');
@@ -78,7 +81,7 @@
           message: 'Это мое портфолио фронтенд-разработчика в ностальгическом стиле Windows XP.',
           actionText: 'Начать: <a href="#about">Обо мне</a> | <a href="#projects">Мои проекты</a>',
           iconUrl: '/Assets/Images/info-icon.png',
-          soundUrl: '/Assets/Sounds/notification-balloon.mp3',
+          soundUrl: '/Assets/Sounds/notification-balloon.wav',
           startAfter: delay,
           duration: 15000,
           position: { bottom: '44px', right: '69px' }
