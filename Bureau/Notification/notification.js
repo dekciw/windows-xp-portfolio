@@ -32,6 +32,7 @@ class XPNotification {
     // Предзагрузка звука
     if (this.options.soundUrl) {
       this.audio = new Audio(this.options.soundUrl);
+      this.audio.volume = 1.0; // Максимальная громкость
       this.audio.preload = 'auto';
       this.audio.load();
     }

@@ -23,7 +23,7 @@ window.addEventListener("DOMContentLoaded", function () {
       setTimeout(() => {
         const logOffP = document.querySelector("#Transi_log_off p");
         if (logOffP) {
-          logOffP.textContent = "Windows is shutting down...";
+          logOffP.textContent = "Завершение работы Windows...";
         }
       }, 1500);
       setTimeout(() => {

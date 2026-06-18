@@ -68,12 +68,12 @@ function loginAsGuest() {
   const guestUser = document.getElementById("guest-user");
   const guestSpan = guestUser.querySelector("span");
 
-  leftPanel.innerHTML = `<p>welcome</p>`;
+  leftPanel.innerHTML = `<p>Приветствие</p>`;
   leftPanel.style.paddingTop = "18%";
 
   const leftPanelP = leftPanel.querySelector("p");
   Object.assign(leftPanelP.style, {
-    fontSize: "5rem",
+    fontSize: "3rem",
     fontFamily: "Arial, sans-serif",
     fontStyle: "italic",
     fontWeight: "bold",
@@ -82,7 +82,7 @@ function loginAsGuest() {
 
   guestSpan.insertAdjacentHTML(
     "afterend",
-    `<p>Loading your personal settings...</p>`
+    `<p>Загрузка личных настроек...</p>`
   );
 
   userList.classList.add("is-padding-anim");
@@ -315,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function () {
           "beforeend",
           `
         <div class="login-screen__password">
-          <p>Type your password</p>
+          <p>Введите пароль</p>
           <form onsubmit="event.preventDefault(); return false;">
             <input id="Password" type="password">
             <button class="login-screen__submit" type="submit">

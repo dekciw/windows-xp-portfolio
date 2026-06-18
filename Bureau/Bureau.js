@@ -91,6 +91,19 @@ playSoundOnPage(
   "/Assets/Sounds/Switch_Users.mp3"
 );
 
+// Предзагрузка звука навигации
+const navigationSound = new Audio("/Assets/Sounds/Windows Navigation Start.wav");
+navigationSound.volume = 1.0;
+navigationSound.preload = "auto";
+
+// Функция воспроизведения звука при открытии окна
+function playNavigationSound() {
+  // Клонируем звук для мгновенного воспроизведения
+  const soundClone = navigationSound.cloneNode();
+  soundClone.volume = 1.0;
+  soundClone.play().catch((error) => console.error("Navigation sound error:", error));
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   updateTaskbarVisibility();
 
@@ -141,6 +154,12 @@ document.addEventListener("click", function (event) {
 });
 
 function openWindow(appName) {
+  // Воспроизводим звук только для папок (My Computer, Recycle Bin)
+  const folderWindows = ['My Computer', 'Recycle Bin (empty)', 'Recycle Bin (full)'];
+  if (folderWindows.includes(appName)) {
+    playNavigationSound();
+  }
+
   let windowTooltipContainer = null;
   let windowCurrentLabel = null;
 

@@ -40,7 +40,7 @@
         setTimeout(() => {
           const logOffP = document.querySelector("#Transi_log_off p");
           if (logOffP) {
-            logOffP.textContent = "Saving your settings...";
+            logOffP.textContent = "Сохранение параметров...";
             logOffP.style.paddingLeft = "0";
           }
         }, 1500);

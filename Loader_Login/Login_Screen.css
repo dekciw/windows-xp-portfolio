@@ -101,7 +101,7 @@
 
 #left-panel p {
   color: white;
-  font-size: x-large;
+  font-size: 18px;
   padding-right: 4%;
 }
 
@@ -380,7 +380,7 @@
 .login-screen__password {
   position: absolute;
   top: 55%;
-  left: 14%;
+  left: calc(16% + 4px);
 }
 
 #Password {
