@@ -35,21 +35,21 @@
       />
       <div class="IE_function_bar_arrow"></div>
     </div>
-    <div class="IE_function_bar_button">
+    <div class="IE_function_bar_button--disable">
       <img
         class="IE_function_bar_icon--margin-1"
         src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/IE Stop.png"
         alt=""
       />
     </div>
-    <div class="IE_function_bar_button">
+    <div class="IE_function_bar_button" id="ie-refresh-button">
       <img
         class="IE_function_bar_icon--margin-1"
         src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/IE Refresh.png"
         alt=""
       />
     </div>
-    <div class="IE_function_bar_button">
+    <div class="IE_function_bar_button" id="ie-home-button">
       <img
         class="IE_function_bar_icon--margin-1"
         src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/IE Home.png"
@@ -57,14 +57,14 @@
       />
     </div>
     <div class="IE_function_bar_separate"></div>
-    <div class="IE_function_bar_button">
+    <div class="IE_function_bar_button--disable">
       <img
         class="IE_function_bar_icon--normalize"
         src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Search.png"
         alt=""
       /><span class="IE_function_bar_text">Поиск</span>
     </div>
-    <div class="IE_function_bar_button">
+    <div class="IE_function_bar_button" id="ie-favorites-button">
       <img
         class="IE_function_bar_icon--normalize"
         src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Favorites.png"
@@ -117,14 +117,19 @@
         alt="IE"
         class="IE_address_bar_IE_content_img"
       />
-      <div class="IE_address_bar_IE_content_text">https://www.google.com</div>
+      <input
+        type="text"
+        id="ie-address-input"
+        class="IE_address_bar_IE_content_input"
+        value="https://ru.wikipedia.org"
+      />
       <img
         src="/Assets/Images/Down arrow.png"
         alt="dropdown"
         class="IE_address_bar_IE_content_img"
       />
     </div>
-    <div class="IE_address_bar_go">
+    <div class="IE_address_bar_go" id="ie-go-button">
       <img
         class="IE_address_bar_go_img"
         src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Go.png"
@@ -141,50 +146,45 @@
       />
     </div>
   </section>
-  <div class="IE_content">
-    <div class="IE_content_inner">
-      <div class="IE_content_inner_OCD">
-        <header class="IE_header">
-          <div class="text">Gmail</div>
-          <div class="text">Images</div>
-          <img src="/Assets/Images/Smiley smiling.svg" alt="avatar" />
-        </header>
-        <section class="Section_IE_content">
-          <img
-            class="logo"
-            alt="Google"
-            src="/Assets/Images/google_logo_color.png"
-          />
-          <div class="search-bar">
-            <input id="search" type="text" name="search" value="" />
-            <div class="icon">
-              <img src="/Assets/Images/google_mic_color.png" alt="microphone" />
-            </div>
-          </div>
-          <div class="buttons">
-            <button id="enter">Google Search</button
-            ><button>I'm Feeling Lucky</button>
-          </div>
-        </section>
-        <footer class="IE_Upper_footer">
-          <section class="upper">
-            <div class="items left"><div class="item">Taiwan</div></div>
-          </section>
-          <section class="lower">
-            <div class="items left">
-              <div class="item">Advertising</div>
-              <div class="item">Business</div>
-              <div class="item">About</div>
-            </div>
-            <div class="items right">
-              <div class="item">Privacy</div>
-              <div class="item">Terms</div>
-              <div class="item">Settings</div>
-            </div>
-          </section>
-        </footer>
+
+  <!-- Панель поиска -->
+  <div class="IE_search_panel" id="ie-search-panel" style="display: none;">
+    <div class="IE_search_header">
+      <img
+        src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Search.png"
+        alt="search"
+        class="IE_search_icon"
+      />
+      <span class="IE_search_title">Поиск</span>
+      <button class="IE_search_close" id="ie-search-close">✕</button>
+    </div>
+    <div class="IE_search_content">
+      <label class="IE_search_label">Поиск по Википедии:</label>
+      <input
+        type="text"
+        id="ie-search-input"
+        class="IE_search_input"
+        placeholder="Введите запрос..."
+      />
+      <button class="IE_search_submit" id="ie-search-submit">Найти</button>
+      <div class="IE_search_options">
+        <label>
+          <input type="radio" name="wiki-lang" value="ru" checked> Русская
+        </label>
+        <label>
+          <input type="radio" name="wiki-lang" value="en"> English
+        </label>
       </div>
     </div>
+  </div>
+
+  <div class="IE_content">
+    <iframe
+      id="ie-browser-frame"
+      class="IE_browser_iframe"
+      src="https://ru.wikipedia.org"
+      sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-top-navigation"
+    ></iframe>
   </div>
   <footer class="IE_footer">
     <div class="IE_footer_status">
@@ -192,7 +192,7 @@
         class="IE_footer_status_img"
         src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/URL.png"
         alt=""
-      /><span class="IE_footer_status_text">Готово</span>
+      /><span class="IE_footer_status_text" id="ie-status-text">Готово</span>
     </div>
     <div class="IE_footer_block"></div>
     <div class="IE_footer_block"></div>
@@ -208,3 +208,5 @@
     </div>
   </footer>
 </div>
+
+<script src="Internet Explorer 6.js"></script>

@@ -211,6 +211,20 @@
   overflow: hidden;
 }
 
+.IE_address_bar_IE_content_input {
+  position: absolute;
+  left: 16px;
+  right: 17px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: Tahoma, "Noto Sans", sans-serif;
+  font-size: 11px;
+  width: calc(100% - 33px);
+  padding: 0;
+  margin: 0;
+}
+
 .IE_address_bar_IE_content_img:last-child {
   width: 15px;
   height: 15px;
@@ -229,6 +243,11 @@
   padding: 0px 18px 0px 5px;
   height: 100%;
   position: relative;
+  cursor: pointer;
+}
+
+.IE_address_bar_go:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .IE_address_bar_go_img {
@@ -538,4 +557,129 @@
     rgb(255, 255, 255) 3px 1px, rgb(255, 255, 255) 6.5px 1px,
     rgb(255, 255, 255) 10px 1px, rgb(255, 255, 255) 10px -2.5px,
     rgb(255, 255, 255) 10px -6px;
+}
+
+.IE_browser_iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: white;
+  display: block;
+}
+
+/* Панель поиска */
+.IE_search_panel {
+  position: absolute;
+  top: 85px;
+  left: 10px;
+  width: 250px;
+  background: linear-gradient(to bottom, #f0f0f0 0%, #e8e8e8 100%);
+  border: 1px solid #999;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  flex-direction: column;
+  font-family: Tahoma, "Noto Sans", sans-serif;
+}
+
+.IE_search_header {
+  background: linear-gradient(to right, #0054e3 0%, #3c8fef 100%);
+  color: white;
+  padding: 3px 5px;
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: bold;
+  border-bottom: 1px solid #0041b8;
+}
+
+.IE_search_icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+  filter: brightness(0) invert(1);
+}
+
+.IE_search_title {
+  flex: 1;
+}
+
+.IE_search_close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 5px;
+  line-height: 1;
+}
+
+.IE_search_close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.IE_search_content {
+  padding: 15px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.IE_search_label {
+  font-size: 11px;
+  color: #333;
+  font-weight: bold;
+}
+
+.IE_search_input {
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid #7f9db9;
+  font-size: 11px;
+  font-family: Tahoma, "Noto Sans", sans-serif;
+  box-sizing: border-box;
+}
+
+.IE_search_input:focus {
+  outline: none;
+  border-color: #0054e3;
+}
+
+.IE_search_submit {
+  padding: 5px 15px;
+  background: linear-gradient(to bottom, #f0f0f0 0%, #d8d8d8 100%);
+  border: 1px solid #999;
+  border-radius: 3px;
+  font-size: 11px;
+  font-family: Tahoma, "Noto Sans", sans-serif;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.IE_search_submit:hover {
+  background: linear-gradient(to bottom, #f8f8f8 0%, #e0e0e0 100%);
+}
+
+.IE_search_submit:active {
+  background: linear-gradient(to bottom, #d0d0d0 0%, #e8e8e8 100%);
+  border-color: #666;
+}
+
+.IE_search_options {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 11px;
+  padding-top: 5px;
+  border-top: 1px solid #ccc;
+}
+
+.IE_search_options label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.IE_search_options input[type="radio"] {
+  margin-right: 5px;
 }

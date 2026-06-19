@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Избранное - Internet Explorer 6</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Tahoma, "Noto Sans", sans-serif;
+      background: linear-gradient(to bottom, #5a7fc6 0%, #4e6db5 50%, #5a7fc6 100%);
+      padding: 20px;
+      color: white;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      color: #333;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #003399;
+      margin-bottom: 10px;
+      border-bottom: 2px solid #003399;
+      padding-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .category {
+      margin-bottom: 30px;
+    }
+
+    .category h2 {
+      font-size: 16px;
+      color: #0066cc;
+      margin-bottom: 15px;
+      padding-left: 20px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="%230066cc" d="M2 4h12v2H2V4zm0 4h12v2H2V8zm0 4h12v2H2v-2z"/></svg>') no-repeat left center;
+    }
+
+    .links {
+      display: grid;
+      gap: 10px;
+      padding-left: 20px;
+    }
+
+    .link-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      text-decoration: none;
+      color: #0066cc;
+      transition: all 0.2s;
+    }
+
+    .link-item:hover {
+      background: #e7f3ff;
+      border-color: #0066cc;
+      transform: translateX(5px);
+    }
+
+    .link-icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      font-size: 16px;
+    }
+
+    .link-text {
+      flex: 1;
+    }
+
+    .link-url {
+      font-size: 10px;
+      color: #666;
+      margin-left: 10px;
+    }
+
+    .note {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 4px;
+      padding: 15px;
+      margin-top: 30px;
+      font-size: 11px;
+      color: #856404;
+    }
+
+    .note strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌐 Избранное Internet Explorer</h1>
+    <div class="subtitle">Проверенные сайты, работающие в iframe</div>
+
+    <div class="category">
+      <h2>📚 Образование и знания</h2>
+      <div class="links">
+        <a href="https://ru.wikipedia.org" class="link-item" target="_parent">
+          <span class="link-icon">📖</span>
+          <span class="link-text">Википедия (Русская)</span>
+          <span class="link-url">ru.wikipedia.org</span>
+        </a>
+        <a href="https://en.wikipedia.org" class="link-item" target="_parent">
+          <span class="link-icon">📕</span>
+          <span class="link-text">Wikipedia (English)</span>
+          <span class="link-url">en.wikipedia.org</span>
+        </a>
+        <a href="https://archive.org" class="link-item" target="_parent">
+          <span class="link-icon">🏛️</span>
+          <span class="link-text">Internet Archive</span>
+          <span class="link-url">archive.org</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="category">
+      <h2>🔍 Поиск</h2>
+      <div class="links">
+        <a href="https://duckduckgo.com" class="link-item" target="_parent">
+          <span class="link-icon">🦆</span>
+          <span class="link-text">DuckDuckGo</span>
+          <span class="link-url">duckduckgo.com</span>
+        </a>
+        <a href="https://www.ecosia.org" class="link-item" target="_parent">
+          <span class="link-icon">🌳</span>
+          <span class="link-text">Ecosia (экологичный поиск)</span>
+          <span class="link-url">ecosia.org</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="category">
+      <h2>🎮 Развлечения</h2>
+      <div class="links">
+        <a href="https://archive.org/details/softwarelibrary_msdos_games" class="link-item" target="_parent">
+          <span class="link-icon">🕹️</span>
+          <span class="link-text">DOS Games Archive</span>
+          <span class="link-url">archive.org/dos_games</span>
+        </a>
+        <a href="https://www.retrogames.cz" class="link-item" target="_parent">
+          <span class="link-icon">👾</span>
+          <span class="link-text">Retro Games</span>
+          <span class="link-url">retrogames.cz</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="category">
+      <h2>🛠️ Разработка</h2>
+      <div class="links">
+        <a href="https://developer.mozilla.org" class="link-item" target="_parent">
+          <span class="link-icon">🦎</span>
+          <span class="link-text">MDN Web Docs</span>
+          <span class="link-url">developer.mozilla.org</span>
+        </a>
+        <a href="https://www.w3schools.com" class="link-item" target="_parent">
+          <span class="link-icon">💻</span>
+          <span class="link-text">W3Schools</span>
+          <span class="link-url">w3schools.com</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="category">
+      <h2>📰 Новости и информация</h2>
+      <div class="links">
+        <a href="https://www.bbc.com" class="link-item" target="_parent">
+          <span class="link-icon">📺</span>
+          <span class="link-text">BBC News</span>
+          <span class="link-url">bbc.com</span>
+        </a>
+        <a href="https://theconversation.com" class="link-item" target="_parent">
+          <span class="link-icon">💬</span>
+          <span class="link-text">The Conversation</span>
+          <span class="link-url">theconversation.com</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>⚠️ Примечание:</strong>
+      Некоторые сайты (Google, YouTube, Facebook, банки) блокируют загрузку в iframe по соображениям безопасности.
+      Эти ссылки проверены и должны работать. Если сайт не загружается, попробуйте другой из списка.
+    </div>
+  </div>
+
+  <script>
+    // Перехват кликов и отправка родительскому окну
+    document.querySelectorAll('.link-item').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const url = this.getAttribute('href');
+
+        // Попытка отправить сообщение родительскому окну
+        if (window.parent !== window) {
+          window.parent.postMessage({ action: 'navigate', url: url }, '*');
+        } else {
+          window.location.href = url;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
