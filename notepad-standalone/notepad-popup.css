@@ -439,6 +439,10 @@ body {
   display: block;
 }
 
+.calculator-button-num svg[width="3"] {
+  transform: translateY(-3px);
+}
+
 .calculator-row-3 {
   display: flex;
   gap: 7px;
