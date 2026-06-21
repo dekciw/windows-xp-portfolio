@@ -1,3 +1,7 @@
+* {
+  cursor: url('/Assets/Images/xp-cursor.cur'), auto !important;
+}
+
 .BigRectangle {
   /*overflow: hidden;*/
   border-radius: 5px;

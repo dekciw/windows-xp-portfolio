@@ -1,3 +1,7 @@
+body, * {
+  cursor: url('/Assets/Images/xp-cursor.cur'), auto !important;
+}
+
 @font-face {
   font-family: "Windows XP Tahoma";
   src: local("Windows-XP-Tahoma"),

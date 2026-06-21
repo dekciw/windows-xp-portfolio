@@ -2,6 +2,11 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  cursor: url('/Assets/Images/xp-cursor.cur'), auto;
+}
+
+* {
+  cursor: url('/Assets/Images/xp-cursor.cur'), auto !important;
 }
 
 #desktop {

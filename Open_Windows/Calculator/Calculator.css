@@ -1,3 +1,4 @@
+* { cursor: url('/Assets/Images/xp-cursor.cur'), auto !important; }
 /* Размер окна калькулятора */
 #window-Calculator {
   width: 254px !important;

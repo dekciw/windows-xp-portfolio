@@ -1,3 +1,4 @@
+* { cursor: url('/Assets/Images/xp-cursor.cur'), auto !important; }
 .notepad_body {
   height: 100%;
   background: linear-gradient(

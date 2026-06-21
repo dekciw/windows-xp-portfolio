@@ -1,3 +1,7 @@
+body, * {
+  cursor: url('/Assets/Images/xp-cursor.cur'), auto !important;
+}
+
 @keyframes fadeOutBlack {
   from {
     opacity: 1;
