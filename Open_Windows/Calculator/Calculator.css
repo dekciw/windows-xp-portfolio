@@ -20,11 +20,12 @@
 /* Все стили калькулятора */
 #window-Calculator .notepad_body {
   width: 254px;
-  height: auto;
+  min-height: 250px;
   background: #ECE9D8;
-  display: block;
-  overflow: visible !important;
+  display: flex;
+  flex-direction: column;
   padding-bottom: 10px;
+  overflow: visible !important;
 }
 
 #window-Calculator .toolbar {
