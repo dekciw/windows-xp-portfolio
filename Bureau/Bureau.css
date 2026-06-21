@@ -2,11 +2,15 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  cursor: url('/Assets/Images/xp-cursor.cur'), auto;
+  cursor: url('/Assets/Images/Cursors/windows-xp-arrow.cur'), auto;
 }
 
 * {
-  cursor: url('/Assets/Images/xp-cursor.cur'), auto !important;
+  cursor: url('/Assets/Images/Cursors/windows-xp-arrow.cur'), auto !important;
+}
+
+a, button, [role="button"], .icon, [onclick], input[type="button"], input[type="submit"], .clickable, .user, .footer_item, .ItemMenu, .AllProgMenu {
+  cursor: url('/Assets/Images/Cursors/windows-xp-link.cur'), pointer !important;
 }
 
 #desktop {

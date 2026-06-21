@@ -1,4 +1,4 @@
-* { cursor: url('/Assets/Images/xp-cursor.cur'), auto !important; }
+* { cursor: url('/Assets/Images/Cursors/windows-xp-arrow.cur'), auto !important; }
 @font-face {
   font-family: "Noto Sans";
   src: local("Noto_Sans-Bold"),
@@ -335,4 +335,8 @@
   margin-top: 25px;
   height: calc(100% - 25px);
   overflow: visible;
+}
+
+a, button, [role="button"], .icon, [onclick], input[type="button"], input[type="submit"], .clickable {
+  cursor: url('/Assets/Images/Cursors/windows-xp-link.cur'), pointer !important;
 }

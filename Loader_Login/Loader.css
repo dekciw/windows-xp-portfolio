@@ -1,5 +1,5 @@
 body, * {
-  cursor: url('/Assets/Images/xp-cursor.cur'), auto !important;
+  cursor: url('/Assets/Images/Cursors/windows-xp-arrow.cur'), auto !important;
 }
 
 @keyframes fadeOutBlack {
@@ -136,4 +136,8 @@ body::after {
   font-size: 11px;
   font-weight: normal;
   letter-spacing: 0.3px;
+}
+
+a, button, [role="button"], .icon, [onclick], input[type="button"], input[type="submit"], .clickable, .user {
+  cursor: url('/Assets/Images/Cursors/windows-xp-link.cur'), pointer !important;
 }

@@ -1,4 +1,4 @@
-* { cursor: url('/Assets/Images/xp-cursor.cur'), auto !important; }
+* { cursor: url('/Assets/Images/Cursors/windows-xp-arrow.cur'), auto !important; }
 /* Размер окна калькулятора */
 #window-Calculator {
   width: 254px !important;
@@ -218,4 +218,8 @@
   display: flex;
   align-items: center;
   margin-top: 8px;
+}
+
+a, button, [role="button"], .icon, [onclick], input[type="button"], input[type="submit"], .clickable {
+  cursor: url('/Assets/Images/Cursors/windows-xp-link.cur'), pointer !important;
 }

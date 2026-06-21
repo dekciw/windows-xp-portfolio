@@ -122,22 +122,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const startBtn = document.getElementById("start-button");
   startBtn.addEventListener("mouseenter", () => {
-    startBtn.src = "/Assets/Images/windows_xp_start_button_hover.png";
+    startBtn.src = "/Assets/Images/Buttons/start-button-hover.png";
   });
 
   startBtn.addEventListener("mouseleave", () => {
-    startBtn.src = "/Assets/Images/windows_xp_start_button_normal.png";
+    startBtn.src = "/Assets/Images/Buttons/start-button-normal.png";
   });
 
   startBtn.addEventListener("mousedown", () => {
-    startBtn.src = "/Assets/Images/windows_xp_start_button_onclick.png";
+    startBtn.src = "/Assets/Images/Buttons/start-button-click.png";
   });
 
   startBtn.addEventListener("mouseup", () => {
     const isHovering = startBtn.matches(":hover");
     startBtn.src = isHovering
-      ? "/Assets/Images/windows_xp_start_button_hover.png"
-      : "/Assets/Images/windows_xp_start_button_normal.png";
+      ? "/Assets/Images/Buttons/start-button-hover.png"
+      : "/Assets/Images/Buttons/start-button-normal.png";
   });
 });
 
@@ -530,7 +530,7 @@ function updateCheckmarkInTooltip() {
 
     if (levelText === selectedText) {
       const img = document.createElement("img");
-      img.src = "/Assets/Images/Tooltip_CheckMark.png";
+      img.src = "/Assets/Images/Icons/tooltip-checkmark.png";
       img.alt = "Check Mark";
       checkContainer.appendChild(img);
     }
@@ -705,7 +705,7 @@ function openRawWinamp() {
     taskbarItem = document.createElement("div");
     taskbarItem.id = `taskbar-Winamp`;
     taskbarItem.classList.add("taskbar-item");
-    taskbarItem.innerHTML = `<img src="/Assets/Images/Winamp-logo.png" width="16"> <span>Winamp</span>`;
+    taskbarItem.innerHTML = `<img src="/Assets/Images/Logos/winamp-logo.png" width="16"> <span>Winamp</span>`;
     taskbarItem.onmousedown = () => {
       const winampWindow = document.getElementById("webamp");
       if (!winampWindow) return;

@@ -1,5 +1,5 @@
 * {
-  cursor: url('/Assets/Images/xp-cursor.cur'), auto !important;
+  cursor: url('/Assets/Images/Cursors/windows-xp-arrow.cur'), auto !important;
 }
 
 .BigRectangle {
@@ -308,4 +308,8 @@
     rgb(17, 101, 210) 83%,
     rgb(15, 97, 203) 88%
   );
+}
+
+a, button, [role="button"], .icon, [onclick], input[type="button"], input[type="submit"], .clickable, .ItemMenu, .AllProgMenu, .footer_item {
+  cursor: url('/Assets/Images/Cursors/windows-xp-link.cur'), pointer !important;
 }

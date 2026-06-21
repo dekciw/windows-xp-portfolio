@@ -1,5 +1,5 @@
 body, * {
-  cursor: url('/Assets/Images/xp-cursor.cur'), auto !important;
+  cursor: url('/Assets/Images/Cursors/windows-xp-arrow.cur'), auto !important;
 }
 
 @font-face {
@@ -402,4 +402,8 @@ body, * {
   padding: 5px;
 
   font-size: 20px;
+}
+
+a, button, [role="button"], .icon, [onclick], input[type="button"], input[type="submit"], .clickable, .user, .login-screen__submit, .login-screen__question, #Power, #shutdown-p {
+  cursor: url('/Assets/Images/Cursors/windows-xp-link.cur'), pointer !important;
 }

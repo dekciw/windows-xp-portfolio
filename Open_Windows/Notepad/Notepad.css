@@ -1,4 +1,4 @@
-* { cursor: url('/Assets/Images/xp-cursor.cur'), auto !important; }
+* { cursor: url('/Assets/Images/Cursors/windows-xp-arrow.cur'), auto !important; }
 .notepad_body {
   height: 100%;
   background: linear-gradient(
@@ -53,4 +53,8 @@
   padding: 2px;
   overflow-y: scroll;
   border: 1px solid rgb(150, 171, 255);
+}
+
+a, button, [role="button"], .icon, [onclick], input[type="button"], input[type="submit"], .clickable {
+  cursor: url('/Assets/Images/Cursors/windows-xp-link.cur'), pointer !important;
 }
