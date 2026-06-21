@@ -1962,3 +1962,191 @@ function writeDateTime() {
 function openCalculator() {
   openWindow('Calculator');
 }
+
+// Логика калькулятора Windows XP
+let calculatorState = {
+  displayValue: '0',
+  previousValue: null,
+  operation: null,
+  waitingForOperand: false,
+  memory: 0
+};
+
+function updateCalculatorDisplay() {
+  const display = document.querySelector('#window-Calculator .calculator-display');
+  if (display) {
+    display.value = calculatorState.displayValue;
+  }
+}
+
+function handleCalculatorNumber(num) {
+  if (calculatorState.waitingForOperand) {
+    calculatorState.displayValue = String(num);
+    calculatorState.waitingForOperand = false;
+  } else {
+    calculatorState.displayValue = calculatorState.displayValue === '0'
+      ? String(num)
+      : calculatorState.displayValue + num;
+  }
+  updateCalculatorDisplay();
+}
+
+function handleCalculatorOperation(nextOperation) {
+  const inputValue = parseFloat(calculatorState.displayValue);
+
+  if (calculatorState.previousValue === null) {
+    calculatorState.previousValue = inputValue;
+  } else if (calculatorState.operation) {
+    const result = performCalculation();
+    calculatorState.displayValue = String(result);
+    calculatorState.previousValue = result;
+  }
+
+  calculatorState.waitingForOperand = true;
+  calculatorState.operation = nextOperation;
+  updateCalculatorDisplay();
+}
+
+function performCalculation() {
+  const prev = calculatorState.previousValue;
+  const current = parseFloat(calculatorState.displayValue);
+
+  switch (calculatorState.operation) {
+    case '+':
+      return prev + current;
+    case '-':
+      return prev - current;
+    case '*':
+      return prev * current;
+    case '/':
+      return current !== 0 ? prev / current : 0;
+    default:
+      return current;
+  }
+}
+
+function handleCalculatorEquals() {
+  if (calculatorState.operation && calculatorState.previousValue !== null) {
+    const result = performCalculation();
+    calculatorState.displayValue = String(result);
+    calculatorState.previousValue = null;
+    calculatorState.operation = null;
+    calculatorState.waitingForOperand = false;
+    updateCalculatorDisplay();
+  }
+}
+
+function handleCalculatorClear() {
+  calculatorState.displayValue = '0';
+  calculatorState.previousValue = null;
+  calculatorState.operation = null;
+  calculatorState.waitingForOperand = false;
+  updateCalculatorDisplay();
+}
+
+function handleCalculatorCE() {
+  calculatorState.displayValue = '0';
+  updateCalculatorDisplay();
+}
+
+function handleCalculatorBackspace() {
+  calculatorState.displayValue = calculatorState.displayValue.length > 1
+    ? calculatorState.displayValue.slice(0, -1)
+    : '0';
+  updateCalculatorDisplay();
+}
+
+function handleCalculatorDecimal() {
+  if (!calculatorState.displayValue.includes('.')) {
+    calculatorState.displayValue += '.';
+    updateCalculatorDisplay();
+  }
+}
+
+function handleCalculatorNegate() {
+  const value = parseFloat(calculatorState.displayValue);
+  calculatorState.displayValue = String(-value);
+  updateCalculatorDisplay();
+}
+
+function handleCalculatorPercent() {
+  const value = parseFloat(calculatorState.displayValue);
+  calculatorState.displayValue = String(value / 100);
+  updateCalculatorDisplay();
+}
+
+function handleCalculatorSqrt() {
+  const value = parseFloat(calculatorState.displayValue);
+  calculatorState.displayValue = String(Math.sqrt(value));
+  updateCalculatorDisplay();
+}
+
+function handleCalculatorReciprocal() {
+  const value = parseFloat(calculatorState.displayValue);
+  calculatorState.displayValue = value !== 0 ? String(1 / value) : '0';
+  updateCalculatorDisplay();
+}
+
+function handleCalculatorMemory(action) {
+  const value = parseFloat(calculatorState.displayValue);
+
+  switch(action) {
+    case 'MC':
+      calculatorState.memory = 0;
+      break;
+    case 'MR':
+      calculatorState.displayValue = String(calculatorState.memory);
+      updateCalculatorDisplay();
+      break;
+    case 'MS':
+      calculatorState.memory = value;
+      break;
+    case 'M+':
+      calculatorState.memory += value;
+      break;
+  }
+}
+
+// Event delegation для обработки кликов на кнопки калькулятора
+document.addEventListener('click', function(e) {
+  const calcWindow = document.getElementById('window-Calculator');
+  if (!calcWindow) return;
+
+  const button = e.target.closest('.calculator-button');
+  if (!button) return;
+
+  // Цифры
+  if (button.classList.contains('calculator-button-num-0')) handleCalculatorNumber(0);
+  else if (button.classList.contains('calculator-button-num-1')) handleCalculatorNumber(1);
+  else if (button.classList.contains('calculator-button-num-2')) handleCalculatorNumber(2);
+  else if (button.classList.contains('calculator-button-num-3')) handleCalculatorNumber(3);
+  else if (button.classList.contains('calculator-button-num-4')) handleCalculatorNumber(4);
+  else if (button.classList.contains('calculator-button-num-5')) handleCalculatorNumber(5);
+  else if (button.classList.contains('calculator-button-num-6')) handleCalculatorNumber(6);
+  else if (button.classList.contains('calculator-button-num-7')) handleCalculatorNumber(7);
+  else if (button.classList.contains('calculator-button-num-8')) handleCalculatorNumber(8);
+  else if (button.classList.contains('calculator-button-num-9')) handleCalculatorNumber(9);
+
+  // Операции
+  else if (button.classList.contains('calculator-button-plus')) handleCalculatorOperation('+');
+  else if (button.classList.contains('calculator-button-minus')) handleCalculatorOperation('-');
+  else if (button.classList.contains('calculator-button-multiply')) handleCalculatorOperation('*');
+  else if (button.classList.contains('calculator-button-divide')) handleCalculatorOperation('/');
+
+  // Специальные функции
+  else if (button.classList.contains('calculator-button-equals')) handleCalculatorEquals();
+  else if (button.classList.contains('calculator-button-c')) handleCalculatorClear();
+  else if (button.classList.contains('calculator-button-ce')) handleCalculatorCE();
+  else if (button.classList.contains('calculator-button-backspace')) handleCalculatorBackspace();
+  else if (button.classList.contains('calculator-button-decimal')) handleCalculatorDecimal();
+  else if (button.classList.contains('calculator-button-negate')) handleCalculatorNegate();
+  else if (button.classList.contains('calculator-button-percent')) handleCalculatorPercent();
+  else if (button.classList.contains('calculator-button-sqrt')) handleCalculatorSqrt();
+  else if (button.classList.contains('calculator-button-reciprocal')) handleCalculatorReciprocal();
+
+  // Память
+  else if (button.classList.contains('calculator-button-mc')) handleCalculatorMemory('MC');
+  else if (button.classList.contains('calculator-button-mr')) handleCalculatorMemory('MR');
+  else if (button.classList.contains('calculator-button-ms')) handleCalculatorMemory('MS');
+  else if (button.classList.contains('calculator-button-mplus')) handleCalculatorMemory('M+');
+});
