@@ -8,13 +8,13 @@
       rel="icon"
       type="image/ico"
       sizes="32x32"
-      href="/Assets/Images/Windows_XP-min.ico"
+      href="/Assets/Images/Icons/windows-xp.ico"
     />
 
     <link
       rel="preload"
       as="image"
-      href="/Assets/Images/Background.webp"
+      href="/Assets/Images/Backgrounds/desktop-background.webp"
       type="image/webp"
     />
 
@@ -80,7 +80,7 @@
           title: 'Добро пожаловать в Atanov XP',
           message: 'Это мое портфолио фронтенд-разработчика в ностальгическом стиле Windows XP.',
           actionText: 'Начать: <a href="#about">Обо мне</a> | <a href="#projects">Мои проекты</a>',
-          iconUrl: '/Assets/Images/info-icon.png',
+          iconUrl: '/Assets/Images/Security/info-icon.png',
           soundUrl: '/Assets/Sounds/notification-balloon.wav',
           startAfter: delay,
           duration: 15000,
@@ -96,7 +96,7 @@
         showWelcomeNotification();
 
         // Добавить обработчик клика на иконку в футере
-        const infoIcons = document.querySelectorAll('.footer__icon[src="/Assets/Images/info-icon.png"]');
+        const infoIcons = document.querySelectorAll('.footer__icon[src="/Assets/Images/Security/info-icon.png"]');
         infoIcons.forEach(icon => {
           icon.style.cursor = 'pointer';
           icon.addEventListener('click', () => {
@@ -110,7 +110,7 @@
     <div
       id="main-content"
       style="
-        background: url('/Assets/Images/Background.webp') no-repeat center
+        background: url('/Assets/Images/Backgrounds/desktop-background.webp') no-repeat center
           center fixed;
         background-size: cover;
         min-height: 100vh;
@@ -177,7 +177,7 @@
           <span>Калькулятор</span>
         </div>
         <div class="icon" ondblclick="openRawWinamp()">
-          <img src="/Assets/Images/Winamp-logo.png" alt="Winamp" />
+          <img src="/Assets/Images/Logos/winamp-logo.png" alt="Winamp" />
           <span>Winamp</span>
         </div>
       </div>
@@ -185,7 +185,7 @@
         <div class="footer__items left">
           <div class="footer__start_menu" onclick="openStartMenu()">
             <img
-              src="/Assets/Images/windows_xp_start_button_normal.png"
+              src="/Assets/Images/Buttons/start-button-normal.png"
               id="start-button"
               class="footer__start"
               alt="start"
@@ -205,7 +205,7 @@
           />
           <img
             class="footer__icon"
-            src="/Assets/Images/info-icon.png"
+            src="/Assets/Images/Security/info-icon.png"
             alt=""
           />
           <div class="footer__time" id="footer-time"></div>
