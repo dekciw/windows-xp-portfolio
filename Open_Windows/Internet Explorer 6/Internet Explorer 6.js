@@ -5,11 +5,9 @@
   const goButton = document.getElementById('ie-go-button');
   const refreshButton = document.getElementById('ie-refresh-button');
   const homeButton = document.getElementById('ie-home-button');
-  const favoritesButton = document.getElementById('ie-favorites-button');
   const statusText = document.getElementById('ie-status-text');
 
   const homePage = 'https://ru.wikipedia.org';
-  const favoritesPage = '/Open_Windows/Internet Explorer 6/favorites.html';
 
   // Загрузка страницы
   function navigateTo(url) {
@@ -62,19 +60,8 @@
     });
   }
 
-  // Кнопка "Избранное"
-  if (favoritesButton) {
-    favoritesButton.addEventListener('click', function() {
-      navigateTo(favoritesPage);
-    });
-  }
-
-  // Прослушивание сообщений от страницы избранного
-  window.addEventListener('message', function(event) {
-    if (event.data && event.data.action === 'navigate' && event.data.url) {
-      navigateTo(event.data.url);
-    }
-  });
+  // Кнопка "Избранное" - отключена
+  // (favorites.html удалён, функционал через меню "Избранное")
 
   // Отслеживание загрузки iframe
   if (browserFrame) {
