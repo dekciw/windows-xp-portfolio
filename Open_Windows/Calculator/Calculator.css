@@ -20,7 +20,6 @@
 /* Все стили калькулятора */
 #window-Calculator .notepad_body {
   width: 254px;
-  min-height: 250px;
   background: #ECE9D8;
   display: flex;
   flex-direction: column;
