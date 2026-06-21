@@ -258,12 +258,22 @@
   margin-right: 10px;
   -webkit-box-align: center;
   align-items: center;
+  cursor: pointer;
+}
+
+.footer_item:hover img {
+  filter: brightness(1.2);
+}
+
+.footer_item:active img {
+  filter: brightness(0.8);
 }
 
 .footer_item img {
   width: 25px;
   height: 25px;
   margin-right: 5px;
+  transition: filter 0.15s ease;
 }
 
 .FooterStartMenu {

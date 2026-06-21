@@ -1,0 +1,220 @@
+/* Размер окна калькулятора */
+#window-Calculator {
+  width: 254px !important;
+  height: auto !important;
+}
+
+#window-Calculator .window-content {
+  overflow: visible !important;
+  padding: 0;
+  height: auto !important;
+}
+
+/* Отключаем кнопку развернуть */
+#window-Calculator .header-button--maximaze {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Все стили калькулятора */
+#window-Calculator .notepad_body {
+  width: 254px;
+  height: auto;
+  background: #ECE9D8;
+  display: block;
+  overflow: visible !important;
+  padding-bottom: 10px;
+}
+
+#window-Calculator .toolbar {
+  position: relative;
+  height: 21px;
+  flex-shrink: 0;
+  border-bottom: 1px solid white;
+}
+
+#window-Calculator .toolbar_OCD {
+  display: inline-flex;
+  height: 20px;
+  line-height: 20px;
+  position: relative;
+}
+
+#window-Calculator .menu-item {
+  font-size: 11px;
+  height: 100%;
+  position: relative;
+}
+
+#window-Calculator .menu-label {
+  padding: 2px 7px;
+  cursor: default;
+  position: relative;
+  height: 20px;
+  line-height: 20px;
+}
+
+#window-Calculator .menu-label:hover {
+  background-color: rgb(22, 96, 232);
+  color: rgb(255, 255, 255);
+  height: 17px;
+  padding-top: 2px;
+}
+
+#window-Calculator .calculator-input-container {
+  margin-top: 3px;
+  margin-left: 8px;
+  margin-right: 8px;
+  margin-bottom: 15px;
+}
+
+#window-Calculator .calculator-display {
+  width: 237px;
+  height: 21px;
+  border: 1px solid #7F9DB9;
+  background: #FFF;
+  padding: 0 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  text-align: right;
+  outline: none;
+  box-sizing: border-box;
+}
+
+#window-Calculator .calculator-row-1 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#window-Calculator .calculator-square {
+  width: 27px;
+  height: 26px;
+  background: #ECE9D8;
+  box-shadow: -1px -1px 1px 0 #FFF inset, 1px 1px 1px 0 rgba(0, 0, 0, 0.50) inset;
+  margin-left: 12px;
+  margin-right: 17px;
+}
+
+#window-Calculator .calculator-buttons-group {
+  display: flex;
+  gap: 7px;
+}
+
+#window-Calculator .calculator-buttons-group > * {
+  margin: 0 !important;
+}
+
+#window-Calculator .calculator-button {
+  height: 25px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  box-sizing: border-box;
+}
+
+#window-Calculator .calculator-button:hover {
+  filter: brightness(105%);
+}
+
+#window-Calculator .calculator-button:active {
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.4), inset -1px -1px 1px rgba(0,0,0,0.2);
+  transform: translateY(1px);
+}
+
+#window-Calculator .calculator-button-backspace {
+  width: 59px;
+  border-radius: 2.5px;
+  border: 1px solid #003C74;
+  background: linear-gradient(180deg, #FFF 0%, #F0F0EA 100%), #F5F5F1;
+  box-shadow: 1px 1px 0 0 rgba(255, 255, 255, 0.75), -1px -1px 0 0 rgba(0, 0, 0, 0.05), -1px -2px 2px 0 rgba(0, 0, 0, 0.20) inset;
+}
+
+#window-Calculator .calculator-button-backspace svg {
+  width: 53px;
+  height: 13px;
+  display: block;
+}
+
+#window-Calculator .calculator-button-ce {
+  width: 58px;
+  border-radius: 2.5px;
+  border: 1px solid #003C74;
+  background: linear-gradient(180deg, #FFF 0%, #F0F0EA 100%), #F5F5F1;
+  box-shadow: 1px 1px 0 0 rgba(255, 255, 255, 0.75), -1px -1px 0 0 rgba(0, 0, 0, 0.05), -1px -2px 2px 0 rgba(0, 0, 0, 0.20) inset;
+}
+
+#window-Calculator .calculator-button-ce svg {
+  width: 53px;
+  height: 13px;
+  display: block;
+}
+
+#window-Calculator .calculator-button-c {
+  width: 58px;
+  border-radius: 2.5px;
+  border: 1px solid #003C74;
+  background: linear-gradient(180deg, #FFF 0%, #F0F0EA 100%), #F5F5F1;
+  box-shadow: 1px 1px 0 0 rgba(255, 255, 255, 0.75), -1px -1px 0 0 rgba(0, 0, 0, 0.05), -1px -2px 2px 0 rgba(0, 0, 0, 0.20) inset;
+}
+
+#window-Calculator .calculator-button-c svg {
+  width: 53px;
+  height: 13px;
+  display: block;
+}
+
+#window-Calculator .calculator-row-2 {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+#window-Calculator .calculator-button-mc {
+  margin-left: 10px;
+  margin-right: 14px;
+}
+
+#window-Calculator .calculator-nums-group {
+  display: flex;
+  gap: 7px;
+}
+
+#window-Calculator .calculator-button-num {
+  width: 32px;
+  height: 25px;
+  border-radius: 2.5px;
+  border: 1px solid #003C74;
+  background: linear-gradient(180deg, #FFF 0%, #F0F0EA 100%), #F5F5F1;
+  box-shadow: 1px 1px 0 0 rgba(255, 255, 255, 0.75), -1px -1px 0 0 rgba(0, 0, 0, 0.05), -1px -2px 2px 0 rgba(0, 0, 0, 0.20) inset;
+}
+
+#window-Calculator .calculator-button-num svg {
+  width: 16px;
+  height: 13px;
+  display: block;
+}
+
+#window-Calculator .calculator-row-3 {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+#window-Calculator .calculator-row-4 {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+#window-Calculator .calculator-row-5 {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}

@@ -28,6 +28,7 @@ const appDisplayNames = {
   "Notepad": "Блокнот",
   "Paint": "Paint",
   "Minesweeper": "Сапёр",
+  "Calculator": "Калькулятор",
 };
 
 async function loadHTML(filePath) {
@@ -1956,4 +1957,8 @@ function writeDateTime() {
   const timeStr = now.toLocaleTimeString("en-US", timeOptions);
 
   textarea.value += `${timeStr} ${dateStr} \n`;
+}
+
+function openCalculator() {
+  openWindow('Calculator');
 }
