@@ -105,25 +105,33 @@
 }
 
 .mp-logo {
-  display: inline-flex;
+  position: relative;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  color: var(--mp-text);
+  width: fit-content;
+  max-width: 100%;
   text-decoration: none;
 }
 
-.mp-logo-mark {
-  flex-shrink: 0;
+.mp-logo-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
-.mp-logo-text {
-  font-family: "Roboto Condensed", "Arial Narrow", "Segoe UI", Arial, sans-serif;
-  font-stretch: condensed;
-  font-weight: 700;
-  font-size: 30px;
-  letter-spacing: -0.5px;
-  line-height: 1;
-  white-space: nowrap;
+/* В SVG значок и надпись — одна картинка. Граница 1/3 проходит в зазоре между ними. */
+.mp-page[data-theme="light"] .mp-logo-image {
+  clip-path: inset(0 66.6667% 0 0);
+}
+
+.mp-page[data-theme="light"] .mp-logo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("/Assets/Images/My%20Projects/logo.svg") center / contain no-repeat;
+  filter: brightness(0);
+  clip-path: inset(0 0 0 33.3333%);
+  pointer-events: none;
 }
 
 .mp-search {
@@ -490,7 +498,6 @@
 
 /* Совсем узко: соцсети прячутся. */
 @container (max-width: 520px) {
-  .mp-logo-text,
   .mp-social {
     display: none;
   }
