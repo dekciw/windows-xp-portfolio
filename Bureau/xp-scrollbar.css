@@ -1,0 +1,111 @@
+/* Полоса прокрутки в стиле Windows XP (Luna) — общая для всего рабочего стола и окон.
+   Цвета сняты со скриншота-образца. Подсветки при наведении нет — как в образце.
+   Chrome/Edge: ::-webkit-scrollbar. scrollbar-color для Chrome не задаём — он отключил бы
+   эти стили; Firefox получает упрощённые цвета в конце файла.
+   Файл сгенерирован: картинки кнопок и рифления — встроенные SVG. */
+
+::-webkit-scrollbar {
+  width: 17px;
+  height: 17px;
+}
+
+::-webkit-scrollbar-corner {
+  background: #f2f1e9;
+}
+
+/* Дорожка: без рамки, светлый градиент, белее ближе к правому (нижнему) краю. */
+::-webkit-scrollbar-track:vertical {
+  background: linear-gradient(to right, #f1f0e6 0%, #f4f2ea 8%, #f8f6ef 20%, #faf9f3 45%, #fefefc 65%, #fff 82%, #f7f6ee 94%, #f1f0e6 100%);
+}
+
+::-webkit-scrollbar-track:horizontal {
+  background: linear-gradient(to bottom, #f1f0e6 0%, #f4f2ea 8%, #f8f6ef 20%, #faf9f3 45%, #fefefc 65%, #fff 82%, #f7f6ee 94%, #f1f0e6 100%);
+}
+
+/* Бегунок: белая рамка, тёмная полоска у верхнего (левого) края внутри, светлая заливка
+   с тёмным краем и полосой у противоположного края; рифление — 4 линии. */
+::-webkit-scrollbar-thumb {
+  border: 1px solid #fff;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+  min-height: 24px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 8' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='6' height='1' fill='%23f2f8ff'/%3E%3Crect x='1' y='1' width='6' height='1' fill='%238db3fe'/%3E%3Crect x='0' y='2' width='6' height='1' fill='%23f2f8ff'/%3E%3Crect x='1' y='3' width='6' height='1' fill='%238db3fe'/%3E%3Crect x='0' y='4' width='6' height='1' fill='%23f2f8ff'/%3E%3Crect x='1' y='5' width='6' height='1' fill='%238db3fe'/%3E%3Crect x='0' y='6' width='6' height='1' fill='%23f2f8ff'/%3E%3Crect x='1' y='7' width='6' height='1' fill='%238db3fe'/%3E%3C/svg%3E") 4px 50% / 7px 8px no-repeat,
+    linear-gradient(to bottom, #b9cdfa 0 1px, #c2d3fc 1px 2px, transparent 2px) 0 0 / calc(100% - 3px) 100% no-repeat,
+    linear-gradient(to right, #b9cdfa 0 1px, #c2d3fc 1px 2px, #cbd9ff 2px 11.5px, #c4d6ff 11.5px 12.3px, #bcd4ff 12.3px 100%);
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+  min-width: 24px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 7' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='6' fill='%23f2f8ff'/%3E%3Crect x='1' y='1' width='1' height='6' fill='%238db3fe'/%3E%3Crect x='2' y='0' width='1' height='6' fill='%23f2f8ff'/%3E%3Crect x='3' y='1' width='1' height='6' fill='%238db3fe'/%3E%3Crect x='4' y='0' width='1' height='6' fill='%23f2f8ff'/%3E%3Crect x='5' y='1' width='1' height='6' fill='%238db3fe'/%3E%3Crect x='6' y='0' width='1' height='6' fill='%23f2f8ff'/%3E%3Crect x='7' y='1' width='1' height='6' fill='%238db3fe'/%3E%3C/svg%3E") 50% 4px / 8px 7px no-repeat,
+    linear-gradient(to right, #b9cdfa 0 1px, #c2d3fc 1px 2px, transparent 2px) 0 0 / 100% calc(100% - 3px) no-repeat,
+    linear-gradient(to bottom, #b9cdfa 0 1px, #c2d3fc 1px 2px, #cbd9ff 2px 11.5px, #c4d6ff 11.5px 12.3px, #bcd4ff 12.3px 100%);
+}
+
+/* Масштаб 150% (как на образце): рамка бегунка — ровно 1 физический пиксель,
+   рифление нарисовано попиксельно для 150%. */
+@media (min-resolution: 1.4dppx) and (max-resolution: 1.6dppx) {
+  ::-webkit-scrollbar-thumb {
+    border-width: 0.667px;
+  }
+  ::-webkit-scrollbar-thumb:vertical {
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 12' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='9' height='1' fill='%23f2f8ff'/%3E%3Crect x='9' y='0' width='1' height='1' fill='%23d7e6ff'/%3E%3Crect x='0' y='1' width='1' height='1' fill='%23dee9ff'/%3E%3Crect x='1' y='1' width='1' height='1' fill='%23cfdfff'/%3E%3Crect x='2' y='1' width='7' height='1' fill='%23bfd5ff'/%3E%3Crect x='9' y='1' width='1' height='1' fill='%23b2ccff'/%3E%3Crect x='10' y='1' width='1' height='1' fill='%23a5c3ff'/%3E%3Crect x='1' y='2' width='1' height='1' fill='%23acc6fe'/%3E%3Crect x='2' y='2' width='9' height='1' fill='%238db3fe'/%3E%3Crect x='0' y='3' width='9' height='1' fill='%23f2f8ff'/%3E%3Crect x='9' y='3' width='1' height='1' fill='%23d7e6ff'/%3E%3Crect x='0' y='4' width='1' height='1' fill='%23dee9ff'/%3E%3Crect x='1' y='4' width='1' height='1' fill='%23cfdfff'/%3E%3Crect x='2' y='4' width='7' height='1' fill='%23bfd5ff'/%3E%3Crect x='9' y='4' width='1' height='1' fill='%23b2ccff'/%3E%3Crect x='10' y='4' width='1' height='1' fill='%23a5c3ff'/%3E%3Crect x='1' y='5' width='1' height='1' fill='%23acc6fe'/%3E%3Crect x='2' y='5' width='9' height='1' fill='%238db3fe'/%3E%3Crect x='0' y='6' width='9' height='1' fill='%23f2f8ff'/%3E%3Crect x='9' y='6' width='1' height='1' fill='%23d7e6ff'/%3E%3Crect x='0' y='7' width='1' height='1' fill='%23dee9ff'/%3E%3Crect x='1' y='7' width='1' height='1' fill='%23cfdfff'/%3E%3Crect x='2' y='7' width='7' height='1' fill='%23bfd5ff'/%3E%3Crect x='9' y='7' width='1' height='1' fill='%23b2ccff'/%3E%3Crect x='10' y='7' width='1' height='1' fill='%23a5c3ff'/%3E%3Crect x='1' y='8' width='1' height='1' fill='%23acc6fe'/%3E%3Crect x='2' y='8' width='9' height='1' fill='%238db3fe'/%3E%3Crect x='0' y='9' width='9' height='1' fill='%23f2f8ff'/%3E%3Crect x='9' y='9' width='1' height='1' fill='%23d7e6ff'/%3E%3Crect x='0' y='10' width='1' height='1' fill='%23dee9ff'/%3E%3Crect x='1' y='10' width='1' height='1' fill='%23cfdfff'/%3E%3Crect x='2' y='10' width='7' height='1' fill='%23bfd5ff'/%3E%3Crect x='9' y='10' width='1' height='1' fill='%23b2ccff'/%3E%3Crect x='10' y='10' width='1' height='1' fill='%23a5c3ff'/%3E%3Crect x='1' y='11' width='1' height='1' fill='%23acc6fe'/%3E%3Crect x='2' y='11' width='9' height='1' fill='%238db3fe'/%3E%3C/svg%3E"),
+      linear-gradient(to bottom, #b9cdfa 0 0.667px, #c2d3fc 0.667px 1.333px, transparent 1.333px),
+      linear-gradient(to right, #b9cdfa 0 0.667px, #c2d3fc 0.667px 1.333px, #cbd9ff 1.333px 11.333px, #c4d6ff 11.333px 12px, #bcd4ff 12px 100%);
+    background-size: 7.333px 8px, calc(100% - 2.667px) 100%, auto;
+    background-position: 4.667px 50%, 0 0, 0 0;
+  }
+  ::-webkit-scrollbar-thumb:horizontal {
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 11' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='9' fill='%23f2f8ff'/%3E%3Crect x='0' y='9' width='1' height='1' fill='%23d7e6ff'/%3E%3Crect x='1' y='0' width='1' height='1' fill='%23dee9ff'/%3E%3Crect x='1' y='1' width='1' height='1' fill='%23cfdfff'/%3E%3Crect x='1' y='2' width='1' height='7' fill='%23bfd5ff'/%3E%3Crect x='1' y='9' width='1' height='1' fill='%23b2ccff'/%3E%3Crect x='1' y='10' width='1' height='1' fill='%23a5c3ff'/%3E%3Crect x='2' y='1' width='1' height='1' fill='%23acc6fe'/%3E%3Crect x='2' y='2' width='1' height='9' fill='%238db3fe'/%3E%3Crect x='3' y='0' width='1' height='9' fill='%23f2f8ff'/%3E%3Crect x='3' y='9' width='1' height='1' fill='%23d7e6ff'/%3E%3Crect x='4' y='0' width='1' height='1' fill='%23dee9ff'/%3E%3Crect x='4' y='1' width='1' height='1' fill='%23cfdfff'/%3E%3Crect x='4' y='2' width='1' height='7' fill='%23bfd5ff'/%3E%3Crect x='4' y='9' width='1' height='1' fill='%23b2ccff'/%3E%3Crect x='4' y='10' width='1' height='1' fill='%23a5c3ff'/%3E%3Crect x='5' y='1' width='1' height='1' fill='%23acc6fe'/%3E%3Crect x='5' y='2' width='1' height='9' fill='%238db3fe'/%3E%3Crect x='6' y='0' width='1' height='9' fill='%23f2f8ff'/%3E%3Crect x='6' y='9' width='1' height='1' fill='%23d7e6ff'/%3E%3Crect x='7' y='0' width='1' height='1' fill='%23dee9ff'/%3E%3Crect x='7' y='1' width='1' height='1' fill='%23cfdfff'/%3E%3Crect x='7' y='2' width='1' height='7' fill='%23bfd5ff'/%3E%3Crect x='7' y='9' width='1' height='1' fill='%23b2ccff'/%3E%3Crect x='7' y='10' width='1' height='1' fill='%23a5c3ff'/%3E%3Crect x='8' y='1' width='1' height='1' fill='%23acc6fe'/%3E%3Crect x='8' y='2' width='1' height='9' fill='%238db3fe'/%3E%3Crect x='9' y='0' width='1' height='9' fill='%23f2f8ff'/%3E%3Crect x='9' y='9' width='1' height='1' fill='%23d7e6ff'/%3E%3Crect x='10' y='0' width='1' height='1' fill='%23dee9ff'/%3E%3Crect x='10' y='1' width='1' height='1' fill='%23cfdfff'/%3E%3Crect x='10' y='2' width='1' height='7' fill='%23bfd5ff'/%3E%3Crect x='10' y='9' width='1' height='1' fill='%23b2ccff'/%3E%3Crect x='10' y='10' width='1' height='1' fill='%23a5c3ff'/%3E%3Crect x='11' y='1' width='1' height='1' fill='%23acc6fe'/%3E%3Crect x='11' y='2' width='1' height='9' fill='%238db3fe'/%3E%3C/svg%3E"),
+      linear-gradient(to right, #b9cdfa 0 0.667px, #c2d3fc 0.667px 1.333px, transparent 1.333px),
+      linear-gradient(to bottom, #b9cdfa 0 0.667px, #c2d3fc 0.667px 1.333px, #cbd9ff 1.333px 11.333px, #c4d6ff 11.333px 12px, #bcd4ff 12px 100%);
+    background-size: 8px 7.333px, 100% calc(100% - 2.667px), auto;
+    background-position: 50% 4.667px, 0 0, 0 0;
+  }
+}
+
+/* Кнопки со стрелками: по одной с каждого конца, нарисованы целиком картинкой. */
+::-webkit-scrollbar-button:start:increment,
+::-webkit-scrollbar-button:end:decrement {
+  display: none;
+}
+
+::-webkit-scrollbar-button:vertical:start:decrement,
+::-webkit-scrollbar-button:vertical:end:increment,
+::-webkit-scrollbar-button:horizontal:start:decrement,
+::-webkit-scrollbar-button:horizontal:end:increment {
+  display: block;
+  width: 17px;
+  height: 17px;
+  background-color: #f2f1e9;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+::-webkit-scrollbar-button:vertical:start:decrement {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 25 25' shape-rendering='geometricPrecision'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23e4ecfd'/%3E%3Cstop offset='.45' stop-color='%23ccdafd'/%3E%3Cstop offset='1' stop-color='%23b9cdf8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='25' height='25' fill='%23f2f1e9'/%3E%3Crect x='1' y='0' width='24' height='25' rx='2.5' fill='%23a9bedd'/%3E%3Crect x='23' y='2' width='1' height='20' fill='%23d2deec'/%3E%3Crect x='2' y='23' width='21' height='1' fill='%23c1d2ee'/%3E%3Crect x='3' y='24' width='19' height='1' fill='%237ea2d9'/%3E%3Crect x='1' y='0' width='22.5' height='23.5' rx='2.5' fill='%23fff'/%3E%3Crect x='3' y='1' width='19.5' height='21.5' rx='1.5' fill='url(%23g)'/%3E%3Cpath d='M7.6 14.8 12.6 9.8l5 5' fill='none' stroke='%234d6287' stroke-width='3' stroke-linejoin='miter'/%3E%3C/svg%3E");
+}
+
+::-webkit-scrollbar-button:vertical:end:increment {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 25 25' shape-rendering='geometricPrecision'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23e4ecfd'/%3E%3Cstop offset='.45' stop-color='%23ccdafd'/%3E%3Cstop offset='1' stop-color='%23b9cdf8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='25' height='25' fill='%23f2f1e9'/%3E%3Crect x='1' y='0' width='24' height='25' rx='2.5' fill='%23a9bedd'/%3E%3Crect x='23' y='2' width='1' height='20' fill='%23d2deec'/%3E%3Crect x='2' y='23' width='21' height='1' fill='%23c1d2ee'/%3E%3Crect x='3' y='24' width='19' height='1' fill='%237ea2d9'/%3E%3Crect x='1' y='0' width='22.5' height='23.5' rx='2.5' fill='%23fff'/%3E%3Crect x='3' y='1' width='19.5' height='21.5' rx='1.5' fill='url(%23g)'/%3E%3Cpath d='M7.6 9.4 12.6 14.4l5-5' fill='none' stroke='%234d6287' stroke-width='3' stroke-linejoin='miter'/%3E%3C/svg%3E");
+}
+
+::-webkit-scrollbar-button:horizontal:start:decrement {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 25 25' shape-rendering='geometricPrecision'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23e4ecfd'/%3E%3Cstop offset='.45' stop-color='%23ccdafd'/%3E%3Cstop offset='1' stop-color='%23b9cdf8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='25' height='25' fill='%23f2f1e9'/%3E%3Crect x='1' y='0' width='24' height='25' rx='2.5' fill='%23a9bedd'/%3E%3Crect x='23' y='2' width='1' height='20' fill='%23d2deec'/%3E%3Crect x='2' y='23' width='21' height='1' fill='%23c1d2ee'/%3E%3Crect x='3' y='24' width='19' height='1' fill='%237ea2d9'/%3E%3Crect x='1' y='0' width='22.5' height='23.5' rx='2.5' fill='%23fff'/%3E%3Crect x='3' y='1' width='19.5' height='21.5' rx='1.5' fill='url(%23g)'/%3E%3Cpath d='M14.9 6.8 9.9 11.8l5 5' fill='none' stroke='%234d6287' stroke-width='3' stroke-linejoin='miter'/%3E%3C/svg%3E");
+}
+
+::-webkit-scrollbar-button:horizontal:end:increment {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 25 25' shape-rendering='geometricPrecision'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23e4ecfd'/%3E%3Cstop offset='.45' stop-color='%23ccdafd'/%3E%3Cstop offset='1' stop-color='%23b9cdf8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='25' height='25' fill='%23f2f1e9'/%3E%3Crect x='1' y='0' width='24' height='25' rx='2.5' fill='%23a9bedd'/%3E%3Crect x='23' y='2' width='1' height='20' fill='%23d2deec'/%3E%3Crect x='2' y='23' width='21' height='1' fill='%23c1d2ee'/%3E%3Crect x='3' y='24' width='19' height='1' fill='%237ea2d9'/%3E%3Crect x='1' y='0' width='22.5' height='23.5' rx='2.5' fill='%23fff'/%3E%3Crect x='3' y='1' width='19.5' height='21.5' rx='1.5' fill='url(%23g)'/%3E%3Cpath d='M10.3 6.8 15.3 11.8l-5 5' fill='none' stroke='%234d6287' stroke-width='3' stroke-linejoin='miter'/%3E%3C/svg%3E");
+}
+
+/* Firefox не умеет рисовать кнопки и рифление — только цвета бегунка и дорожки. */
+@supports (-moz-appearance: none) {
+  :root {
+    scrollbar-color: #bed1fc #fefefb;
+  }
+}

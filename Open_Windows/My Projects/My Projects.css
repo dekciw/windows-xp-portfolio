@@ -1,0 +1,505 @@
+/* Шапка окна (меню, кнопки, адрес) — те же классы, что у «Мой компьютер» и «Обо мне». */
+@import url("/Open_Windows/My Computer/My Computer.css");
+/* Шрифт страницы — Roboto, как в макете (локальные файлы, работает без интернета). */
+@import url("/Assets/Fonts/Roboto/roboto.css");
+
+/* ---------- XP-обвязка ---------- */
+/* Меню, панель кнопок и адресная строка — целиком из «Мой компьютер» (импорт выше),
+   чтобы окно выглядело как остальные окна системы. Здесь только своё. */
+
+/* «Сервис» и «Справка» неактивны: серый текст, без подсветки. */
+.options_OCD .drop_down_label.mp-disabled,
+.options_OCD .drop_down_label.mp-disabled:hover {
+  color: rgb(161, 161, 146);
+  background-color: transparent;
+}
+
+/* Строка состояния: «Готово» | «Мои проекты». */
+.mp-status {
+  flex-shrink: 0;
+  display: flex;
+  gap: 1px;
+  height: 23px;
+  padding: 2px 1px;
+  box-sizing: border-box;
+  font-size: 11px;
+  background-color: #ece9d8;
+  border-top: 1px solid #fff;
+}
+
+.mp-status-field {
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: inset 1px 1px #a0a0a0, inset -1px -1px #fff;
+}
+
+.mp-status-text {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+/* ---------- страница внутри окна ---------- */
+
+.mp-page {
+  --mp-bg: #121212;
+  --mp-header-bg: rgba(18, 18, 18, 0.8);
+  --mp-line: #333;
+  --mp-text: #fff;
+  --mp-muted: #aaa;
+  --mp-field: #1e1e1e;
+  --mp-field-button: #2a2a2a;
+  --mp-active: #2a2a2a;
+  --mp-hover: #272727;
+  --mp-thumb-border: #fff;
+  --mp-accent: #f00;
+
+  flex: 1 1 0%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  container-type: inline-size;
+  background-color: var(--mp-bg);
+  color: var(--mp-text);
+  font-family: Roboto, "Segoe UI", Arial, sans-serif;
+  font-size: 14px;
+  border-top: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.mp-page[data-theme="light"] {
+  --mp-bg: #fff;
+  --mp-header-bg: rgba(255, 255, 255, 0.85);
+  --mp-line: #e5e5e5;
+  --mp-text: #0f0f0f;
+  --mp-muted: #606060;
+  --mp-field: #fff;
+  --mp-field-button: #f8f8f8;
+  --mp-active: #f2f2f2;
+  --mp-hover: #f2f2f2;
+  --mp-thumb-border: #e5e5e5;
+}
+
+/* Шапка: логотип слева, поиск по центру, соцсети справа. */
+.mp-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  height: 68px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 280px) 1fr;
+  align-items: center;
+  gap: 24px;
+  padding: 0 24px;
+  background-color: var(--mp-header-bg);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--mp-line);
+}
+
+.mp-header-left {
+  min-width: 0;
+}
+
+.mp-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--mp-text);
+  text-decoration: none;
+}
+
+.mp-logo-mark {
+  flex-shrink: 0;
+}
+
+.mp-logo-text {
+  font-family: "Roboto Condensed", "Arial Narrow", "Segoe UI", Arial, sans-serif;
+  font-stretch: condensed;
+  font-weight: 700;
+  font-size: 30px;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.mp-search {
+  display: flex;
+  height: 32px;
+  margin: 0;
+  min-width: 0;
+}
+
+.mp-search-input {
+  flex: 1 1 0%;
+  min-width: 0;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0 16px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--mp-text);
+  background-color: var(--mp-field);
+  /* как в макете: тонкая рамка 0.667px, справа рамки нет — поле и кнопка без разделителя */
+  border: 0.667px solid var(--mp-line);
+  border-right: 0;
+  border-radius: 20px 0 0 20px;
+  outline: none;
+}
+
+.mp-search-input::placeholder {
+  color: var(--mp-muted);
+}
+
+.mp-search-input:focus {
+  border-color: #1c62b9;
+}
+
+.mp-search-input::-webkit-search-cancel-button {
+  filter: grayscale(1);
+}
+
+.mp-search-button {
+  flex-shrink: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px 0 14px;
+  color: var(--mp-text);
+  background-color: var(--mp-field-button);
+  border: 0.667px solid var(--mp-line);
+  border-left: 0;
+  border-radius: 0 20px 20px 0;
+}
+
+/* Значок лупы из макета (белый PNG) — маской, чтобы в светлой теме он был тёмным. */
+.mp-search-icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  background-color: currentColor;
+  -webkit-mask: url("/Assets/Images/My Projects/search.png") center / contain no-repeat;
+  mask: url("/Assets/Images/My Projects/search.png") center / contain no-repeat;
+}
+
+.mp-social {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mp-social a {
+  color: var(--mp-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* как в макете: блок 32×26 — отступ 6px слева и значок 26×26 */
+  box-sizing: border-box;
+  width: 32px;
+  height: 26px;
+  padding-left: 6px;
+  border-radius: 14.5px;
+  transition: color 0.15s;
+}
+
+/* При наведении значки соцсетей окрашиваются в оранжевый. */
+.mp-social a:hover,
+.mp-social a:focus-visible {
+  color: #ff4500;
+}
+
+.mp-social svg,
+.mp-social-icon {
+  width: 26px;
+  height: 26px;
+}
+
+.mp-social-icon {
+  display: block;
+  background-color: currentColor;
+  -webkit-mask: var(--mp-icon) center / contain no-repeat;
+  mask: var(--mp-icon) center / contain no-repeat;
+}
+
+/* Левое меню и сетка карточек. */
+.mp-body {
+  display: flex;
+  align-items: flex-start;
+  min-height: calc(100% - 68px);
+}
+
+.mp-sidebar {
+  position: sticky;
+  top: 68px;
+  flex-shrink: 0;
+  width: 80px;
+  box-sizing: border-box;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-right: 1px solid var(--mp-line);
+}
+
+.mp-nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 32px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 10px;
+  color: var(--mp-text);
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.mp-nav:hover {
+  background-color: var(--mp-hover);
+}
+
+.mp-nav[aria-current="true"] {
+  background-color: var(--mp-active);
+}
+
+/* Красная метка у выбранного пункта. */
+.mp-nav[aria-current="true"]::before {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 4px;
+  width: 3px;
+  height: 24px;
+  border-radius: 0 2px 2px 0;
+  background-color: var(--mp-accent);
+}
+
+/* Блок значка как в макете: 36×20 — значок 20×20 в поле 24px и отступ 12px. */
+.mp-nav-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0 8px;
+  background-color: currentColor;
+  -webkit-mask: var(--mp-icon) center / contain no-repeat;
+  mask: var(--mp-icon) center / contain no-repeat;
+}
+
+/* Подпись не видна (меню только из значков), но остаётся для экранного диктора. */
+.mp-nav-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.mp-main {
+  flex: 1 1 0%;
+  min-width: 0;
+  padding: 17px 16px 24px;
+}
+
+/* Размер как в макете: превью 333.77×188.03, карточка = превью + отступ 5.667px
+   + прозрачная рамка 1px с каждой стороны = 347.1px. Колонки не растягиваются;
+   если карточка не помещается (узкое окно), она сжимается с теми же пропорциями. */
+.mp-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 347.1px);
+  gap: 16px;
+  /* остаток ширины делится поровну слева и справа: блок карточек по центру,
+     неполный последний ряд остаётся в своих колонках */
+  justify-content: center;
+}
+
+.mp-card {
+  display: flex;
+  flex-direction: column;
+  gap: 11.67px;
+  padding: 5.667px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: var(--mp-text);
+  text-decoration: none;
+  transition: background-color 0.15s;
+  outline: none;
+}
+
+.mp-card:hover,
+.mp-card:focus-visible {
+  background-color: var(--mp-hover);
+}
+
+.mp-thumb {
+  position: relative;
+  box-sizing: border-box; /* размер 333.77×188.03 — вместе с рамкой, как в макете */
+  aspect-ratio: 333.77 / 188.03;
+  overflow: hidden;
+  border: 1px solid var(--mp-thumb-border);
+  border-radius: 12px;
+  background-color: #2b2b2b;
+}
+
+.mp-thumb > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Заглушка, пока нет картинки: цветной градиент и значок папки. */
+.mp-thumb-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background:
+    radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.28), transparent 55%),
+    linear-gradient(135deg, var(--mp-card-color, #3a6df0), rgba(0, 0, 0, 0.55));
+  background-color: var(--mp-card-color, #3a6df0);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.mp-thumb-placeholder img {
+  width: 56px;
+  height: 56px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
+}
+
+.mp-badge {
+  position: absolute;
+  right: 7px;
+  bottom: 8px;
+  padding: 2px 6px 3px;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 15px;
+}
+
+.mp-info {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+}
+
+.mp-avatar {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #fff;
+}
+
+.mp-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.mp-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 20.4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mp-meta {
+  margin: 0;
+  color: var(--mp-muted);
+  font-size: 14px;
+  line-height: 16.8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mp-empty {
+  padding: 48px 0;
+  text-align: center;
+  color: var(--mp-muted);
+  font-size: 16px;
+}
+
+/* Число колонок зависит от ширины страницы с запасом, а не от точного совпадения
+   до пикселя: если места чуть не хватает (масштаб экрана 125–150%, округления),
+   карточки немного сжимаются, а не перескакивают в один ряд. */
+@container (min-width: 600px) {
+  .mp-grid {
+    grid-template-columns: repeat(2, minmax(0, 347.1px));
+  }
+}
+
+@container (min-width: 1100px) {
+  .mp-grid {
+    grid-template-columns: repeat(3, minmax(0, 347.1px));
+  }
+}
+
+@container (min-width: 1560px) {
+  .mp-grid {
+    grid-template-columns: repeat(4, minmax(0, 347.1px));
+  }
+}
+
+/* ---------- узкое окно ---------- */
+
+/* Меню категорий сворачивается до значков. */
+@container (max-width: 760px) {
+  .mp-sidebar {
+    width: 64px;
+    padding: 12px 4px;
+  }
+  .mp-nav[aria-current="true"]::before {
+    left: -4px;
+  }
+
+  .mp-header {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 16px;
+    padding: 0 16px;
+  }
+}
+
+/* Совсем узко: соцсети прячутся. */
+@container (max-width: 520px) {
+  .mp-logo-text,
+  .mp-social {
+    display: none;
+  }
+  .mp-header {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .mp-main {
+    padding: 12px 8px 16px;
+  }
+}
+
+/* Полоса прокрутки — общая для всех окон: /Bureau/xp-scrollbar.css */

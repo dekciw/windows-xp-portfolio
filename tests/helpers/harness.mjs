@@ -124,3 +124,17 @@ export async function closeResume(page) {
   await page.evaluate(() => closeWindow("Resume"));
   await page.waitForFunction(() => !document.getElementById("window-Resume"));
 }
+
+export const PROJECTS = '[id="window-My Projects"]';
+
+export async function openProjects(page) {
+  const icon = await page.$('.icon[data-app="My Projects"]');
+  if (!icon) throw new Error('desktop icon .icon[data-app="My Projects"] not found');
+  await icon.click({ count: 2 });
+  await page.waitForSelector(`${PROJECTS} .mp-card`, { timeout: 5000 });
+}
+
+export async function closeProjects(page) {
+  await page.evaluate(() => closeWindow("My Projects"));
+  await page.waitForFunction(() => !document.getElementById("window-My Projects"));
+}

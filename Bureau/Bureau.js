@@ -24,6 +24,7 @@ const appDisplayNames = {
   "My Computer": "Мой компьютер",
   "About Me": "Обо мне",
   "Resume": "Моё резюме",
+  "My Projects": "Мои проекты",
   "GitHub": "GitHub",
   "Recycle Bin (empty)": "Корзина",
   "Recycle Bin (full)": "Корзина (полная)",
@@ -257,6 +258,7 @@ function openWindow(appName, options = {}) {
         window.AboutMe.init(windowElement);
       }
       if (appName === "Resume" && window.ResumeWindow) window.ResumeWindow.init(windowElement);
+      if (appName === "My Projects" && window.MyProjects) window.MyProjects.init(windowElement);
 
       const labelDivs = windowElement.querySelectorAll(
         ".drop_down_label, .Minesweeper_drop_down_label"
