@@ -592,36 +592,14 @@ for (const width of [400, 300]) {
 
 // ---------- резюме ----------
 
-test("«Моё резюме» без файла — сообщение, новая вкладка не открывается", async () => {
+test("«Моё резюме» открывает окно резюме, новых вкладок нет", async () => {
   await fresh();
   const before = (await h.browser.pages()).length;
+  assert.equal(await page.$eval(`${ABOUT} [data-am-action="resume"]`, (e) => e.tagName === "A"), false);
   await clickIn('[data-am-action="resume"]');
-  await page.waitForSelector(`${ABOUT} .am-notice`, { timeout: 5000 });
-  assert.match(await text(".am-notice"), /Файл резюме пока не добавлен/);
-  await new Promise((r) => setTimeout(r, 300));
+  await page.waitForSelector('[id="window-Resume"]', { timeout: 5000 });
   assert.equal((await h.browser.pages()).length, before);
-});
-
-// Если PDF есть, вкладка должна открываться прямо по клику (настоящая ссылка),
-// иначе Safari/Firefox блокируют window.open, вызванный после await fetch.
-test("если resume.pdf есть — «Моё резюме» это настоящая ссылка на PDF", async () => {
-  await page.setRequestInterception(true);
-  const handler = (req) =>
-    req.url().endsWith("/Assets/Docs/resume.pdf")
-      ? req.respond({ status: 200, contentType: "application/pdf", body: "%PDF-1.4" })
-      : req.continue();
-  page.on("request", handler);
-  try {
-    await fresh();
-    await page.waitForSelector(`${ABOUT} a[data-am-action="resume"][target="_blank"]`, { timeout: 5000 });
-    assert.equal(
-      await page.$eval(`${ABOUT} a[data-am-action="resume"]`, (a) => a.getAttribute("href")),
-      "/Assets/Docs/resume.pdf"
-    );
-  } finally {
-    page.off("request", handler);
-    await page.setRequestInterception(false);
-  }
+  await page.evaluate(() => closeWindow("Resume"));
 });
 
 test("закрыть и открыть снова — профиль, «Назад» неактивна", async () => {

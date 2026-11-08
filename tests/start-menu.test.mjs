@@ -2,7 +2,7 @@ import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { startHarness } from "./helpers/harness.mjs";
 
-// Правая колонка меню «Пуск»: Telegram, GitHub, Instagram (ссылки), «Обо мне» (окно), «Резюме» (пока заглушка).
+// Правая колонка меню «Пуск»: Telegram, GitHub, Instagram (ссылки), «Обо мне» и «Резюме» (окна).
 
 let h;
 let page;
@@ -128,22 +128,22 @@ test("«Проводник» вместо «Выбор программ по у�
   await page.evaluate(() => closeWindow("My Computer"));
 });
 
-test("«Резюме» пока неактивно: бледное, подсказка «Скоро», щелчок ничего не делает", async () => {
+test("«Резюме» открывает окно «Моё резюме» и закрывает меню", async () => {
   await openMenu();
   const r = await page.evaluate(() => {
     const i = [...document.querySelectorAll("#StartMenu .RightMenu .ItemMenu")].find(
       (x) => x.querySelector(".MenuItemTxt").textContent.trim() === "Резюме"
     );
-    return { title: i.getAttribute("title"), opacity: parseFloat(getComputedStyle(i).opacity), href: i.getAttribute("href") };
+    return { title: i.getAttribute("title"), opacity: parseFloat(getComputedStyle(i).opacity) };
   });
-  assert.equal(r.title, "Скоро");
-  assert.ok(r.opacity < 1, "пункт должен быть бледным");
-  assert.equal(r.href, null);
-  const windowsBefore = await page.$$eval(".window", (l) => l.length);
+  assert.equal(r.title, null);
+  assert.equal(r.opacity, 1);
   await page.evaluate(() =>
     [...document.querySelectorAll("#StartMenu .RightMenu .ItemMenu")]
       .find((x) => x.querySelector(".MenuItemTxt").textContent.trim() === "Резюме")
       .click()
   );
-  assert.equal(await page.$$eval(".window", (l) => l.length), windowsBefore);
+  await page.waitForSelector('[id="window-Resume"]', { timeout: 5000 });
+  assert.equal(await menuOpen(), false);
+  await page.evaluate(() => closeWindow("Resume"));
 });

@@ -9,7 +9,7 @@
   const LISTS = ["social", "stack", "frameworks", "about", "experience", "education", "projects"];
   const data = () => {
     const d = window.ABOUT_ME_DATA || {};
-    const out = { resume: { href: "/Assets/Docs/resume.pdf", ...(d.resume || {}) } };
+    const out = {};
     LISTS.forEach((k) => (out[k] = Array.isArray(d[k]) ? d[k] : []));
     return out;
   };
@@ -17,7 +17,6 @@
   const PAGES = {
     profile: { address: "Обо мне" },
     projects: { address: "Обо мне › Мои проекты" },
-    "resume-missing": { address: "Обо мне › Моё резюме" },
   };
 
   function el(tag, cls, text) {
@@ -139,41 +138,6 @@
     data().projects.forEach((it) => p.appendChild(item(it)));
   }
 
-  function renderResumeMissing(win) {
-    const p = win.querySelector(".am-resume-missing");
-    p.textContent = "";
-    p.appendChild(el("div", "am-title", "Моё резюме"));
-    p.appendChild(el("div", "am-notice", "Файл резюме пока не добавлен. Загляните позже!"));
-  }
-
-  // ---------- кнопка «Моё резюме» ----------
-
-  async function fileExists(href) {
-    try {
-      return (await fetch(href, { method: "HEAD" })).ok;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  // Файл есть — кнопка становится настоящей ссылкой, чтобы вкладка открывалась
-  // прямо по клику (window.open после await браузеры блокируют).
-  function makeResumeLink(win) {
-    const btn = win.querySelector('[data-am-action="resume"]');
-    const a = el("a", btn.className);
-    a.dataset.amAction = "resume";
-    setLink(a, data().resume.href);
-    a.append(...btn.childNodes);
-    btn.replaceWith(a);
-  }
-
-  async function onResumeClick(win) {
-    const known = win._am.files.resume;
-    const exists = known === undefined ? await fileExists(data().resume.href) : known;
-    if (exists) window.open(data().resume.href, "_blank", "noopener");
-    else navigate(win, "resume-missing");
-  }
-
   // ---------- навигация ----------
 
   function render(win) {
@@ -181,9 +145,7 @@
     const page = st.history[st.index];
     win.querySelector(".am-profile").hidden = page !== "profile";
     win.querySelector(".am-projects").hidden = page !== "projects";
-    win.querySelector(".am-resume-missing").hidden = page !== "resume-missing";
     if (page === "projects") renderProjects(win);
-    if (page === "resume-missing") renderResumeMissing(win);
     win.querySelector(".am-body").scrollTop = 0;
     win.querySelector(".address_bar_content_text").textContent = PAGES[page].address;
     setEnabled(win, "back", st.index > 0);
@@ -251,7 +213,7 @@
   function init(win) {
     const firstInit = !win._am;
     if (firstInit) placeWindow(win);
-    win._am = { history: ["profile"], index: 0, files: {} };
+    win._am = { history: ["profile"], index: 0 };
     if (firstInit) {
       const actions = { back, forward, up };
       win.querySelectorAll("[data-am-nav]").forEach((b) =>
@@ -260,21 +222,14 @@
       win
         .querySelector('[data-am-action="projects"]')
         .addEventListener("click", () => navigate(win, "projects"));
-      // Делегирование: кнопка резюме может быть заменена на <a>.
-      win.querySelector(".function_bar").addEventListener("click", (e) => {
-        const r = e.target.closest('[data-am-action="resume"]');
-        if (r && r.tagName !== "A") onResumeClick(win);
-      });
+      win
+        .querySelector('[data-am-action="resume"]')
+        .addEventListener("click", () => openWindow("Resume"));
     }
     renderSidebar(win);
     renderProfile(win);
     render(win);
 
-    const href = data().resume.href;
-    fileExists(href).then((ok) => {
-      win._am.files.resume = ok;
-      if (ok && win.querySelector('[data-am-action="resume"]').tagName !== "A") makeResumeLink(win);
-    });
   }
 
   window.AboutMe = { init, show, back, forward, up };

@@ -209,26 +209,6 @@ a.am-item-title:hover {
   margin-top: 4px;
 }
 
-.am-notice {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  max-width: 560px;
-  padding: 8px 10px;
-  border: 1px solid #000;
-  background: #ffffe1;
-  color: #000;
-  font-size: 11px;
-}
-
-.am-notice::before {
-  content: "";
-  flex: 0 0 auto;
-  width: 16px;
-  height: 16px;
-  background: url("/Assets/Images/Security/info-icon.png") center / contain no-repeat;
-}
-
 /* ---------- узкое окно: панель сверху, контент снизу ---------- */
 
 @container (max-width: 460px) {
