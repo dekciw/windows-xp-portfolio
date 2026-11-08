@@ -51,18 +51,13 @@
     return icon;
   }
 
-  // Склонение по числу: plural(5, ["элемент", "элемента", "элементов"]) → "элементов"
+  // Склонение по числу: plural(5, ["день", "дня", "дней"]) → "дней"
   function plural(n, forms) {
     const mod10 = n % 10;
     const mod100 = n % 100;
     if (mod10 === 1 && mod100 !== 11) return forms[0];
     if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return forms[1];
     return forms[2];
-  }
-
-  // 1 элемент, 2 элемента, 5 элементов
-  function itemsLabel(n) {
-    return `${n} ${plural(n, ["элемент", "элемента", "элементов"])}`;
   }
 
   // 1 просмотр, 845 просмотров, 2,3 тыс. просмотров, 46 тыс. просмотров, 1,2 млн просмотров
@@ -209,7 +204,6 @@
       ph.appendChild(el("span", null, "Скоро здесь будет превью"));
       thumb.appendChild(ph);
     }
-    if (p.items > 0) thumb.appendChild(el("span", "mp-badge", itemsLabel(p.items)));
     c.appendChild(thumb);
 
     const info = el("div", "mp-info");
@@ -345,5 +339,5 @@
     grid.addEventListener("mouseleave", () => setStatus(win));
   }
 
-  window.MyProjects = { init, setCategory, setTheme, itemsLabel, viewsLabel, timeAgo };
+  window.MyProjects = { init, setCategory, setTheme, viewsLabel, timeAgo };
 })();

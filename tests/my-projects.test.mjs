@@ -104,22 +104,11 @@ test("все картинки окна загружаются (иконки XP, 
   assert.deepEqual(broken, []);
 });
 
-test("карточек столько же, сколько проектов в данных; бейдж с правильным склонением", async () => {
+test("карточек столько же, сколько проектов в данных; на превью нет бейджа с числом элементов", async () => {
   await fresh();
   const d = await projectsData();
   assert.deepEqual(await titles(), d.projects.map((p) => p.title));
-  const labels = await page.evaluate(() => [1, 2, 5, 11, 21, 22, 112].map(MyProjects.itemsLabel));
-  assert.deepEqual(labels, [
-    "1 элемент",
-    "2 элемента",
-    "5 элементов",
-    "11 элементов",
-    "21 элемент",
-    "22 элемента",
-    "112 элементов",
-  ]);
-  const badge = await text(".mp-card .mp-badge");
-  assert.equal(badge, await page.evaluate((n) => MyProjects.itemsLabel(n), d.projects[0].items));
+  assert.equal(await page.$$eval(`${PROJECTS} .mp-thumb`, (l) => l.filter((t) => /элемент/.test(t.textContent)).length), 0);
 });
 
 test("меню категорий: «Все» + категории из данных, выбор фильтрует и меняет адрес", async () => {
@@ -251,14 +240,12 @@ test("карточка со ссылкой и картинкой — это сс
       href: a.getAttribute("href"),
       target: a.target,
       thumb: a.querySelector(".mp-thumb > img")?.getAttribute("src"),
-      badge: !!a.querySelector(".mp-badge"),
     }));
     assert.deepEqual(c, {
       tag: "A",
       href: "https://example.com/",
       target: "_blank",
       thumb: "/Assets/Images/Logos/windows-xp-logo.png",
-      badge: false,
     });
     await page.click(`${PROJECTS} .mp-card`);
     assert.equal(await page.evaluate(() => window.__followed), "https://example.com/");
