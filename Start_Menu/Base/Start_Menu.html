@@ -106,55 +106,47 @@
         </div>
       </div>
       <div class="RightMenu">
-        <div class="ItemMenu">
-          <img
-            class="MenuItemImg"
-            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/My Documents.png"
-            alt="My Documents"
-          />
+        <!-- Ссылки на соцсети: открываются в новой вкладке. Меню закрывается само: щелчок всплывает до .footer__start_menu (openStartMenu). -->
+        <a class="ItemMenu" href="https://t.me/atanov_roman" target="_blank" rel="noreferrer">
+          <img class="MenuItemImg" src="/Assets/Images/Logos/telegram-logo.svg" alt="Telegram" />
           <div class="MenuItemTxts">
-            <div class="MenuItemTxt">Мои документы</div>
+            <div class="MenuItemTxt">Telegram</div>
           </div>
-        </div>
-        <div id="My Recent Documents" class="ItemMenu">
-          <img
-            class="MenuItemImg"
-            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Recent Documents.png"
-            alt="My Recent Documents"
-          />
+        </a>
+        <a class="ItemMenu" href="https://github.com/dekciw" target="_blank" rel="noreferrer">
+          <img class="MenuItemImg" src="/Assets/Images/Logos/github-logo.svg" alt="GitHub" />
           <div class="MenuItemTxts">
-            <div class="MenuItemTxt">Недавние документы</div>
-            <div class="MenuArrow"></div>
+            <div class="MenuItemTxt">GitHub</div>
           </div>
-        </div>
-        <div class="ItemMenu">
-          <img
-            class="MenuItemImg"
-            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/My Pictures.png"
-            alt="My Pictures"
-          />
+        </a>
+        <a class="ItemMenu" href="https://www.instagram.com/666kaine" target="_blank" rel="noreferrer">
+          <img class="MenuItemImg" src="/Assets/Images/Logos/instagram-logo.svg" alt="Instagram" />
           <div class="MenuItemTxts">
-            <div class="MenuItemTxt">Мои рисунки</div>
+            <div class="MenuItemTxt">Instagram</div>
           </div>
-        </div>
-        <div class="ItemMenu">
+        </a>
+        <!-- data-open-window: окно открывает общий обработчик в Bureau.html. -->
+        <a class="ItemMenu" data-open-window="About Me" href="#">
           <img
             class="MenuItemImg"
-            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/My Music.png"
-            alt="My Music"
+            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/About Me.png"
+            alt="Обо мне"
           />
           <div class="MenuItemTxts">
-            <div class="MenuItemTxt">Моя музыка</div>
+            <div class="MenuItemTxt">Обо мне</div>
           </div>
-        </div>
-        <div class="ItemMenu" onclick="openWindow('My Computer')">
+        </a>
+        <!-- Резюме пока не готово. Когда будет: заменить div на
+             <a class="ItemMenu" href="АДРЕС_РЕЗЮМЕ" target="_blank" rel="noreferrer">
+             и убрать класс ItemMenu--disabled и title. -->
+        <div class="ItemMenu ItemMenu--disabled" title="Скоро">
           <img
             class="MenuItemImg"
-            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/My Computer.png"
-            alt="My Computer"
+            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Generic Document.png"
+            alt="Резюме"
           />
           <div class="MenuItemTxts">
-            <div class="MenuItemTxt">Мой компьютер</div>
+            <div class="MenuItemTxt">Резюме</div>
           </div>
         </div>
         <div class="MenuSeparator"></div>
@@ -168,14 +160,15 @@
             <div class="MenuItemTxt">Панель управления</div>
           </div>
         </div>
-        <div class="ItemMenu">
+        <!-- Проводник открывает «Мой компьютер», как в XP. -->
+        <div class="ItemMenu" onclick="openWindow('My Computer')">
           <img
             class="MenuItemImg"
-            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Default Programs.png"
-            alt="Set Program Access and Defaults"
+            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Explorer.png"
+            alt="Проводник"
           />
           <div class="MenuItemTxts">
-            <div class="MenuItemTxt">Выбор программ по умолчанию</div>
+            <div class="MenuItemTxt">Проводник</div>
           </div>
         </div>
         <div id="Connect To" class="ItemMenu">

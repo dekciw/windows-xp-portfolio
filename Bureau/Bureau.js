@@ -1697,9 +1697,6 @@ function attachHoverTooltip() {
     if (itemMenu && itemMenu.id === "Connect To") {
       tooltip.style.left = `${rect.right + 48}px`;
       tooltip.style.top = `${rect.height + 256}px`;
-    } else if (itemMenu && itemMenu.id === "My Recent Documents") {
-      tooltip.style.left = `${rect.right + 48}px`;
-      tooltip.style.top = `${rect.height + 34}px`;
     }
 
     tooltip.style.zIndex = 9999;
@@ -1787,7 +1784,7 @@ function attachHoverTooltip() {
       if (
         target.classList &&
         target.classList.contains("ItemMenu") &&
-        (target.id === "Connect To" || target.id === "My Recent Documents")
+        target.id === "Connect To"
       ) {
         itemMenu = target;
         contentFile = `/Start_Menu/Tooltip/${itemMenu.id}.html`;

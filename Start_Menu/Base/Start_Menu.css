@@ -149,7 +149,6 @@
   line-height: 13px;
 }
 
-.Menu .RightMenu .ItemMenu:nth-child(-n + 5) .MenuItemTxt,
 .Menu .LeftMenu .ItemMenu:nth-child(-n + 2) .MenuItemTxt,
 .Menu .LeftMenu .ItemMenu:last-child .MenuItemTxt {
   font-weight: 700;
@@ -166,6 +165,22 @@
 
 .ItemMenu img {
   margin-right: 3px;
+}
+
+/* Пункты-ссылки (Telegram, GitHub, Instagram, Обо мне) выглядят как обычные пункты. */
+a.ItemMenu {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Пункт, который пока не работает (Резюме): бледный, без подсветки. */
+.ItemMenu--disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.ItemMenu.ItemMenu--disabled:hover {
+  color: inherit;
+  background-color: transparent;
 }
 
 .ItemMenu:hover {
