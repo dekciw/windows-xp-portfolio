@@ -436,3 +436,14 @@ test("строка состояния: «Щёлкните, чтобы увели
   await fresh();
   assert.equal(await text(".rs-status"), "Щёлкните, чтобы увеличить, затем перетащите");
 });
+
+// Регрессия: помощник «поднять окно» не должен перекрывать showWindow() из Pinball.
+test("bringWindowToFront не перекрывает showWindow() окна Pinball", async () => {
+  const r = await page.evaluate(() => ({
+    bring: typeof bringWindowToFront,
+    show: typeof showWindow,
+    showArgs: typeof showWindow === "function" ? showWindow.length : -1,
+    showSrc: String(showWindow).includes("Space Cadet Pinball"),
+  }));
+  assert.deepEqual(r, { bring: "function", show: "function", showArgs: 0, showSrc: true });
+});

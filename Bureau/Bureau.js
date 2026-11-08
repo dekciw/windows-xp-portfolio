@@ -1119,7 +1119,7 @@ function closeWindow(appName) {
 }
 
 // Открывает окно, если его нет; иначе показывает (из свёрнутого), поднимает наверх и подсвечивает в панели задач.
-function showWindow(appName) {
+function bringWindowToFront(appName) {
   openWindow(appName);
   const win = document.getElementById(`window-${appName}`);
   if (!win) return;
