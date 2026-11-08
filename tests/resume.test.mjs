@@ -180,7 +180,7 @@ test("страниц столько же, сколько в pages.json, src со
   );
 });
 
-test("панель: Масштаб, Сохранить (download → /Assets/Docs/resume.pdf), Печать неактивна, Связаться → t.me/atanov_roman", async () => {
+test("панель: Масштаб, Сохранить (download → /Assets/Docs/resume.pdf), Печать, Связаться → t.me/atanov_roman", async () => {
   await fresh();
   assert.equal(await text('[data-rs-action="zoom"]'), "Масштаб");
 
@@ -205,7 +205,7 @@ test("панель: Масштаб, Сохранить (download → /Assets/Doc
     disabled: e.classList.contains("function_bar_button--disable"),
     text: e.textContent.trim(),
   }));
-  assert.deepEqual(print, { disabled: true, text: "Печать" });
+  assert.deepEqual(print, { disabled: false, text: "Печать" });
 
   const contact = await page.$eval(`${RESUME} [data-rs-action="contact"]`, (a) => ({
     tag: a.tagName,
@@ -446,4 +446,43 @@ test("bringWindowToFront не перекрывает showWindow() окна Pinba
     showSrc: String(showWindow).includes("Space Cadet Pinball"),
   }));
   assert.deepEqual(r, { bring: "function", show: "function", showArgs: 0, showSrc: true });
+});
+
+// «Печать» печатает сам PDF (чёткий текст): PDF грузится в скрытую рамку и у неё вызывается print().
+async function clickPrintAndGetFrame(selector) {
+  await page.evaluate(() => document.querySelectorAll("iframe.rs-print-frame").forEach((f) => f.remove()));
+  const pagesBefore = (await h.browser.pages()).length;
+  await page.click(selector);
+  await page.waitForSelector("iframe.rs-print-frame", { timeout: 5000 });
+  const frame = await page.$eval("iframe.rs-print-frame", (f) => ({
+    src: f.getAttribute("src"),
+    hidden: f.getBoundingClientRect().width <= 1 && f.getBoundingClientRect().height <= 1,
+  }));
+  await new Promise((r) => setTimeout(r, 500));
+  assert.equal((await h.browser.pages()).length, pagesBefore, "печать не должна открывать новую вкладку");
+  return frame;
+}
+
+test("«Печать» загружает PDF в скрытую рамку для печати", async () => {
+  await fresh();
+  await page.waitForSelector(`${RESUME} .rs-page img`, { timeout: 5000 });
+  const errorsBefore = consoleErrors.length;
+  const frame = await clickPrintAndGetFrame(`${RESUME} [data-rs-action="print"]`);
+  assert.match(frame.src, /^\/Assets\/Docs\/resume\.pdf\?v=[0-9a-f]{10}$/);
+  assert.equal(frame.hidden, true);
+  assert.equal(consoleErrors.length, errorsBefore);
+  // Повторная печать не копит рамки.
+  await page.click(`${RESUME} [data-rs-action="print"]`);
+  await new Promise((r) => setTimeout(r, 300));
+  assert.equal(await page.$$eval("iframe.rs-print-frame", (l) => l.length), 1);
+});
+
+test("меню «Файл → Печать» тоже печатает PDF", async () => {
+  await fresh();
+  await page.waitForSelector(`${RESUME} .rs-page img`, { timeout: 5000 });
+  await clickMenu("Файл");
+  await page.waitForSelector(`${RESUME} .window-tooltip [data-rs-print] .drop-down__text`, { timeout: 5000 });
+  assert.equal(await page.$eval(`${RESUME} [data-rs-print] .drop-down__text`, (e) => e.textContent.trim()), "Печать");
+  const frame = await clickPrintAndGetFrame(`${RESUME} [data-rs-print] .drop-down__text`);
+  assert.match(frame.src, /^\/Assets\/Docs\/resume\.pdf/);
 });

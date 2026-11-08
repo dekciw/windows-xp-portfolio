@@ -31,6 +31,34 @@
   const PDF = "/Assets/Docs/resume.pdf";
   const pdfHref = (v) => PDF + "?v=" + encodeURIComponent(v);
 
+  // Печать самого PDF (текст на бумаге чёткий, а не картинка): PDF грузится в скрытую
+  // рамку, и браузер открывает обычный диалог печати. Если браузер так не умеет
+  // (Safari, телефоны), PDF открывается в новой вкладке, печатать можно оттуда.
+  function printResume(win) {
+    const href = win._rs && win._rs.version ? pdfHref(win._rs.version) : PDF;
+    document.querySelectorAll("iframe.rs-print-frame").forEach((f) => f.remove());
+    const frame = el("iframe", "rs-print-frame");
+    frame.title = "Печать резюме";
+    frame.setAttribute("aria-hidden", "true");
+    // Не display:none и не visibility:hidden: из такой рамки Chrome печатает пустой лист.
+    frame.style.cssText = "position:fixed;left:-10000px;top:0;width:1px;height:1px;border:0;";
+    frame.addEventListener(
+      "load",
+      () => {
+        try {
+          frame.contentWindow.focus();
+          frame.contentWindow.print();
+        } catch (e) {
+          console.warn("resume print:", e);
+          window.open(href, "_blank", "noopener");
+        }
+      },
+      { once: true }
+    );
+    frame.src = href;
+    document.body.appendChild(frame);
+  }
+
   function renderPages(viewer, manifest) {
     manifest.pages.forEach((p, i) => {
       const sheet = el("div", "rs-page");
@@ -141,6 +169,7 @@
     win.addEventListener("click", (e) => {
       const item = e.target.closest("[data-rs-zoom]");
       if (item) setZoom(win, item.dataset.rsZoom);
+      if (e.target.closest('[data-rs-action="print"], [data-rs-print]')) printResume(win);
       // «Сохранить» в меню «Файл» подгружается позже манифеста: версию подставляем при щелчке.
       const link = e.target.closest(".rs-menu-link");
       if (link && win._rs.version) link.href = pdfHref(win._rs.version);
