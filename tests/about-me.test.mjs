@@ -57,6 +57,22 @@ test("двойной клик открывает окно с заголовко�
   );
 });
 
+test("двойной клик по иконке открывает «Обо мне» поверх уже открытого окна (GitHub при запуске)", async () => {
+  if (await page.$(ABOUT)) await closeAboutMe(page);
+  await page.waitForSelector('[id="window-GitHub"]');
+  await openAboutMe(page);
+  const r = await page.evaluate(() => {
+    const am = document.getElementById("window-About Me");
+    const z = (w) => parseInt(getComputedStyle(w).zIndex) || 0;
+    const others = [...document.querySelectorAll(".window")].filter((w) => w !== am && w.style.display !== "none");
+    // и проверка по пикселю: в центре «Обо мне» сверху лежит именно оно
+    const b = am.getBoundingClientRect();
+    const hit = document.elementFromPoint(b.left + b.width / 2, b.top + 60);
+    return { onTop: others.every((w) => z(am) > z(w)), hitInside: am.contains(hit) };
+  });
+  assert.deepEqual(r, { onTop: true, hitInside: true });
+});
+
 test("повторный двойной клик не создаёт второе окно и не сбрасывает страницу", async () => {
   await fresh();
   await clickIn('[data-am-action="projects"]');

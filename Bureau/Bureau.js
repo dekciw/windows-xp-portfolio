@@ -23,6 +23,7 @@ let hoverTooltipMouseLeaveHandler = null;
 const appDisplayNames = {
   "My Computer": "Мой компьютер",
   "About Me": "Обо мне",
+  "GitHub": "GitHub",
   "Recycle Bin (empty)": "Корзина",
   "Recycle Bin (full)": "Корзина (полная)",
   "Internet Explorer": "Internet Explorer",
@@ -82,9 +83,15 @@ playSoundOnPage(
   "/Bureau/Bureau.html",
   "/Assets/Sounds/windows-xp-startup.mp3",
   function () {
-    openWindow("LinkedIn");
-    toggleWindow("LinkedIn");
-    toggleWindow("LinkedIn");
+    // После загрузки рабочего стола сразу показываем окно GitHub поверх остальных
+    // (размер и положение по центру задаёт GitHubWindow.init).
+    openWindow("GitHub");
+    const gh = document.getElementById("window-GitHub");
+    if (gh) {
+      zIndexCounter++;
+      gh.style.zIndex = zIndexCounter;
+      updateTaskbarHighlight("GitHub", true);
+    }
   }
 );
 
@@ -241,6 +248,9 @@ function openWindow(appName) {
         windowElement.innerHTML = htmlContent;
       }
 
+      if (appName === "GitHub" && window.GitHubWindow) {
+        window.GitHubWindow.init(windowElement);
+      }
       if (appName === "About Me" && window.AboutMe) {
         window.AboutMe.init(windowElement);
       }
@@ -364,6 +374,9 @@ function openWindow(appName) {
   document.body.appendChild(windowElement);
   windowElement.style.top = "115px";
   windowElement.style.left = "115px";
+  // Новое окно открывается поверх уже открытых (как в Windows)
+  zIndexCounter++;
+  windowElement.style.zIndex = zIndexCounter;
   makeDraggable(windowElement);
 
   if (!document.getElementById(`taskbar-${appName}`)) {

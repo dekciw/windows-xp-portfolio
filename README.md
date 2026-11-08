@@ -33,6 +33,7 @@ This project was a nostalgic deep dive into one of the most iconic operating sys
 - Резюме: положите PDF в `Assets/Docs/resume.pdf`. Кнопка «Моё резюме» откроет его в новой вкладке; пока файла нет, окно показывает сообщение «Файл резюме пока не добавлен».
 - После правок `about-me-data.js` или `about-me.js` увеличьте номер версии `?v=` в `Bureau/Bureau.html`, чтобы посетители не получили старую версию из кэша.
 - Локальный просмотр: `npx http-server . -p 3000 -c-1`, затем откройте http://localhost:3000 (не используйте `npx serve`: он ломает Paint).
+- Окно «GitHub» (открывается свёрнутым при старте) берёт профиль и репозитории из GitHub API при открытии и кэширует их в браузере на час. Логин задаётся константой `GITHUB_LOGIN` в [`Open_Windows/GitHub/github.js`](Open_Windows/GitHub/github.js); форки и репозиторий с README профиля не показываются.
 - Тесты: `npm install`, затем `npm test` (нужен Google Chrome; путь можно задать переменной `CHROME_PATH`).
 
 # 💬 Acknowledgements

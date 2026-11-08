@@ -35,7 +35,35 @@ function startServer() {
   return new Promise((resolve) => server.listen(0, "127.0.0.1", () => resolve(server)));
 }
 
+// Тесты не ходят в сеть: fetch к api.github.com и к сервису активности отвечает
+// данными из window.__gh (меняются в тесте через page.evaluate).
+//   status — код ответа профиля/репозиториев; readme/contrib: null → 404/500 у этого источника;
+//   calls — число запросов к api.github.com; delay — задержка ответа, мс.
+function installGithubMock(user, repos, readme, contrib) {
+  window.__gh = { user, repos, readme, contrib, status: 200, calls: 0, delay: 0 };
+  const realFetch = window.fetch.bind(window);
+  const reply = (status, body, type) =>
+    new Promise((r) =>
+      setTimeout(() => r(new Response(body, { status, headers: { "Content-Type": type } })), window.__gh.delay)
+    );
+  window.fetch = (input, init) => {
+    const url = String(input && input.url ? input.url : input);
+    const gh = window.__gh;
+    if (url.startsWith("https://github-contributions-api.jogruber.de/")) {
+      return gh.contrib ? reply(200, JSON.stringify(gh.contrib), "application/json") : reply(500, "{}", "application/json");
+    }
+    if (!url.startsWith("https://api.github.com/")) return realFetch(input, init);
+    gh.calls++;
+    if (url.includes("/readme")) {
+      return gh.readme ? reply(200, gh.readme, "text/html") : reply(404, '{"message":"Not Found"}', "application/json");
+    }
+    if (gh.status !== 200) return reply(gh.status, '{"message":"API rate limit exceeded"}', "application/json");
+    return reply(200, JSON.stringify(url.includes("/repos") ? gh.repos : gh.user), "application/json");
+  };
+}
+
 export async function startHarness() {
+  const { GH_USER, GH_REPOS, GH_README, GH_CONTRIB } = await import("../fixtures/github.mjs");
   const server = await startServer();
   const base = `http://127.0.0.1:${server.address().port}`;
   const browser = await puppeteer.launch({
@@ -48,6 +76,7 @@ export async function startHarness() {
   await page.evaluateOnNewDocument(() => {
     HTMLMediaElement.prototype.play = () => Promise.resolve();
   });
+  await page.evaluateOnNewDocument(installGithubMock, GH_USER, GH_REPOS, GH_README, GH_CONTRIB);
   await page.goto(`${base}/Bureau/Bureau.html`, { waitUntil: "domcontentloaded" });
   await page.waitForFunction(() => typeof openWindow === "function");
   // Base window template is fetched asynchronously by Bureau.js.

@@ -1,0 +1,789 @@
+* { cursor: url('/Assets/Images/Cursors/windows-xp-arrow.cur'), auto !important; }
+.Internet_Explorer_6_Body {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  background: linear-gradient(
+    to right,
+    rgb(237, 237, 229) 0%,
+    rgb(237, 232, 205) 100%
+  );
+
+  font-family: Tahoma, "Noto Sans", sans-serif;
+}
+
+.IE_toolbar {
+  position: relative;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  line-height: 100%;
+  height: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+}
+
+.IE_options {
+  height: 23px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  border-right: 1px solid rgba(0, 0, 0, 0.15);
+  padding-left: 2px;
+  flex: 1 1 0%;
+}
+
+.IE_options_OCD {
+  display: inline-flex;
+  height: 21px;
+  line-height: 21px;
+  position: relative;
+}
+
+.drop_down {
+  font-size: 11px;
+  height: 100%;
+  position: relative;
+}
+
+.drop_down_label {
+  padding: 0px 7px;
+}
+
+.drop_down_label:hover {
+  background-color: rgb(22, 96, 232);
+  color: rgb(255, 255, 255);
+}
+
+.drop_down_label--active {
+  background-color: rgb(22, 96, 232);
+  color: rgb(255, 255, 255);
+}
+
+.IE_windows-logo {
+  height: 100%;
+  border-left: 1px solid white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.IE_function_bar {
+  height: 36px;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  font-size: 11px;
+  padding: 1px 3px 0px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.IE_function_bar_button--disable {
+  filter: grayscale(1);
+  opacity: 0.5;
+  display: flex;
+  height: 100%;
+  -webkit-box-align: center;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0);
+}
+
+.IE_function_bar_icon {
+  height: 25px;
+  width: 25px;
+  margin: 0px 5px 0px 5px;
+}
+
+.IE_function_bar_text {
+  margin-right: 4px;
+}
+
+.IE_function_bar_arrow {
+  height: 100%;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  margin: 0px 4px;
+}
+
+.IE_function_bar_arrow::before {
+  content: "";
+  display: block;
+  border-width: 3px 3px 0px;
+  border-color: rgb(0, 0, 0) transparent;
+  border-style: solid;
+}
+
+.IE_function_bar_button {
+  display: flex;
+  height: 100%;
+  -webkit-box-align: center;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0);
+  border-radius: 3px;
+}
+
+.IE_function_bar_button:hover {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px -1px 1px inset;
+}
+
+.IE_function_bar_button:hover:active {
+  border: 1px solid rgb(185, 185, 185);
+  background-color: rgb(222, 222, 222);
+  box-shadow: rgba(255, 255, 255, 0.7) 0px -1px 1px inset;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.IE_function_bar_button:hover:active > * {
+  transform: translate(1px, 1px);
+}
+
+.IE_function_bar_icon--margin-1 {
+  margin: 0px -1px;
+  height: 25px;
+  width: 25px;
+}
+
+.IE_function_bar_separate {
+  height: 90%;
+  width: 1px;
+  background-color: rgba(0, 0, 0, 0.2);
+  margin: 0px 2px;
+}
+
+.IE_function_bar_icon--normalize {
+  height: 22px;
+  width: 22px;
+  margin: 0px 4px 0px 1px;
+}
+
+.IE_function_bar_arrow--margin-11 {
+  height: 100%;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  margin: 0px 1px 0px -1px;
+}
+
+.IE_function_bar_icon--margin12 {
+  height: 22px;
+  width: 22px;
+  margin: 0px 1px 0px 2px;
+}
+
+.IE_address_bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.7);
+  height: 22px;
+  font-size: 11px;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  padding: 0px 2px 2px;
+  box-shadow: rgb(45, 45, 45) 0px -2px 3px -1px inset;
+}
+
+.IE_address_bar_title {
+  line-height: 100%;
+  color: rgba(0, 0, 0, 0.5);
+  padding: 5px;
+}
+
+.IE_address_bar_IE_content {
+  border: 1px solid rgba(122, 122, 255, 0.6);
+  height: 85%;
+  display: flex;
+  flex: 1 1 0%;
+  -webkit-box-align: center;
+  align-items: center;
+  background-color: white;
+  position: relative;
+}
+
+.IE_address_bar_IE_content_img {
+  width: 14px;
+  height: 14px;
+}
+
+.IE_address_bar_IE_content_text {
+  position: absolute;
+  white-space: nowrap;
+  left: 16px;
+  right: 17px;
+  overflow: hidden;
+}
+
+.IE_address_bar_IE_content_img:last-child {
+  width: 15px;
+  height: 15px;
+  right: 1px;
+  position: absolute;
+}
+
+.IE_address_bar_IE_content_img:last-child:hover {
+  filter: brightness(1.1);
+}
+
+.IE_address_bar_go {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  padding: 0px 18px 0px 5px;
+  height: 100%;
+  position: relative;
+}
+
+.IE_address_bar_go_img {
+  height: 95%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-right: 3px;
+}
+
+.IE_address_bar_separate {
+  height: 100%;
+  width: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+  box-shadow: rgba(255, 255, 255, 0.7) 1px 0px;
+}
+
+.IE_address_bar_links {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  padding: 0px 18px 0px 5px;
+  height: 100%;
+  position: relative;
+}
+
+.IE_address_bar_links_text {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.IE_address_bar_links_img {
+  position: absolute;
+  right: 2px;
+  top: 3px;
+  height: 5px;
+  width: 8px;
+}
+
+.IE_content {
+  flex: 1 1 0%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-left: 1px;
+  border-left: 1px solid rgb(111, 111, 111);
+  background-color: rgb(241, 241, 241);
+  position: relative;
+}
+
+.IE_content_inner {
+  position: relative;
+  min-height: 800px;
+  min-width: 800px;
+  width: 100%;
+  height: 100%;
+}
+
+.IE_content_inner_OCD {
+  height: 100%;
+  background: white;
+  position: relative;
+}
+
+.IE_footer {
+  height: 20px;
+  border-top: 1px solid transparent;
+  box-shadow: rgba(50, 50, 50, 0.8) 0px 1px 3px inset;
+  background-color: rgb(236, 233, 216);
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  padding-top: 2px;
+}
+
+.IE_footer_status {
+  flex: 1 1 0%;
+  height: 100%;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  padding-left: 2px;
+}
+
+.IE_footer_status_img {
+  height: 14px;
+  width: 14px;
+  margin-right: 3px;
+}
+
+.IE_footer_status_text {
+  font-size: 11px;
+}
+
+.IE_footer_block {
+  height: 85%;
+  width: 22px;
+  border-left: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(255, 255, 255, 0.7) 1px 0px inset;
+}
+
+.IE_footer_right {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  width: 150px;
+  height: 80%;
+  border-left: 1px solid rgba(0, 0, 0, 0.11);
+  box-shadow: rgba(255, 255, 255, 0.7) 1px 0px inset;
+  padding-left: 5px;
+  position: relative;
+}
+
+.IE_footer_right_img {
+  height: 14px;
+  width: 14px;
+  margin-right: 3px;
+}
+
+.IE_footer_right_text {
+  font-size: 11px;
+}
+
+.IE_footer_right_dots {
+  position: absolute;
+  right: 11px;
+  bottom: -1px;
+  width: 2px;
+  height: 2px;
+  box-shadow: rgba(0, 0, 0, 0.25) 2px 0px, rgba(0, 0, 0, 0.25) 5.5px 0px,
+    rgba(0, 0, 0, 0.25) 9px 0px, rgba(0, 0, 0, 0.25) 5.5px -3.5px,
+    rgba(0, 0, 0, 0.25) 9px -3.5px, rgba(0, 0, 0, 0.25) 9px -7px,
+    rgb(255, 255, 255) 3px 1px, rgb(255, 255, 255) 6.5px 1px,
+    rgb(255, 255, 255) 10px 1px, rgb(255, 255, 255) 10px -2.5px,
+    rgb(255, 255, 255) 10px -6px;
+}
+
+.IE_content_inner img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ===================== Живая карточка GitHub =====================
+   Только для окна GitHub (#window-GitHub): классы IE_* общие с окном Internet Explorer. */
+
+#window-GitHub .IE_content_inner {
+  min-width: 0;
+  min-height: 100%;
+  height: auto;
+  background: #fff;
+}
+
+#window-GitHub .gh-root {
+  container-type: inline-size;
+  min-height: 100%;
+  font-family: -apple-system, "Segoe UI", Tahoma, "Noto Sans", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #1f2328;
+  background: #fff;
+}
+
+#window-GitHub .gh-loading,
+#window-GitHub .gh-error {
+  margin: 24px;
+  padding: 10px 12px;
+  font-family: Tahoma, "Noto Sans", sans-serif;
+  font-size: 12px;
+}
+
+#window-GitHub .gh-error {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  border: 1px solid #000;
+  background: #ffffe1;
+}
+
+#window-GitHub .gh-error::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+  background: url("/Assets/Images/Security/warning-icon.png") center / contain no-repeat;
+}
+
+#window-GitHub .gh-page {
+  display: flex;
+  gap: 24px;
+  max-width: 1012px;
+  margin: 0 auto;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* ---------- профиль слева ---------- */
+
+#window-GitHub .gh-profile {
+  flex: 0 0 240px;
+  min-width: 0;
+}
+
+#window-GitHub .gh-avatar {
+  display: block;
+  width: 100%;
+  max-width: 240px;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid #d0d7de;
+}
+
+#window-GitHub .gh-name {
+  margin-top: 16px;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+#window-GitHub .gh-login {
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 24px;
+  color: #59636e;
+}
+
+#window-GitHub .gh-bio {
+  margin-top: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+#window-GitHub .gh-open {
+  display: block;
+  margin: 16px 0;
+  padding: 5px 16px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #25292e;
+  text-decoration: none;
+  background: #f6f8fa;
+  border: 1px solid #d1d9e0;
+  border-radius: 6px;
+}
+
+#window-GitHub .gh-open:hover {
+  background: #eff2f5;
+}
+
+#window-GitHub .gh-location,
+#window-GitHub .gh-follow {
+  margin-top: 6px;
+  color: #59636e;
+}
+
+#window-GitHub .gh-location::before {
+  content: "📍 ";
+}
+
+/* ---------- репозитории справа ---------- */
+
+#window-GitHub .gh-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+#window-GitHub .gh-repos-title {
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  border-bottom: 2px solid #fd8c73;
+  display: inline-block;
+}
+
+#window-GitHub .gh-count {
+  display: inline-block;
+  min-width: 20px;
+  margin-left: 4px;
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  text-align: center;
+  background: #818b981f;
+  border-radius: 2em;
+}
+
+#window-GitHub .gh-repos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+#window-GitHub .gh-repo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid #d1d9e0;
+  border-radius: 6px;
+  min-width: 0;
+}
+
+#window-GitHub .gh-repo-name {
+  font-weight: 600;
+  color: #0969da;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+#window-GitHub .gh-repo-name:hover {
+  text-decoration: underline;
+}
+
+#window-GitHub .gh-repo-desc {
+  flex: 1 1 auto;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #59636e;
+}
+
+#window-GitHub .gh-repo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 12px;
+  color: #59636e;
+}
+
+#window-GitHub .gh-repo-lang::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  vertical-align: -1px;
+  border-radius: 50%;
+  border: 1px solid rgba(1, 4, 9, 0.1);
+  background: var(--lang-color, #8b949e);
+}
+
+#window-GitHub .gh-repo-stars::before {
+  content: "☆ ";
+}
+
+/* ---------- узкое окно: всё в одну колонку ---------- */
+
+@container (max-width: 700px) {
+  #window-GitHub .gh-page {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  #window-GitHub .gh-profile {
+    flex: none;
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    column-gap: 16px;
+    align-items: center;
+  }
+
+  #window-GitHub .gh-avatar {
+    grid-row: span 2;
+  }
+
+  #window-GitHub .gh-name {
+    margin-top: 0;
+    font-size: 20px;
+  }
+
+  #window-GitHub .gh-bio,
+  #window-GitHub .gh-open,
+  #window-GitHub .gh-location,
+  #window-GitHub .gh-follow {
+    grid-column: 1 / -1;
+  }
+
+  #window-GitHub .gh-repos {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- README профиля ---------- */
+
+#window-GitHub .gh-readme {
+  margin-bottom: 24px;
+  border: 1px solid #d1d9e0;
+  border-radius: 6px;
+}
+
+#window-GitHub .gh-readme-title {
+  padding: 16px 24px 0;
+  font-size: 12px;
+  color: #59636e;
+}
+
+#window-GitHub .gh-readme-file {
+  font-weight: 600;
+  color: #1f2328;
+}
+
+#window-GitHub .gh-readme-body {
+  padding: 16px 24px 24px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+#window-GitHub .gh-readme-body img {
+  max-width: 100%;
+  height: auto;
+}
+
+#window-GitHub .gh-readme-body h1,
+#window-GitHub .gh-readme-body h2 {
+  margin: 24px 0 16px;
+  padding-bottom: 0.3em;
+  font-weight: 600;
+  line-height: 1.25;
+  border-bottom: 1px solid #d1d9e0b3;
+}
+
+#window-GitHub .gh-readme-body h1 { font-size: 2em; }
+#window-GitHub .gh-readme-body h2 { font-size: 1.5em; }
+#window-GitHub .gh-readme-body h3 { font-size: 1.25em; margin: 24px 0 16px; }
+
+#window-GitHub .gh-readme-body > :first-child,
+#window-GitHub .gh-readme-body .markdown-body > :first-child {
+  margin-top: 0;
+}
+
+#window-GitHub .gh-readme-body p,
+#window-GitHub .gh-readme-body ul,
+#window-GitHub .gh-readme-body ol {
+  margin: 0 0 16px;
+}
+
+#window-GitHub .gh-readme-body ul,
+#window-GitHub .gh-readme-body ol {
+  padding-left: 2em;
+}
+
+#window-GitHub .gh-readme-body a {
+  color: #0969da;
+  text-decoration: none;
+}
+
+#window-GitHub .gh-readme-body a:hover {
+  text-decoration: underline;
+}
+
+#window-GitHub .gh-readme-body code {
+  padding: 0.2em 0.4em;
+  font-size: 85%;
+  background: #818b9833;
+  border-radius: 6px;
+}
+
+/* GitHub оборачивает заголовки в div.markdown-heading с якорем-иконкой — прячем якорь */
+#window-GitHub .gh-readme-body .anchor {
+  display: none;
+}
+
+/* ---------- активность ---------- */
+
+#window-GitHub .gh-contrib {
+  margin-top: 24px;
+}
+
+#window-GitHub .gh-contrib-title {
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+#window-GitHub .gh-contrib-card {
+  padding: 12px 16px;
+  border: 1px solid #d1d9e0;
+  border-radius: 6px;
+}
+
+/* в узком окне график прокручивается внутри карточки, а не всё окно */
+#window-GitHub .gh-contrib-scroll {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+/* Резиновые клетки: год (53 недели) помещается по ширине карточки; клетки от 6 до 12px.
+   Если окно ещё уже — график прокручивается внутри карточки (сразу к последним неделям). */
+#window-GitHub .gh-contrib-months,
+#window-GitHub .gh-contrib-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--weeks), minmax(6px, 12px));
+  column-gap: 3px;
+  justify-content: space-between;
+  min-width: calc(var(--weeks) * 9px);
+}
+
+#window-GitHub .gh-contrib-months {
+  margin-bottom: 4px;
+  font-size: 11px;
+  color: #59636e;
+  height: 14px;
+}
+
+#window-GitHub .gh-contrib-month {
+  overflow: visible;
+  white-space: nowrap;
+}
+
+#window-GitHub .gh-contrib-grid {
+  grid-template-rows: repeat(7, auto);
+  row-gap: 3px;
+  grid-auto-flow: column;
+}
+
+#window-GitHub .gh-contrib-grid .gh-day {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+#window-GitHub .gh-day {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  outline: 1px solid rgba(31, 35, 40, 0.05);
+  outline-offset: -1px;
+  background: #ebedf0;
+}
+
+#window-GitHub .gh-day--empty {
+  background: transparent;
+  outline: none;
+}
+
+#window-GitHub .gh-day[data-level="1"] { background: #9be9a8; }
+#window-GitHub .gh-day[data-level="2"] { background: #40c463; }
+#window-GitHub .gh-day[data-level="3"] { background: #30a14e; }
+#window-GitHub .gh-day[data-level="4"] { background: #216e39; }
+
+#window-GitHub .gh-contrib-legend {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #59636e;
+}
+
+#window-GitHub .gh-contrib-legend span:first-child {
+  margin-right: 2px;
+}
+
+#window-GitHub .gh-contrib-legend span:last-child {
+  margin-left: 2px;
+}
