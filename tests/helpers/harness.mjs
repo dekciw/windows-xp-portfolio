@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import puppeteer from "puppeteer-core";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
-const CHROME =
+export const CHROME =
   process.env.CHROME_PATH || "C:/Program Files/Google/Chrome/Application/chrome.exe";
 
 const TYPES = {
@@ -17,12 +17,12 @@ const TYPES = {
   ".ttf": "font/ttf", ".otf": "font/otf", ".json": "application/json", ".pdf": "application/pdf",
 };
 
-function startServer() {
+export function startServer(root = ROOT) {
   const server = http.createServer(async (req, res) => {
     try {
       const urlPath = decodeURIComponent(new URL(req.url, "http://x").pathname);
-      let file = path.join(ROOT, urlPath);
-      if (!file.startsWith(ROOT)) throw new Error("outside root");
+      let file = path.join(root, urlPath);
+      if (!file.startsWith(root)) throw new Error("outside root");
       if ((await stat(file)).isDirectory()) file = path.join(file, "index.html");
       const body = await readFile(file);
       res.writeHead(200, { "Content-Type": TYPES[path.extname(file).toLowerCase()] || "application/octet-stream" });

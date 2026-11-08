@@ -1,0 +1,30 @@
+{
+  "version": "859c3930be",
+  "pages": [
+    {
+      "src": "/Assets/Images/Resume/page-1.webp?v=859c3930be",
+      "width": 1191,
+      "height": 1684
+    },
+    {
+      "src": "/Assets/Images/Resume/page-2.webp?v=859c3930be",
+      "width": 1191,
+      "height": 1684
+    },
+    {
+      "src": "/Assets/Images/Resume/page-3.webp?v=859c3930be",
+      "width": 1191,
+      "height": 1684
+    },
+    {
+      "src": "/Assets/Images/Resume/page-4.webp?v=859c3930be",
+      "width": 1191,
+      "height": 1684
+    },
+    {
+      "src": "/Assets/Images/Resume/page-5.webp?v=859c3930be",
+      "width": 1191,
+      "height": 347
+    }
+  ]
+}

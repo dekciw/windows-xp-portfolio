@@ -3,9 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test --test-concurrency=1 tests/"
+    "test": "node --test --test-concurrency=1 tests/",
+    "resume": "node scripts/build-resume.mjs"
   },
   "devDependencies": {
+    "pdfjs-dist": "^4.10.38",
     "puppeteer-core": "^23.11.1"
   }
 }
