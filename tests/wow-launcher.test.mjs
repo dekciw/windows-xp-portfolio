@@ -145,3 +145,47 @@ test("no taskbar button", async () => {
   );
   assert.ok(!txt.includes("World of Warcraft"));
 });
+
+test("desktop icon launches", async () => {
+  const label = await page.$eval('.icon[data-app="World of Warcraft"] span', (s) => s.textContent.trim());
+  assert.equal(label, "World of Warcraft");
+  const icon = await page.$('.icon[data-app="World of Warcraft"]');
+  await icon.click({ count: 2 });
+  await waitOpen();
+});
+
+test("games menu item launches", async () => {
+  await page.waitForFunction(() => !recentlyClosedStartMenu);
+  await page.click("#start-button");
+  await page.waitForSelector("#StartMenu .AllProgMenu", { timeout: 5000 });
+  await page.hover("#StartMenu .AllProgMenu");
+  // Подменю перерисовываются при наведении: ищем пункт заново и наводим мышь по координатам.
+  const hoverItem = async (sel, text) => {
+    const box = await page.waitForFunction(
+      (sel, text) => {
+        const el = [...document.querySelectorAll(sel)].find((i) => i.querySelector(".hover-infotxt")?.textContent.trim() === text);
+        if (!el) return null;
+        const r = el.getBoundingClientRect();
+        return r.width ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null;
+      },
+      { timeout: 5000 }, sel, text
+    );
+    const { x, y } = await box.jsonValue();
+    await page.mouse.move(x, y);
+  };
+  await hoverItem(".hover-infoitm", "Игры");
+  await page.waitForFunction(() => /Сапёр/.test(document.querySelector(".sub-tooltip")?.textContent || ""), { timeout: 5000 }); // меню «Игры» открылось
+  const item = await page.waitForFunction(
+    () => [...document.querySelectorAll(".sub-tooltip .hover-infoitm")].find((i) => i.querySelector(".hover-infotxt")?.textContent.trim() === "World of Warcraft"),
+    { timeout: 5000 }
+  );
+  const img = await item.asElement().$eval("img", (i) => i.getAttribute("src"));
+  assert.equal(img, "/Assets/Images/Icons/wow-icon.svg");
+  await item.asElement().evaluate((el) => el.dispatchEvent(new MouseEvent("mousedown", { bubbles: true })));
+  await waitOpen();
+});
+
+test("icon file exists", async () => {
+  const r = await fetch(`${h.base}/Assets/Images/Icons/wow-icon.svg`, { method: "HEAD" });
+  assert.equal(r.status, 200);
+});

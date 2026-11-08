@@ -63,6 +63,7 @@ I would like to extend my heartfelt thanks to all the creators and developers wh
 - [Nobel Tech](https://www.youtube.com/watch?v=1pd3-FVPjUc&ab_channel=NobelTech) and [Ballyweg - Startup](https://www.youtube.com/watch?v=7nQ2oiVqKHw&ab_channel=Ballyweg), [Ballyweg - Shutdown](https://www.youtube.com/watch?v=Gb2jGy76v0Y&ab_channel=Ballyweg) for nostalgic Windows-inspired sound.
 
 #### 💡 INSPIRATION / UI - UX / MODULES
+- [WoWLoginScreens](https://github.com/Xiexe/WoWLoginScreens) by Xiexe — World of Warcraft login screen recreation; WoW media © Blizzard Entertainment.
 - The creators of [JSPaint](https://github.com/1j01/jspaint) and [98.css](https://github.com/1j01/98#readme) for their fantastic open-source projects.
 
 - The [Windows XP web replica](https://windows-xp.netlify.app/) of [EddyVinck’s XP repository](https://github.com/EddyVinck/xp/tree/master) for interface design inspiration.
