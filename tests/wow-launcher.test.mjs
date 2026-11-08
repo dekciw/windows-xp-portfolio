@@ -189,3 +189,18 @@ test("icon file exists", async () => {
   const r = await fetch(`${h.base}/Assets/Images/Icons/wow-icon.svg`, { method: "HEAD" });
   assert.equal(r.status, 200);
 });
+
+test("Esc on the desktop cancels launch and closes the game without fullscreen", async () => {
+  await stubFullscreen("reject");
+  const esc = () => page.evaluate(() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })));
+  await page.evaluate(() => launchWoW());
+  await sleep(100);
+  await esc();
+  await sleep(1500);
+  assert.equal(await overlayCount(), 0);
+  assert.equal(await page.evaluate(() => document.body.classList.contains("wow-launching")), false);
+  await page.evaluate(() => launchWoW());
+  await waitOpen();
+  await esc();
+  await waitGone();
+});

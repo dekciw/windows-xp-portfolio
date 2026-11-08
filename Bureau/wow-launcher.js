@@ -78,6 +78,12 @@ function closeWoW() {
   }, WOW_FADE_MS);
 }
 
+// Esc на рабочем столе (пока iframe не получил фокус или полноэкранный режим недоступен):
+// отменяет запуск или закрывает игру.
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && (wowState === "launching" || wowState === "open")) closeWoW();
+});
+
 // Пользователь сам вышел из полноэкранного режима (Esc) — игра закрывается, как настоящая.
 document.addEventListener("fullscreenchange", () => {
   if (!wowRequestedFullscreen || document.fullscreenElement) return;
