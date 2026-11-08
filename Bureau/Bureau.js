@@ -85,7 +85,8 @@ playSoundOnPage(
   function () {
     // После загрузки рабочего стола сразу показываем окно GitHub поверх остальных
     // (размер и положение по центру задаёт GitHubWindow.init).
-    openWindow("GitHub");
+    // Без звука открытия: в этот момент уже звучит мелодия запуска Windows.
+    openWindow("GitHub", { silent: true });
     const gh = document.getElementById("window-GitHub");
     if (gh) {
       zIndexCounter++;
@@ -162,13 +163,8 @@ document.addEventListener("click", function (event) {
   }
 });
 
-function openWindow(appName) {
-  // Звук навигации — для окон-папок (как в Проводнике XP): My Computer, Recycle Bin, About Me
-  const folderWindows = ['My Computer', 'Recycle Bin (empty)', 'Recycle Bin (full)', 'About Me'];
-  if (folderWindows.includes(appName)) {
-    playNavigationSound();
-  }
-
+// options.silent — открыть без звука (автооткрытие при загрузке, восстановление окон).
+function openWindow(appName, options = {}) {
   let windowTooltipContainer = null;
   let windowCurrentLabel = null;
 
@@ -180,6 +176,11 @@ function openWindow(appName) {
   let taskbar = document.getElementById("taskbar");
 
   if (document.getElementById(`window-${appName}`)) return;
+
+  // Звук открытия — для любого нового окна (уже открытое выше не звучит повторно).
+  if (!options.silent) {
+    playNavigationSound();
+  }
 
   let windowElement = document.createElement("div");
   windowElement.id = `window-${appName}`;
@@ -1943,7 +1944,7 @@ setTimeout(() => {
   const windowStates = JSON.parse(localStorage.getItem("openWindows") || "[]");
   windowStates.forEach(
     ({ appName, left, top, width, height, display, zIndex }) => {
-      openWindow(appName);
+      openWindow(appName, { silent: true }); // восстановление окон — без звука
 
       const win = document.getElementById(`window-${appName}`);
       if (win) {

@@ -73,8 +73,13 @@ export async function startHarness() {
   });
   const page = await browser.newPage();
   page.on("pageerror", (e) => console.log("PAGEERROR", String(e)));
+  // Звук не играем, но запоминаем, что пытались проиграть: window.__played (адреса файлов).
   await page.evaluateOnNewDocument(() => {
-    HTMLMediaElement.prototype.play = () => Promise.resolve();
+    window.__played = [];
+    HTMLMediaElement.prototype.play = function () {
+      window.__played.push(decodeURIComponent(this.currentSrc || this.src));
+      return Promise.resolve();
+    };
   });
   await page.evaluateOnNewDocument(installGithubMock, GH_USER, GH_REPOS, GH_README, GH_CONTRIB);
   await page.goto(`${base}/Bureau/Bureau.html`, { waitUntil: "domcontentloaded" });
