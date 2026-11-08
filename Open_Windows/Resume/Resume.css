@@ -1,0 +1,111 @@
+/* Шапка окна (меню, кнопки) — те же классы, что у «Мой компьютер» и «Обо мне». */
+@import url("/Open_Windows/My Computer/My Computer.css");
+
+/* Кнопки-ссылки панели («Сохранить», «Связаться со мной») выглядят как остальные кнопки. */
+.rs-action {
+  color: #000;
+  text-decoration: none;
+  padding-right: 6px;
+  cursor: pointer;
+}
+
+/* «Справка» неактивна, как в макете: серый текст, без подсветки. */
+.options_OCD .drop_down_label.rs-disabled,
+.options_OCD .drop_down_label.rs-disabled:hover {
+  color: rgb(161, 161, 146);
+  background-color: transparent;
+}
+
+/* Пункт меню «Файл → Сохранить» — ссылка, но выглядит как обычная строка меню. */
+.rs-menu-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ---------- область просмотра ---------- */
+
+.rs-viewer {
+  flex: 1 1 0%;
+  min-height: 0;
+  overflow: auto;
+  padding: 20px 0 0;
+  background-color: rgb(238, 238, 238);
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  border-left: 1px solid rgba(0, 0, 0, 0.15);
+  font-family: Tahoma, "Noto Sans", sans-serif;
+  font-size: 11px;
+  user-select: none;
+}
+
+/* Белый лист с тенью. --rs-w — натуральная ширина картинки (задаёт resume.js). */
+.rs-page {
+  --rs-w: 1191px;
+  display: block;
+  box-sizing: border-box;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  margin: 0 auto 20px;
+}
+
+.rs-page img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* По ширине: лист в ширину области (поля по 20px), но не крупнее половины картинки
+   (картинки отрисованы с удвоенной плотностью). Реакция на размер окна — средствами CSS. */
+.rs-viewer[data-zoom="fit"] .rs-page {
+  width: calc(100% - 40px);
+  max-width: calc(var(--rs-w) / 2);
+}
+
+/* Курсоры: !important — общий стиль сайта ставит стрелку XP на все элементы (* {… !important}). */
+.rs-viewer[data-zoom="fit"] .rs-page,
+.rs-viewer[data-zoom="fit"] .rs-page img {
+  cursor: zoom-in !important;
+}
+
+.rs-viewer[data-zoom="large"] .rs-page,
+.rs-viewer[data-zoom="large"] .rs-page img {
+  cursor: grab !important;
+}
+
+.rs-viewer.rs-dragging,
+.rs-viewer.rs-dragging .rs-page,
+.rs-viewer.rs-dragging .rs-page img {
+  cursor: grabbing !important;
+}
+
+/* Крупно: натуральный размер; по центру, если помещается, иначе с полем 20px слева. */
+.rs-viewer[data-zoom="large"] .rs-page {
+  width: var(--rs-w);
+  max-width: none;
+  margin-left: max(20px, (100% - var(--rs-w)) / 2);
+  margin-right: 20px;
+}
+
+.rs-error {
+  margin: 20px;
+  padding: 8px 10px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: #000;
+}
+
+/* ---------- строка состояния ---------- */
+
+.rs-status {
+  flex-shrink: 0;
+  height: 20px;
+  line-height: 20px;
+  padding: 0 6px;
+  font-size: 11px;
+  color: #000;
+  background-color: rgb(236, 233, 216);
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(255, 255, 255, 0.7) 0 1px inset;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

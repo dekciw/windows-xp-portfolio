@@ -23,6 +23,7 @@ let hoverTooltipMouseLeaveHandler = null;
 const appDisplayNames = {
   "My Computer": "Мой компьютер",
   "About Me": "Обо мне",
+  "Resume": "Моё резюме",
   "GitHub": "GitHub",
   "Recycle Bin (empty)": "Корзина",
   "Recycle Bin (full)": "Корзина (полная)",
@@ -255,6 +256,7 @@ function openWindow(appName, options = {}) {
       if (appName === "About Me" && window.AboutMe) {
         window.AboutMe.init(windowElement);
       }
+      if (appName === "Resume" && window.ResumeWindow) window.ResumeWindow.init(windowElement);
 
       const labelDivs = windowElement.querySelectorAll(
         ".drop_down_label, .Minesweeper_drop_down_label"

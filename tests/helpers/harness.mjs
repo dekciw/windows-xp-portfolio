@@ -110,3 +110,17 @@ export async function closeAboutMe(page) {
   await page.evaluate(() => closeWindow("About Me"));
   await page.waitForFunction(() => !document.getElementById("window-About Me"));
 }
+
+export const RESUME = '[id="window-Resume"]';
+
+export async function openResume(page) {
+  const icon = await page.$('.icon[data-app="Resume"]');
+  if (!icon) throw new Error('desktop icon .icon[data-app="Resume"] not found');
+  await icon.click({ count: 2 });
+  await page.waitForSelector(`${RESUME} .rs-page img`, { timeout: 5000 });
+}
+
+export async function closeResume(page) {
+  await page.evaluate(() => closeWindow("Resume"));
+  await page.waitForFunction(() => !document.getElementById("window-Resume"));
+}
