@@ -42,6 +42,8 @@ This project was a nostalgic deep dive into one of the most iconic operating sys
 2. Выполните `npm run resume`: страницы PDF превратятся в картинки `Assets/Images/Resume/page-N.webp` и список `pages.json`.
 3. Закоммитьте `Assets/Docs` и `Assets/Images/Resume`.
 
+Для `npm run resume` один раз выполните `npm install` и держите локально установленный Google Chrome (путь можно задать переменной `CHROME_PATH`).
+
 # 💬 Acknowledgements
 
 ### SPECIAL THANKS TO THE FOLLOWING

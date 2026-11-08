@@ -28,10 +28,13 @@
     win.style.top = Math.max(d.top, Math.round(top)) + "px";
   }
 
+  const PDF = "/Assets/Docs/resume.pdf";
+  const pdfHref = (v) => PDF + "?v=" + encodeURIComponent(v);
+
   function renderPages(viewer, manifest) {
     manifest.pages.forEach((p, i) => {
       const sheet = el("div", "rs-page");
-      // натуральная ширина картинки: в large — как есть, в fit — не шире половины
+      // натуральная ширина картинки: в large — как есть, в fit — не шире 3/4 натуральной
       sheet.style.setProperty("--rs-w", p.width + "px");
       const img = el("img");
       img.src = p.src;
@@ -138,6 +141,9 @@
     win.addEventListener("click", (e) => {
       const item = e.target.closest("[data-rs-zoom]");
       if (item) setZoom(win, item.dataset.rsZoom);
+      // «Сохранить» в меню «Файл» подгружается позже манифеста: версию подставляем при щелчке.
+      const link = e.target.closest(".rs-menu-link");
+      if (link && win._rs.version) link.href = pdfHref(win._rs.version);
     });
 
     bindViewer(win, viewer);
@@ -150,8 +156,15 @@
       .then((m) => {
         if (!m || !Array.isArray(m.pages) || m.pages.length === 0) throw new Error("пустой pages.json");
         renderPages(viewer, m);
+        win._rs.version = m.version;
+        if (m.version) {
+          win.querySelectorAll('[data-rs-action="save"]').forEach((a) => (a.href = pdfHref(m.version)));
+        }
       })
-      .catch(() => renderError(viewer));
+      .catch((e) => {
+        console.warn("resume:", e);
+        renderError(viewer);
+      });
   }
 
   window.ResumeWindow = { init, setZoom };

@@ -57,7 +57,7 @@
    (картинки отрисованы с удвоенной плотностью). Реакция на размер окна — средствами CSS. */
 .rs-viewer[data-zoom="fit"] .rs-page {
   width: calc(100% - 40px);
-  max-width: calc(var(--rs-w) / 2);
+  max-width: calc(var(--rs-w) * 0.75);
 }
 
 /* Курсоры: !important — общий стиль сайта ставит стрелку XP на все элементы (* {… !important}). */

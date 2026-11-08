@@ -224,7 +224,7 @@
         .addEventListener("click", () => navigate(win, "projects"));
       win
         .querySelector('[data-am-action="resume"]')
-        .addEventListener("click", () => openWindow("Resume"));
+        .addEventListener("click", () => showWindow("Resume"));
     }
     renderSidebar(win);
     renderProfile(win);

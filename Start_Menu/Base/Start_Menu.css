@@ -173,16 +173,6 @@ a.ItemMenu {
   text-decoration: none;
 }
 
-/* Пункт, который пока не работает (Резюме): бледный, без подсветки. */
-.ItemMenu--disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-.ItemMenu.ItemMenu--disabled:hover {
-  color: inherit;
-  background-color: transparent;
-}
-
 .ItemMenu:hover {
   color: white;
   background-color: rgb(47, 113, 205);

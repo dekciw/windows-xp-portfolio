@@ -1118,6 +1118,18 @@ function closeWindow(appName) {
   updateTaskbarVisibility();
 }
 
+// Открывает окно, если его нет; иначе показывает (из свёрнутого), поднимает наверх и подсвечивает в панели задач.
+function showWindow(appName) {
+  openWindow(appName);
+  const win = document.getElementById(`window-${appName}`);
+  if (!win) return;
+  win.style.removeProperty("display");
+  win.classList.remove("window-inactive");
+  zIndexCounter++;
+  win.style.zIndex = zIndexCounter;
+  updateTaskbarHighlight(appName, true);
+}
+
 function toggleWindow(appName) {
   const windowElement = document.getElementById(`window-${appName}`);
   const taskbarItem = document.getElementById(`taskbar-${appName}`);

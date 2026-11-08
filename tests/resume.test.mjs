@@ -190,6 +190,8 @@ test("панель: Масштаб, Сохранить (download → /Assets/Doc
     download: a.getAttribute("download"),
     text: a.textContent.trim(),
   }));
+  assert.ok(save.href.startsWith("/Assets/Docs/resume.pdf"), save.href);
+  save.href = "/Assets/Docs/resume.pdf";
   assert.deepEqual(save, {
     tag: "A",
     href: "/Assets/Docs/resume.pdf",
@@ -361,6 +363,8 @@ test("меню «Файл»: «Сохранить» ведёт на PDF, «За�
     download: a.getAttribute("download"),
     text: a.textContent.trim(),
   }));
+  assert.ok(save.href.startsWith("/Assets/Docs/resume.pdf"), save.href);
+  save.href = "/Assets/Docs/resume.pdf";
   assert.deepEqual(save, {
     href: "/Assets/Docs/resume.pdf",
     download: "Резюме Атанов Роман.pdf",
@@ -386,6 +390,10 @@ test("развернуть окно в fit → страница становит
     assert.ok(after.pageWidth > before.pageWidth, `страница ${before.pageWidth} → ${after.pageWidth}`);
     assert.ok(after.scrollWidth <= after.clientWidth);
     assert.equal(await zoom(), "fit");
+    assert.ok(after.pageWidth >= 850, `fit-страница в развёрнутом окне ${after.pageWidth} < 850`);
+    await page.click(`${RESUME} [data-rs-action="zoom"]`);
+    const large = await geo();
+    assert.ok(large.pageWidth > after.pageWidth, `large ${large.pageWidth} не шире fit ${after.pageWidth}`);
   } finally {
     await page.evaluate(() => maximazeWindow("Resume"));
   }

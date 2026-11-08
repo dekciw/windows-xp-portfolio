@@ -612,3 +612,20 @@ test("закрыть и открыть снова — профиль, «Наза
     true
   );
 });
+
+test("«Моё резюме» поднимает уже открытое, но свёрнутое окно Resume наверх", async () => {
+  await fresh();
+  await page.evaluate(() => openWindow("Resume"));
+  await page.waitForSelector('[id="window-Resume"]');
+  await page.evaluate(() => toggleWindow("Resume"));
+  assert.equal(await page.$eval('[id="window-Resume"]', (w) => w.style.display), "none");
+  await clickIn('[data-am-action="resume"]');
+  const r = await page.evaluate(() => {
+    const w = document.getElementById("window-Resume");
+    const zs = [...document.querySelectorAll(".window")].map((x) => parseInt(x.style.zIndex || 0, 10));
+    return { display: w.style.display, z: parseInt(w.style.zIndex, 10), max: Math.max(...zs) };
+  });
+  assert.notEqual(r.display, "none");
+  assert.equal(r.z, r.max);
+  await page.evaluate(() => closeWindow("Resume"));
+});

@@ -59,10 +59,10 @@
     <link rel="stylesheet" href="/Bureau/Notification/notification.css?v=14" />
     <link rel="stylesheet" href="/Bureau/DesktopFeatures/Selection.css?v=2" />
 
-    <script src="/Bureau/Bureau.js?v=8"></script>
-    <script src="/Open_Windows/About Me/about-me-data.js?v=11"></script>
-    <script src="/Open_Windows/About Me/about-me.js?v=9"></script>
-    <script src="/Open_Windows/Resume/resume.js?v=1"></script>
+    <script src="/Bureau/Bureau.js?v=9"></script>
+    <script src="/Open_Windows/About Me/about-me-data.js?v=12"></script>
+    <script src="/Open_Windows/About Me/about-me.js?v=10"></script>
+    <script src="/Open_Windows/Resume/resume.js?v=2"></script>
     <script src="/Open_Windows/GitHub/github.js?v=7"></script>
     <script src="/Open_Windows/Minesweeper/Minesweeper.js"></script>
     <script src="/Bureau/Notification/notification.js?v=13"></script>
@@ -102,16 +102,7 @@
         if (!link) return;
         e.preventDefault();
         const app = link.dataset.openWindow;
-        openWindow(app); // создаёт окно, если его ещё нет
-        // Показать и поднять наверх: окно могло быть свёрнуто или лежать под другими окнами.
-        const win = document.getElementById(`window-${app}`);
-        if (win) {
-          win.style.removeProperty('display');
-          win.classList.remove('window-inactive');
-          zIndexCounter++;
-          win.style.zIndex = zIndexCounter;
-          if (typeof updateTaskbarHighlight === 'function') updateTaskbarHighlight(app, true);
-        }
+        showWindow(app); // открывает, показывает из свёрнутого и поднимает наверх
         if (currentNotification && currentNotification.isShowing) currentNotification.close();
       });
 
