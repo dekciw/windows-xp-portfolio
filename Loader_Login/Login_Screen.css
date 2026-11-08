@@ -377,15 +377,13 @@ body, * {
   font-family: windows xp tahoma, sans-serif;
   font-weight: 100;
   margin-bottom: 5px;
-  margin-left: 5px;
 
   letter-spacing: 0.5px;
 }
 
+/* Форма пароля идёт в потоке под именем: левый край совпадает с текстом при любой ширине экрана. */
 .login-screen__password {
-  position: absolute;
-  top: 55%;
-  left: calc(16% + 4px);
+  margin-top: 6px;
 }
 
 #Password {
