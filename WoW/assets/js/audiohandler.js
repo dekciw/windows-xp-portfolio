@@ -1,6 +1,6 @@
 // Adapted from github.com/Xiexe/WoWLoginScreens for the Windows XP desktop:
 // three expansions, music starts at launch, Quit/Esc return to the desktop.
-var expansion = 1;
+var expansion = 0;
 
 var expansionMap = [
     'Vanilla',

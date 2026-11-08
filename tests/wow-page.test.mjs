@@ -31,7 +31,7 @@ beforeEach(async () => {
 
 const openWoW = () => page.goto(`${base}/WoW/index.html`, { waitUntil: "load" });
 
-test("three expansions, starts on Wrath", async () => {
+test("three expansions, starts on Vanilla", async () => {
   await openWoW();
   const s = await page.evaluate(() => ({
     title: document.title,
@@ -42,8 +42,8 @@ test("three expansions, starts on Wrath", async () => {
   }));
   assert.equal(s.title, "World of Warcraft");
   assert.deepEqual(s.map, ["Vanilla", "WrathOfTheLichKing", "Shadowlands"]);
-  assert.equal(s.ver, "Version 3.3.5 (12340) (Release)");
-  assert.match(s.src, /Wrathofthelichking\.mp4$/);
+  assert.equal(s.ver, "Version 1.12.1 (5875) (Release)");
+  assert.match(s.src, /Vanilla\.mp4$/);
   assert.equal(s.sources, 1);
 });
 
@@ -57,13 +57,13 @@ test("logo click cycles and wraps", async () => {
     }
     return out;
   });
-  assert.deepEqual(seq, [2, 0, 1]);
+  assert.deepEqual(seq, [1, 2, 0]);
 });
 
 test("music starts without a click", async () => {
   await openWoW();
   const played = await page.evaluate(() => window.__played);
-  assert.ok(played.some((u) => u.endsWith("WrathOfTheLichKing.ogg")), JSON.stringify(played));
+  assert.ok(played.some((u) => u.endsWith("Vanilla.ogg")), JSON.stringify(played));
   assert.deepEqual(errors, []);
 });
 
