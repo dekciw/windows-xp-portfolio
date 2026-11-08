@@ -13,7 +13,7 @@ const TYPES = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".mjs": "text/javascript",
   ".css": "text/css", ".png": "image/png", ".jpg": "image/jpeg", ".gif": "image/gif",
   ".svg": "image/svg+xml", ".webp": "image/webp", ".ico": "image/x-icon", ".cur": "image/x-icon",
-  ".mp3": "audio/mpeg", ".wav": "audio/wav", ".woff": "font/woff", ".woff2": "font/woff2",
+  ".mp3": "audio/mpeg", ".wav": "audio/wav", ".ogg": "audio/ogg", ".mp4": "video/mp4", ".woff": "font/woff", ".woff2": "font/woff2",
   ".ttf": "font/ttf", ".otf": "font/otf", ".json": "application/json", ".pdf": "application/pdf",
 };
 
