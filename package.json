@@ -1,0 +1,11 @@
+{
+  "name": "windows-xp-portfolio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^23.11.1"
+  }
+}

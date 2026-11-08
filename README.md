@@ -24,6 +24,17 @@ I plan to build a couple of dedicated websites inside the Internet Explorer appl
 
 This project was a nostalgic deep dive into one of the most iconic operating systems ever made, combining design, frontend development, and a touch of creativity to bring a familiar environment to life on the web.
 
+# 👤 Как заполнить окно «Обо мне»
+
+- Весь текст окна лежит в одном файле: [`Open_Windows/About Me/about-me-data.js`](Open_Windows/About%20Me/about-me-data.js). Замените все заглушки `[заполните]` своими данными, разметку трогать не нужно:
+  - `social` — карточка «Соцсети» (ссылки), `stack` — «Стек технологий» (языки), `frameworks` — «Фреймворки». Иконка строки: `icon` (имя иконки XP без `.png`) или `iconSrc` (путь к своей картинке).
+  - `about` — абзацы «Обо мне»; у абзаца может быть картинка `image`.
+  - `experience`, `education` — разделы ниже на странице; `projects` — страница «Мои проекты».
+- Резюме: положите PDF в `Assets/Docs/resume.pdf`. Кнопка «Моё резюме» откроет его в новой вкладке; пока файла нет, окно показывает сообщение «Файл резюме пока не добавлен».
+- После правок `about-me-data.js` или `about-me.js` увеличьте номер версии `?v=` в `Bureau/Bureau.html`, чтобы посетители не получили старую версию из кэша.
+- Локальный просмотр: `npx http-server . -p 3000 -c-1`, затем откройте http://localhost:3000 (не используйте `npx serve`: он ломает Paint).
+- Тесты: `npm install`, затем `npm test` (нужен Google Chrome; путь можно задать переменной `CHROME_PATH`).
+
 # 💬 Acknowledgements
 
 ### SPECIAL THANKS TO THE FOLLOWING
@@ -63,6 +74,9 @@ I would like to extend my heartfelt thanks to all the creators and developers wh
 * **[User Icons Preview](https://ia800902.us.archive.org/22/items/WindowsXPUserAccountPictures/preview.png)**
 * **[LinkedIn Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/LinkedIn_logo_initials.png/250px-LinkedIn_logo_initials.png)**
 * **[GitHub Logo](https://upload.wikimedia.org/wikipedia/commons/c/c2/GitHub_Invertocat_Logo.svg)**
+* **[Telegram Logo](https://commons.wikimedia.org/wiki/File:Telegram_2019_Logo.svg)**
+* **[Instagram Logo](https://commons.wikimedia.org/wiki/File:Instagram_logo_2022.svg)**
+* **[Tech stack logos — gilbarbara/logos](https://github.com/gilbarbara/logos)** (`Assets/Images/Stack/`)
 * **[Winamp Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Winamp-logo.svg/1024px-Winamp-logo.svg.png)**
 * **[Windows XP Boot Screen](https://upload.wikimedia.org/wikipedia/commons/a/a8/Windows_XP_SP2_Boot_screen.png)**
 

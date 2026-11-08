@@ -1,0 +1,269 @@
+/* Шапка окна (меню, кнопки, адрес) — те же классы, что у «Мой компьютер». */
+@import url("/Open_Windows/My Computer/My Computer.css");
+
+/* Тело окна — страница-профиль в стиле XP (Figma «Control Panel» + скриншот-ориентир). */
+
+/* Единственная прокрутка окна: панель слева и текст справа едут вместе. */
+.am-body {
+  position: relative;
+  flex: 1 1 0%;
+  display: flex;
+  /* wrap: высота ряда = самая высокая колонка (а не высота окна),
+     поэтому фон обеих колонок доходит до низа прокрутки */
+  flex-wrap: wrap;
+  align-content: stretch;
+  align-items: stretch;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-left: 1px solid #fff;
+  font-family: Tahoma, "Noto Sans", sans-serif;
+  font-size: 11px;
+}
+
+/* Контейнер для @container ниже: ширина самого окна, а не экрана. */
+.am-root {
+  container-type: inline-size;
+}
+
+/* Кнопки панели «Мои проекты» / «Моё резюме» (div или a) */
+.am-action {
+  color: #000;
+  text-decoration: none;
+  padding-right: 6px;
+  cursor: pointer;
+}
+
+/* ---------- боковая панель ----------
+   Оформление — классы «Мой компьютер» (content_left, content_left_card*, из My Computer.css).
+   Здесь только раскладка и анимация сворачивания. */
+
+/* content_left из «Мой компьютер» даёт height: 100% + свою прокрутку — здесь они не нужны:
+   панель растягивается на высоту содержимого, прокручивает .am-body. */
+.am-sidebar {
+  flex: 0 0 auto;
+  height: auto;
+  overflow: visible;
+}
+
+.am-card-header {
+  user-select: none;
+}
+
+.am-card-header:focus-visible {
+  outline: 1px dotted #000;
+  outline-offset: -3px;
+}
+
+/* Стрелка-шеврон поворачивается на 180° */
+.am-card-arrow {
+  flex: 0 0 auto;
+  transition: transform 0.25s ease;
+}
+
+.am-card--collapsed .am-card-arrow {
+  transform: rotate(180deg);
+}
+
+/* Плавное сворачивание: высота строки грида 1fr ↔ 0fr */
+.am-card-collapse {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.am-card--collapsed .am-card-collapse {
+  grid-template-rows: 0fr;
+}
+
+.am-card-body {
+  min-height: 0;
+  overflow: hidden;
+  transition: padding-top 0.25s ease, padding-bottom 0.25s ease;
+}
+
+.am-card--collapsed .am-card-body {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .am-card-arrow,
+  .am-card-collapse,
+  .am-card-body {
+    transition: none;
+  }
+}
+
+a.am-link {
+  text-decoration: none;
+}
+
+.am-link-icon {
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+/* ---------- основная область ---------- */
+
+.am-main {
+  flex: 1 1 0%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 24px 32px 32px;
+  background: #6375d6;
+  color: #fff;
+}
+
+/* Вне прокрутки: всегда в правом нижнем углу видимой области окна. */
+.am-watermark {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 290px;
+  height: 290px;
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.am-title {
+  margin: 0 0 20px;
+  font-family: "Trebuchet MS", Tahoma, sans-serif;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1.1;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.am-about-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  max-width: 720px;
+  margin-bottom: 22px;
+}
+
+.am-about-img {
+  flex: 0 0 auto;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.am-about-text,
+.am-item-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  margin: 0;
+  font-family: Tahoma, "Noto Sans", sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.35);
+}
+
+.am-section {
+  max-width: 720px;
+  margin-top: 28px;
+}
+
+.am-section-title {
+  margin-bottom: 12px;
+  font-family: "Trebuchet MS", Tahoma, sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.am-item {
+  max-width: 720px;
+  margin-bottom: 16px;
+}
+
+.am-item-title {
+  display: inline-block;
+  font-family: Tahoma, "Noto Sans", sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: #fff;
+  text-decoration: none;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.35);
+}
+
+a.am-item-title:hover {
+  text-decoration: underline;
+}
+
+.am-item-meta {
+  margin-top: 2px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.am-item-text {
+  margin-top: 4px;
+}
+
+.am-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 560px;
+  padding: 8px 10px;
+  border: 1px solid #000;
+  background: #ffffe1;
+  color: #000;
+  font-size: 11px;
+}
+
+.am-notice::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  background: url("/Assets/Images/Security/info-icon.png") center / contain no-repeat;
+}
+
+/* ---------- узкое окно: панель сверху, контент снизу ---------- */
+
+@container (max-width: 460px) {
+  .am-body {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+
+  .am-sidebar {
+    width: auto;
+    padding: 10px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.33);
+  }
+
+  .am-main {
+    flex: 1 0 auto;
+    padding: 16px;
+  }
+
+  .am-title {
+    font-size: 28px;
+  }
+
+  .am-about-block {
+    gap: 12px;
+  }
+
+  .am-about-img {
+    width: 72px;
+    height: 72px;
+  }
+
+  .am-watermark {
+    width: 160px;
+    height: 160px;
+  }
+}

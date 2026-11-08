@@ -78,10 +78,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Установить начальные позиции иконок
   function setInitialIconPositions() {
+    // Сколько иконок помещается в столбец; не поместившиеся переходят в следующий столбец (как в XP).
+    // 70px — высота иконки с подписью.
+    const rows = Math.max(1, Math.floor((desktop.clientHeight - 10 - 70) / GRID_SIZE) + 1);
     icons.forEach((icon, index) => {
       // Все иконки сразу делаем absolute чтобы они не двигались при перетаскивании других
-      const gridX = 0;
-      const gridY = index;
+      const gridX = Math.floor(index / rows);
+      const gridY = index % rows;
 
       icon.style.position = 'absolute';
       icon.style.left = (gridX * GRID_SIZE + 10) + 'px'; // +10px для padding

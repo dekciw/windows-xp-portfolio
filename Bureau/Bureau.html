@@ -59,11 +59,13 @@
     <link rel="stylesheet" href="/Bureau/Notification/notification.css?v=14" />
     <link rel="stylesheet" href="/Bureau/DesktopFeatures/Selection.css?v=2" />
 
-    <script src="/Bureau/Bureau.js?v=2"></script>
+    <script src="/Bureau/Bureau.js?v=4"></script>
+    <script src="/Open_Windows/About Me/about-me-data.js?v=9"></script>
+    <script src="/Open_Windows/About Me/about-me.js?v=8"></script>
     <script src="/Open_Windows/Minesweeper/Minesweeper.js"></script>
     <script src="/Bureau/Notification/notification.js?v=13"></script>
     <script src="/Bureau/DesktopFeatures/Selection.js?v=2"></script>
-    <script src="/Bureau/DesktopFeatures/desktop-icons-draggable.js?v=2"></script>
+    <script src="/Bureau/DesktopFeatures/desktop-icons-draggable.js?v=3"></script>
     <script>
       // Глобальная переменная для отслеживания текущего уведомления
       let currentNotification = null;
@@ -79,7 +81,7 @@
         const notification = new XPNotification({
           title: 'Добро пожаловать в Atanov XP',
           message: 'Это мое портфолио фронтенд-разработчика в ностальгическом стиле Windows XP.',
-          actionText: 'Начать: <a href="#about">Обо мне</a> | <a href="#projects">Мои проекты</a>',
+          actionText: 'Начать: <a href="#" data-open-window="About Me">Обо мне</a> | <a href="#projects">Мои проекты</a>',
           iconUrl: '/Assets/Images/Security/info-icon.png',
           soundUrl: '/Assets/Sounds/notification-balloon.wav',
           startAfter: delay,
@@ -90,6 +92,26 @@
         currentNotification = notification;
         notification.show();
       }
+
+      // Ссылки вида <a data-open-window="About Me"> в уведомлении открывают окно
+      // и закрывают уведомление, не меняя адрес страницы.
+      document.addEventListener('click', (e) => {
+        const link = e.target.closest('a[data-open-window]');
+        if (!link) return;
+        e.preventDefault();
+        const app = link.dataset.openWindow;
+        openWindow(app); // создаёт окно, если его ещё нет
+        // Показать и поднять наверх: окно могло быть свёрнуто или лежать под другими окнами.
+        const win = document.getElementById(`window-${app}`);
+        if (win) {
+          win.style.removeProperty('display');
+          win.classList.remove('window-inactive');
+          zIndexCounter++;
+          win.style.zIndex = zIndexCounter;
+          if (typeof updateTaskbarHighlight === 'function') updateTaskbarHighlight(app, true);
+        }
+        if (currentNotification && currentNotification.isShowing) currentNotification.close();
+      });
 
       // Показать уведомление после загрузки страницы
       document.addEventListener('DOMContentLoaded', () => {
@@ -123,6 +145,13 @@
             alt="My Computer"
           />
           <span>Мой компьютер</span>
+        </div>
+        <div class="icon" data-app="About Me" ondblclick="openWindow('About Me')">
+          <img
+            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/About Me.png"
+            alt="Обо мне"
+          />
+          <span>Обо мне</span>
         </div>
         <div class="icon" ondblclick="openWindow('Recycle Bin (empty)')">
           <img

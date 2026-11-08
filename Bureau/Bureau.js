@@ -22,6 +22,7 @@ let hoverTooltipMouseLeaveHandler = null;
 // Маппинг английских названий приложений на русские для отображения
 const appDisplayNames = {
   "My Computer": "Мой компьютер",
+  "About Me": "Обо мне",
   "Recycle Bin (empty)": "Корзина",
   "Recycle Bin (full)": "Корзина (полная)",
   "Internet Explorer": "Internet Explorer",
@@ -155,8 +156,8 @@ document.addEventListener("click", function (event) {
 });
 
 function openWindow(appName) {
-  // Воспроизводим звук только для папок (My Computer, Recycle Bin)
-  const folderWindows = ['My Computer', 'Recycle Bin (empty)', 'Recycle Bin (full)'];
+  // Звук навигации — для окон-папок (как в Проводнике XP): My Computer, Recycle Bin, About Me
+  const folderWindows = ['My Computer', 'Recycle Bin (empty)', 'Recycle Bin (full)', 'About Me'];
   if (folderWindows.includes(appName)) {
     playNavigationSound();
   }
@@ -238,6 +239,10 @@ function openWindow(appName) {
         contentContainer.innerHTML = htmlContent;
       } else {
         windowElement.innerHTML = htmlContent;
+      }
+
+      if (appName === "About Me" && window.AboutMe) {
+        window.AboutMe.init(windowElement);
       }
 
       const labelDivs = windowElement.querySelectorAll(
