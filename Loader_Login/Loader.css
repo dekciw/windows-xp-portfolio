@@ -57,8 +57,11 @@ body::after {
 }
 
 #logo {
-  width: 25%;
-  margin-bottom: 8%;
+  width: 20%;
+  /* % margin is relative to viewport width: ~16% of the logo's 20% width */
+  margin-bottom: 3.3%;
+  /* Optical centering: the "Atanov" word sits left in the image, so nudge right */
+  transform: translateX(6%);
 }
 
 #progress-bar {
@@ -122,7 +125,7 @@ body::after {
 
 #Copyright {
   position: absolute;
-  width: 7%;
+  width: 9%;
   bottom: 5%;
   right: 3%;
 }
@@ -134,6 +137,7 @@ body::after {
   color: white;
   font-family: "Windows XP Tahoma", Tahoma, sans-serif;
   font-size: 11px;
+  line-height: 1.5;
   font-weight: normal;
   letter-spacing: 0.3px;
 }

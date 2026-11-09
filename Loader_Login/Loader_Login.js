@@ -42,7 +42,7 @@ window.addEventListener("load", function () {
     } else {
       console.error("Missing #loader or #login-screen");
     }
-  }, 4000);
+  }, 6000); // boot screen duration
 });
 
 window.addEventListener("DOMContentLoaded", function () {

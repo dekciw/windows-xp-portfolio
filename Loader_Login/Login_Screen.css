@@ -107,6 +107,7 @@ body, * {
   color: white;
   font-size: 18px;
   padding-right: 4%;
+  white-space: nowrap;
 }
 
 #xp-logo {
@@ -182,8 +183,14 @@ body, * {
   );
 }
 
-.user img {
+/* Only the avatar (direct child), not the Go/Question icons inside the password form */
+.user > img {
   width: 70px;
+  height: 70px;
+  object-fit: cover;
+  /* Keep the avatar square: don't stretch to the taller text column when the password form appears */
+  align-self: flex-start;
+  flex-shrink: 0;
   margin-right: 15px;
   border: 2px solid white;
   border-radius: 10%;
@@ -222,10 +229,13 @@ body, * {
   cursor: pointer;
 }
 
-#Power:hover {
+/* Icon and label act as one button: hovering/pressing either one lights up the icon */
+#Power:hover,
+#left-section:has(#shutdown-p:hover) #Power {
   filter: brightness(1.1);
 }
-#Power:active {
+#Power:active,
+#left-section:has(#shutdown-p:active) #Power {
   filter: brightness(0.9);
 }
 
@@ -242,7 +252,6 @@ body, * {
 }
 
 #shutdown-p:hover {
-  text-decoration: underline;
   cursor: pointer;
 }
 
@@ -315,23 +324,21 @@ body, * {
   flex-grow: 1;
 }
 
+/* Logo + caption sit in the exact center of the area between the bars */
 #Transi_log_off_content {
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-grow: 1;
 }
 
 #Transi_log_off {
-  position: relative;
-  top: 40%;
-  left: 5%;
   pointer-events: none;
-  max-height: fit-content;
-  width: 23%;
 
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  /* Caption centered under the logo */
+  align-items: center;
 }
 
 #Transi_log_off img {
@@ -342,13 +349,16 @@ body, * {
   pointer-events: none;
   font-size: x-large;
   color: white;
-  padding-left: 20px;
+  text-align: center;
+  white-space: nowrap;
   font-family: Tahoma, Verdana, sans-serif;
 }
 
 .login-screen__submit img,
 .login-screen__question img {
   width: 30px;
+  height: 30px;
+  display: block;
   cursor: pointer;
   border: none;
   margin: auto;
