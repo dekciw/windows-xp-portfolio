@@ -91,8 +91,10 @@ body {
   position: absolute;
   height: 25px;
   line-height: 25px;
+  /* Как у обычных окон (макет Figma 763:7246): Trebuchet MS Bold 13px */
   font-weight: 700;
-  font-size: 12px;
+  font-size: 13px;
+  font-family: "Trebuchet MS", Tahoma, sans-serif;
   text-shadow: rgb(0, 0, 0) 1px 1px;
   left: 3px;
   right: 3px;
@@ -102,8 +104,9 @@ body {
 .window-header img {
   width: 16px;
   height: 16px;
-  margin-left: 5px;
-  margin-right: 5px;
+  flex-shrink: 0;
+  margin-left: 3px;
+  margin-right: 9px;
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
@@ -113,7 +116,7 @@ body {
   flex: 1 1 0%;
   pointer-events: none;
   padding-right: 5px;
-  letter-spacing: 0.5px;
+  letter-spacing: normal;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

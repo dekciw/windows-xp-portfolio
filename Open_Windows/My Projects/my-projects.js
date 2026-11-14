@@ -188,7 +188,22 @@
     c.setAttribute("aria-label", `Открыть проект ${p.title}`);
 
     const thumb = el("div", "mp-thumb");
-    if (p.thumb) {
+    if (p.video) {
+      const cover = el("img", "mp-thumb-cover");
+      if (p.thumb) cover.src = p.thumb;
+      cover.alt = p.title;
+      cover.loading = "lazy";
+      const video = el("video", "mp-thumb-video");
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.preload = "none";
+      video.setAttribute("aria-hidden", "true");
+      const progress = el("div", "mp-progress");
+      progress.appendChild(el("div", "mp-progress-bar"));
+      thumb.append(video, cover, progress);
+      attachPreview(c, thumb, video, p.video);
+    } else if (p.thumb) {
       const img = el("img");
       img.src = p.thumb;
       img.alt = p.title;
@@ -218,6 +233,56 @@
     info.appendChild(details);
     c.appendChild(info);
     return c;
+  }
+
+  // Видео-превью: наведение/фокус — видео с начала по кругу (src ставится лениво, при первом
+  // наведении); обложка прячется только на событии playing (без чёрного кадра); красная дорожка
+  // показывает прогресс. Уход — пауза, сброс на начало, снова обложка.
+  function attachPreview(card, thumb, video, src) {
+    const bar = thumb.querySelector(".mp-progress-bar");
+    let active = false;
+
+    function tick() {
+      if (!active || !thumb.isConnected) return;
+      const d = video.duration;
+      bar.style.width = d > 0 ? (video.currentTime / d) * 100 + "%" : "0%";
+      requestAnimationFrame(tick);
+    }
+    function start() {
+      if (active) return;
+      active = true;
+      if (!video.getAttribute("src")) video.src = src;
+      try {
+        video.currentTime = 0;
+      } catch (e) {}
+      const p = video.play();
+      if (p && p.catch) p.catch(() => {});
+    }
+    function stop() {
+      if (!active) return;
+      active = false;
+      thumb.classList.remove("is-playing");
+      video.pause();
+      try {
+        video.currentTime = 0;
+      } catch (e) {}
+      bar.style.width = "0%";
+    }
+    video.addEventListener("playing", () => {
+      if (!active) return;
+      thumb.classList.add("is-playing");
+      requestAnimationFrame(tick);
+    });
+    card.addEventListener("mouseenter", start);
+    card.addEventListener("focus", start);
+    // Не останавливаем только при клавиатурном фокусе: щелчок мышью тоже даёт фокус,
+    // но после ухода курсора видео должно встать.
+    card.addEventListener("mouseleave", () => {
+      if (!card.matches(":focus-visible")) stop();
+    });
+    card.addEventListener("blur", () => {
+      if (!card.matches(":hover")) stop();
+    });
   }
 
   function slug(category) {

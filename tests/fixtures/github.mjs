@@ -2,7 +2,7 @@
 export const GH_USER = {
   login: "dekciw",
   name: null,
-  avatar_url: "/Assets/Images/About/about-1.jpg", // локальная картинка — тест не ходит в сеть
+  avatar_url: "/Assets/Images/About/about-1.png", // локальная картинка — тест не ходит в сеть
   html_url: "https://github.com/dekciw",
   bio: "Фронтенд это место, где логика встречается с эстетикой",
   location: "Moscow",
@@ -55,7 +55,7 @@ export const GH_REPOS = [
 export const GH_README = `<div id="readme"><article class="markdown-body">
 <h1>Привет! 👋 Я Роман</h1>
 <p>Fullstack-разработчик. <a href="readme.en.md">Eng version</a> · <a href="https://logiways.ru/">Logiways</a></p>
-<img src="/Assets/Images/About/about-2.jpg" onerror="window.__xss = 1" alt="pic">
+<img src="/Assets/Images/About/about-2.png" onerror="window.__xss = 1" alt="pic">
 <script>window.__xss = 2</script>
 <a href="javascript:window.__xss = 3">bad link</a>
 <iframe src="https://example.com"></iframe>

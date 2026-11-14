@@ -1600,6 +1600,8 @@ function openStartMenu() {
 
   setTimeout(() => {
     container.appendChild(StartMenu);
+    // Видео из innerHTML (собрано вне документа) не стартует по autoplay — запускаем явно.
+    StartMenu.querySelectorAll("video[autoplay]").forEach((v) => v.play().catch(() => {}));
     attachHoverTooltip();
 
     document.addEventListener("mousedown", handleOutsideClick);

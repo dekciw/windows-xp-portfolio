@@ -80,6 +80,9 @@ function loginAsGuest() {
     textShadow: "2px 3px #3454b4",
   });
 
+  // Подпись «Full Stack Developer» уступает место статусу загрузки.
+  const guestRole = guestUser.querySelector(".user-role");
+  if (guestRole) guestRole.remove();
   guestSpan.insertAdjacentHTML(
     "afterend",
     `<p>Загрузка личных настроек...</p>`
@@ -134,15 +137,6 @@ document.addEventListener("DOMContentLoaded", function () {
         selectedIndex = 0;
         updateUserSelection(selectedIndex);
         hasArrowBeenUsed = true;
-        users.forEach((user, i) => {
-          if (i === selectedIndex) {
-            user.style.opacity = "1";
-            user.style.animation = "";
-          } else {
-            user.style.opacity = "0.5";
-            user.style.animation = "glitchOpacityReverse 0.4s steps(5, end)";
-          }
-        });
         e.preventDefault();
         return;
       }
@@ -153,33 +147,13 @@ document.addEventListener("DOMContentLoaded", function () {
         if (selectedIndex < users.length - 1) {
           selectedIndex++;
           updateUserSelection(selectedIndex);
-
-          users.forEach((user, i) => {
-            if (i === selectedIndex) {
-              user.style.opacity = "1";
-              user.style.animation = "";
-              handleAdminSelection();
-            } else {
-              user.style.opacity = "0.5";
-              user.style.animation = "glitchOpacityReverse 0.4s steps(5, end)";
-            }
-          });
+          handleAdminSelection();
         }
         e.preventDefault();
       } else if (e.key === "ArrowUp") {
         if (selectedIndex > 0) {
           selectedIndex--;
           updateUserSelection(selectedIndex);
-
-          users.forEach((user, i) => {
-            if (i === selectedIndex) {
-              user.style.opacity = "1";
-              user.style.animation = "";
-            } else {
-              user.style.opacity = "0.5";
-              user.style.animation = "glitchOpacityReverse 0.4s steps(5, end)";
-            }
-          });
         }
         e.preventDefault();
       }
@@ -191,67 +165,9 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  userList.addEventListener("mouseenter", function () {
-    const hasSelected = Array.from(users).some((user) =>
-      user.classList.contains("selected")
-    );
-    if (hasSelected) return;
+  // Плашки не тускнеют: подсветка только у плашки под курсором/выбранной (CSS .user:hover, .user.selected).
 
-    users.forEach((user) => {
-      user.style.opacity = "0.5";
-      user.style.animation = "glitchOpacityReverse 0.4s steps(5, end)";
-    });
-  });
-
-  userList.addEventListener("mouseleave", function () {
-    const hasSelected = Array.from(users).some((user) =>
-      user.classList.contains("selected")
-    );
-    if (hasSelected) return;
-
-    users.forEach((user) => {
-      user.style.opacity = "1";
-      user.style.animation = "glitchOpacity 0.4s steps(5, end)";
-    });
-  });
-
-  users.forEach((user) => {
-    user.addEventListener("mouseenter", function () {
-      if (user.classList.contains("selected")) {
-        this.style.opacity = "1";
-        this.style.animation = "";
-      } else {
-        this.style.opacity = "1";
-        this.style.animation = "";
-      }
-    });
-    user.addEventListener("mouseleave", function () {
-      if (user.classList.contains("selected")) {
-        this.style.opacity = "1";
-        this.style.animation = "";
-      } else {
-        if (
-          userList.matches(":hover") &&
-          !userList.classList.contains("is-padding-anim")
-        ) {
-          this.style.opacity = "0.5";
-          this.style.animation = "glitchOpacityReverse 0.4s steps(5, end)";
-        }
-      }
-    });
-  });
-
-  users.forEach((user) => {
-    const userimg = user.querySelector("img");
-    if (userimg) {
-      user.addEventListener("mouseenter", function () {
-        userimg.style.border = "2px solid #bfa304";
-      });
-      user.addEventListener("mouseleave", function () {
-        userimg.style.border = "2px solid white";
-      });
-    }
-  });
+  // Рамка аватара при наведении/выборе — в CSS (.user:hover > video, .user.selected > img).
 
   const guestUser = document.getElementById("guest-user");
   if (guestUser) {

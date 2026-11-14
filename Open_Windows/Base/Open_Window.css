@@ -157,26 +157,30 @@
   position: absolute;
   height: 25px;
   line-height: 25px;
+  /* Макет Figma 763:7246: Trebuchet MS Bold 13px */
   font-weight: 700;
-  font-size: 12px;
-  font-family: "Noto Sans";
+  font-size: 13px;
+  font-family: "Trebuchet MS", Tahoma, sans-serif;
   text-shadow: rgb(0, 0, 0) 1px 1px;
   left: 3px;
   right: 3px;
   -webkit-box-align: center;
 }
 
+/* Значок 16px: 6px от края окна (рамка 3px + 3px), до текста 9px (4 + 5) — по макету */
 .window-header img {
-  width: 20px;
-  height: 20px;
-  margin-right: 5px;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-left: 3px;
+  margin-right: 9px;
 }
 
 .window-header-title {
   flex: 1 1 0%;
   pointer-events: none;
   padding-right: 5px;
-  letter-spacing: 0.5px;
+  letter-spacing: normal;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

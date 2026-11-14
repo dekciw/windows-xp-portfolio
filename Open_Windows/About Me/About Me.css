@@ -145,13 +145,12 @@ a.am-link {
   margin-bottom: 22px;
 }
 
+/* 3D-аватар на прозрачном фоне — без рамки, скругления и тени (референс) */
 .am-about-img {
   flex: 0 0 auto;
   width: 120px;
   height: 120px;
-  object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.35);
+  object-fit: contain;
 }
 
 .am-about-text,

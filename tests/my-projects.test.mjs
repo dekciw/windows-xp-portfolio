@@ -111,8 +111,207 @@ test("карточек столько же, сколько проектов в �
   assert.equal(await page.$$eval(`${PROJECTS} .mp-thumb`, (l) => l.filter((t) => /элемент/.test(t.textContent)).length), 0);
 });
 
-test("меню категорий: «Все» + категории из данных, выбор фильтрует и меняет адрес", async () => {
+// Пока в данных одна карточка (доводим её до ума, потом масштабируем).
+test("в данных пока одна карточка — «Burger Cheddar»", async () => {
   await fresh();
+  const d = await projectsData();
+  assert.deepEqual(d.projects.map((p) => p.title), ["Burger Cheddar"]);
+  assert.deepEqual(await titles(), ["Burger Cheddar"]);
+});
+
+// ---- Видео-превью карточки: обложка в покое, видео по кругу при наведении, красная дорожка ----
+const COVER = "/Assets/Projects/covers/BurgerCheddar.jpg";
+const VIDEO = "/Assets/Projects/previews/BurgerCheddar.mp4";
+const CARD = `${PROJECTS} .mp-card`;
+const previewState = () =>
+  page.$eval(CARD, (c) => {
+    const t = c.querySelector(".mp-thumb");
+    const v = t.querySelector("video.mp-thumb-video");
+    const prog = t.querySelector(".mp-progress");
+    const bar = t.querySelector(".mp-progress-bar");
+    return {
+      playing: t.classList.contains("is-playing"),
+      coverSrc: t.querySelector("img.mp-thumb-cover")?.getAttribute("src"),
+      coverOpacity: getComputedStyle(t.querySelector("img.mp-thumb-cover")).opacity,
+      src: v.getAttribute("src"),
+      preload: v.preload,
+      muted: v.muted,
+      loop: v.loop,
+      progOpacity: getComputedStyle(prog).opacity,
+      progHeight: getComputedStyle(prog).height,
+      barColor: getComputedStyle(bar).backgroundColor,
+      barW: bar.getBoundingClientRect().width,
+      progW: prog.getBoundingClientRect().width,
+    };
+  });
+async function leaveCard() {
+  await page.mouse.move(2, 2);
+  await page.$eval(CARD, (c) => c.blur());
+}
+// Стенд подменяет play(); pause() отмечаем сами, чтобы видеть вызов.
+async function trackPause() {
+  await page.evaluate(() => {
+    if (window.__pauseTracked) return;
+    window.__pauseTracked = true;
+    const orig = HTMLMediaElement.prototype.pause;
+    HTMLMediaElement.prototype.pause = function () {
+      this.__paused = true;
+      return orig.call(this);
+    };
+  });
+}
+
+test("превью до наведения: обложка видна, видео не загружено, дорожки не видно", async () => {
+  await fresh();
+  await leaveCard();
+  const s = await previewState();
+  assert.equal(s.coverSrc, COVER);
+  assert.equal(s.coverOpacity, "1");
+  assert.equal(s.src, null, "видео не должно получать src до наведения");
+  assert.equal(s.preload, "none");
+  assert.ok(s.muted && s.loop);
+  assert.equal(s.playing, false);
+  assert.equal(s.progOpacity, "0");
+  assert.ok(!requests.some((u) => u.includes("previews/BurgerCheddar.mp4")), "видео запрошено до наведения");
+});
+
+test("наведение: видео с начала, после playing обложка скрыта, красная дорожка 3px растёт", async () => {
+  await fresh();
+  await leaveCard();
+  await page.evaluate(() => (window.__played.length = 0));
+  await page.hover(CARD);
+  assert.ok((await page.evaluate(() => window.__played)).some((s) => s.endsWith(VIDEO)), "play() не вызван");
+  let s = await previewState();
+  assert.equal(s.src, VIDEO);
+  assert.equal(s.playing, false, "до playing обложка не прячется");
+  await page.$eval(`${CARD} video`, (v) => {
+    Object.defineProperty(v, "duration", { value: 8, configurable: true });
+    Object.defineProperty(v, "currentTime", { value: 4, configurable: true, writable: true });
+    v.dispatchEvent(new Event("playing"));
+  });
+  // обложка гаснет плавно (transition 0.15s) — ждём конца перехода, а не фиксированное время
+  await page.waitForFunction(
+    (sel) => getComputedStyle(document.querySelector(`${sel} img.mp-thumb-cover`)).opacity === "0",
+    { timeout: 3000 },
+    CARD
+  );
+  s = await previewState();
+  assert.equal(s.playing, true);
+  assert.equal(s.coverOpacity, "0");
+  assert.equal(s.progOpacity, "1");
+  assert.equal(s.progHeight, "3px");
+  assert.equal(s.barColor, "rgb(255, 0, 0)");
+  assert.ok(Math.abs(s.barW - s.progW / 2) <= 2, `дорожка ${s.barW} из ${s.progW}`);
+});
+
+test("уход курсора: пауза, сброс на начало, дорожка 0, обложка вернулась", async () => {
+  // самостоятельный тест: сам наводит, сам подделывает время (не зависит от предыдущего)
+  await fresh();
+  await trackPause();
+  await leaveCard();
+  await page.hover(CARD);
+  await page.$eval(`${CARD} video`, (v) => {
+    Object.defineProperty(v, "duration", { value: 8, configurable: true });
+    Object.defineProperty(v, "currentTime", { value: 4, configurable: true, writable: true });
+    v.dispatchEvent(new Event("playing"));
+  });
+  await leaveCard();
+  // обложка возвращается плавно (transition 0.15s) — ждём конца перехода
+  await page.waitForFunction(
+    (sel) => getComputedStyle(document.querySelector(`${sel} img.mp-thumb-cover`)).opacity === "1",
+    { timeout: 3000 },
+    CARD
+  );
+  const s = await previewState();
+  assert.equal(s.playing, false);
+  assert.equal(s.coverOpacity, "1");
+  assert.equal(s.barW, 0);
+  // stop() записывает 0 в подменённое свойство (было 4) — это и проверяем, до удаления подмены
+  const v = await page.$eval(`${CARD} video`, (v) => {
+    const t = v.currentTime;
+    delete v.currentTime;
+    delete v.duration;
+    return { paused: v.__paused === true, t };
+  });
+  assert.equal(v.paused, true, "pause() не вызван");
+  assert.equal(v.t, 0);
+});
+
+// В роликах-слайдах по бокам тёмные поля до 56px из 1280 — видео увеличено, чтобы они ушли за край
+// превью: нужно ≥ 1280 / (1280 − 2·56) ≈ 1.096; по центру, обрезка внутри .mp-thumb.
+test("видео увеличено ≥1.096 по центру, чтобы тёмные поля слайда ушли за край превью", async () => {
+  await fresh();
+  const r = await page.$eval(`${CARD} .mp-thumb`, (t) => {
+    const v = t.querySelector("video");
+    const m = new DOMMatrix(getComputedStyle(v).transform);
+    const [ox, oy] = getComputedStyle(v).transformOrigin.split(" ").map(parseFloat);
+    return { sx: m.a, sy: m.d, ox, oy, w: v.offsetWidth, h: v.offsetHeight, overflow: getComputedStyle(t).overflow };
+  });
+  assert.ok(r.sx >= 1.096 && Math.abs(r.sx - r.sy) < 1e-6, `масштаб ${r.sx}×${r.sy}`);
+  assert.ok(Math.abs(r.ox - r.w / 2) <= 1 && Math.abs(r.oy - r.h / 2) <= 1, `центр ${r.ox},${r.oy} при ${r.w}×${r.h}`);
+  assert.equal(r.overflow, "hidden");
+});
+
+test("уход до playing: обложка остаётся, если видео стартовало уже после ухода", async () => {
+  await fresh();
+  await page.hover(CARD);
+  await leaveCard();
+  await page.$eval(`${CARD} video`, (v) => v.dispatchEvent(new Event("playing")));
+  await pause(50);
+  const s = await previewState();
+  assert.equal(s.playing, false);
+  assert.equal(s.coverOpacity, "1");
+});
+
+// Щелчок мышью тоже даёт карточке фокус — но это не клавиатурный фокус: уход курсора должен остановить видео.
+test("щелчок по карточке, затем уход курсора: видео остановилось, обложка вернулась", async () => {
+  await fresh();
+  await leaveCard();
+  await page.click(CARD);
+  await page.$eval(`${CARD} video`, (v) => v.dispatchEvent(new Event("playing")));
+  await page.mouse.move(2, 2);
+  await page.waitForFunction(
+    (sel) => getComputedStyle(document.querySelector(`${sel} img.mp-thumb-cover`)).opacity === "1",
+    { timeout: 3000 },
+    CARD
+  );
+  assert.equal((await previewState()).playing, false);
+});
+
+test("фокус с клавиатуры тоже запускает превью", async () => {
+  await fresh();
+  await leaveCard();
+  await page.evaluate(() => (window.__played.length = 0));
+  await page.$eval(CARD, (c) => c.focus());
+  assert.ok((await page.evaluate(() => window.__played)).some((s) => s.endsWith(VIDEO)));
+  await leaveCard();
+});
+
+// Фильтр и поиск проверяем на своём наборе из нескольких карточек — не зависим от числа проектов в данных.
+const SAMPLE_PROJECTS = [
+  { title: "Калькулятор локеров", category: "client", views: 2300, date: "2026-10-08", color: "#3a6df0", href: "" },
+  { title: "Windows XP Portfolio", category: "personal", views: 46000, date: "2025-11-02", color: "#1f9d73", href: "" },
+  { title: "Telegram-бот заметок", category: "builds", views: 79000, date: "2026-04-05", color: "#8e44ad", href: "" },
+  { title: "Дашборд логистики", category: "client", views: 12400, date: "2026-07-19", color: "#d35400", href: "" },
+  { title: "Лендинг кофейни", category: "media", views: 845, date: "2026-10-27", color: "#c0392b", href: "" },
+];
+async function withSampleProjects(fn) {
+  if (await page.$(PROJECTS)) await closeProjects(page);
+  const saved = await page.evaluate((s) => {
+    const prev = JSON.stringify(window.MY_PROJECTS_DATA.projects);
+    window.MY_PROJECTS_DATA.projects = s;
+    return prev;
+  }, SAMPLE_PROJECTS);
+  try {
+    await fresh();
+    await fn();
+  } finally {
+    await page.evaluate((s) => (window.MY_PROJECTS_DATA.projects = JSON.parse(s)), saved);
+    if (await page.$(PROJECTS)) await closeProjects(page);
+  }
+}
+
+test("меню категорий: «Все» + категории из данных, выбор фильтрует и меняет адрес", () => withSampleProjects(async () => {
   const d = await projectsData();
   const nav = await page.$$eval(`${PROJECTS} .mp-nav`, (l) =>
     l.map((b) => [b.dataset.mpCategory, b.textContent.trim(), b.getAttribute("aria-current")])
@@ -140,10 +339,9 @@ test("меню категорий: «Все» + категории из данн
   await page.click(`${PROJECTS} .mp-logo`);
   assert.equal((await titles()).length, d.projects.length);
   assert.equal(await text(".mp-address"), "https://www.myprojects.com");
-});
+}));
 
-test("поиск фильтрует по названию, «Ничего не найдено» при пустом результате, Esc очищает", async () => {
-  await fresh();
+test("поиск фильтрует по названию, «Ничего не найдено» при пустом результате, Esc очищает", () => withSampleProjects(async () => {
   const d = await projectsData();
   const target = d.projects[2].title;
   await page.type(`${PROJECTS} .mp-search-input`, target);
@@ -161,7 +359,7 @@ test("поиск фильтрует по названию, «Ничего не �
   assert.equal(await page.$eval(`${PROJECTS} .mp-search-input`, (i) => i.value), "");
   assert.equal((await titles()).length, d.projects.length);
   assert.ok(await page.$(PROJECTS), "Esc в поиске не должен закрывать окно");
-});
+}));
 
 test("Светлая/Тёмная: по умолчанию тёмная, кнопка переключает, выбор запоминается", async () => {
   await fresh();
@@ -410,4 +608,27 @@ test("строка под названием: просмотры и «сколь
   const metas = await page.$$eval(`${PROJECTS} .mp-card .mp-meta`, (l) => l.map((e) => e.textContent));
   assert.equal(metas.length, d.projects.length);
   for (const m of metas) assert.match(m, /просмотр.* • /);
+});
+
+// Логотип — персональный (MyProjects_profile.svg, 2172×724). В светлой теме значок слева
+// цветной, надпись справа чёрная; граница clip-path должна попасть в просвет между ними:
+// значок кончается на x=645, буква «M» начинается на x=712 (из 2172).
+test("логотип — персональный, пропорции 3:1, граница светлой темы в просвете значок/надпись", async () => {
+  const { readFileSync } = await import("node:fs");
+  const svg = readFileSync(new URL("../Assets/Images/My Projects/logo.svg", import.meta.url), "utf8");
+  assert.match(svg, /MyProjects — персональный логотип/);
+  assert.match(svg, /viewBox="0 0 2172 724"/);
+  await openProjects(page);
+  const r = await page.$eval(`${PROJECTS} .mp-logo-image`, (i) => {
+    const b = i.getBoundingClientRect();
+    const cs = getComputedStyle(document.querySelector(".mp-page"));
+    return { w: b.width, h: b.height };
+  });
+  assert.ok(Math.abs(r.w / r.h - 3) < 0.05, `пропорции ${r.w}×${r.h}`);
+  const css = readFileSync(new URL("../Open_Windows/My Projects/My Projects.css", import.meta.url), "utf8");
+  const right = +css.match(/\.mp-logo-image \{\s*clip-path: inset\(0 ([\d.]+)% 0 0\)/)[1];
+  const left = +css.match(/\.mp-logo::after \{[^}]*clip-path: inset\(0 0 0 ([\d.]+)%\)/)[1];
+  const cut = (100 - right) / 100;
+  assert.equal(left, 100 - right, "две половины должны стыковаться");
+  assert.ok(cut > 645 / 2172 && cut < 712 / 2172, `граница ${cut} не в просвете`);
 });

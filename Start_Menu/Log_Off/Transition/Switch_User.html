@@ -36,13 +36,14 @@
 
         <div id="user-list">
           <div class="user" id="guest-user" onclick="switchUserLogOn()">
-            <img src="/Assets/Images/Profiles/guest-avatar.jpg" alt="Guest" />
-            <div class="loaded">
+            <video src="/Assets/Images/Profiles/guest-avatar.mp4" poster="/Assets/Images/Profiles/guest-avatar-poster.jpg" autoplay muted loop playsinline aria-label="Guest"></video>
+            <div class="user-text">
               <span>Атанов Роман</span>
+              <p class="user-role">Full Stack Developer</p>
             </div>
           </div>
           <div class="user" id="admin-user">
-            <img src="/Assets/Images/UI/flower-avatar.png" alt="Administrator" />
+            <video src="/Assets/Images/Profiles/admin-avatar.mp4" poster="/Assets/Images/Profiles/admin-avatar-poster.jpg" autoplay muted loop playsinline aria-label="Administrator"></video>
             <div class="user-text">
               <span>Администратор</span>
             </div>
@@ -67,18 +68,4 @@
       </div>
     </div>
   </body>
-  <script>
-    const windowStates = JSON.parse(localStorage.getItem("openWindows") || "[]");
-    const loadedDiv = document.querySelector(".loaded");
-    loadedDiv.querySelectorAll("p").forEach((p) => p.remove());
-    const p = document.createElement("p");
-    if (windowStates.length === 0) {
-      p.textContent = "Вход выполнен";
-    } else {
-      const programWord = windowStates.length === 1 ? "программа запущена" :
-                          windowStates.length < 5 ? "программы запущены" : "программ запущено";
-      p.textContent = `${windowStates.length} ${programWord}`;
-    }
-    loadedDiv.appendChild(p);
-  </script>
 </html>

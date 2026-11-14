@@ -15,6 +15,9 @@ async function fresh() {
   if (await page.$(ABOUT)) await closeAboutMe(page);
   await openAboutMe(page);
   await page.waitForSelector(`${ABOUT} .am-title`, { timeout: 5000 });
+  // closeWindow() удаляет CSS окна, openWindow() подключает заново — ждём, пока стили загрузятся,
+  // иначе тесты раскладки/шрифтов меряют неоформленную страницу (Times New Roman, отступ 0).
+  await page.waitForFunction(() => !!document.getElementById("css-window-About Me")?.sheet, { timeout: 5000 });
 }
 const clickIn = (sel) => page.click(`${ABOUT} ${sel}`);
 const text = (sel) => page.$eval(`${ABOUT} ${sel}`, (e) => e.textContent.trim());
@@ -280,18 +283,19 @@ test("абзац без картинки — текст начинается о�
   assert.ok(r.withImg >= 120, `у абзаца с картинкой текст должен быть правее картинки: ${r.withImg}`);
 });
 
-test("абзацы «Обо мне»: у каждого картинка 120px со скруглёнными углами", async () => {
+// Картинки — 3D-аватары на прозрачном фоне (PNG), без рамки, скругления и тени (как на референсе).
+test("абзацы «Обо мне»: у каждого прозрачный PNG-аватар 120px без рамки и тени", async () => {
   await fresh();
   const imgs = await page.$$eval(`${ABOUT} .am-about-block`, (blocks) =>
     blocks.map((b) => {
       const i = b.querySelector(".am-about-img");
       if (!i) return null;
       const cs = getComputedStyle(i);
-      return { w: cs.width, h: cs.height, radius: cs.borderTopLeftRadius, loaded: i.naturalWidth > 0 };
+      return { w: cs.width, h: cs.height, radius: cs.borderTopLeftRadius, shadow: cs.boxShadow, fit: cs.objectFit, png: i.getAttribute("src").endsWith(".png"), loaded: i.naturalWidth > 0 };
     })
   );
   assert.equal(imgs.length, 3);
-  for (const i of imgs) assert.deepEqual(i, { w: "120px", h: "120px", radius: "12px", loaded: true });
+  for (const i of imgs) assert.deepEqual(i, { w: "120px", h: "120px", radius: "0px", shadow: "none", fit: "contain", png: true, loaded: true });
 });
 
 test("одна общая прокрутка: панель и текст едут вместе, панель не обрезана", async () => {

@@ -13,6 +13,8 @@
 //   meta      — своя серая строка вместо «просмотры • дата», если views и date не указаны
 //   thumb     — картинка превью 16:9, например "/Assets/Images/Projects/shop.webp";
 //               пусто — цветная заглушка (цвет из color)
+//   video     — видео-превью 16:9 (mp4), например "/Assets/Projects/previews/shop.mp4":
+//               при наведении на карточку играет вместо thumb (обложки) с красной дорожкой
 //   color     — цвет заглушки, пока нет картинки
 //   href      — ссылка на проект (GitHub, сайт, файл); пусто — карточка «скоро»
 //
@@ -30,14 +32,17 @@ window.MY_PROJECTS_DATA = {
     { id: "client", label: "Клиенты", icon: "client" },
   ],
 
-  // [заполните] Демо-данные: названия, просмотры и даты придуманы для примера.
-  // Перед публикацией замените своими проектами и настоящими цифрами.
+  // Пока одна карточка: доводим её до ума, потом добавим остальные проекты по её образцу.
+  // [заполните] Просмотры и дата — пока демо-значения.
   projects: [
-    { title: "Калькулятор локеров", category: "client", views: 2300, date: "2026-10-08", color: "#3a6df0", href: "" },
-    { title: "Windows XP Portfolio", category: "personal", views: 46000, date: "2025-11-02", color: "#1f9d73", href: "https://github.com/dekciw/windows-xp-portfolio" },
-    { title: "Telegram-бот заметок", category: "builds", views: 79000, date: "2026-04-05", color: "#8e44ad", href: "" },
-    { title: "Дашборд логистики", category: "client", views: 12400, date: "2026-07-19", color: "#d35400", href: "" },
-    { title: "Лендинг кофейни", category: "media", views: 845, date: "2026-10-27", color: "#c0392b", href: "" },
-    { title: "Трекер привычек", category: "builds", views: 5600, date: "2026-02-14", color: "#16758f", href: "" },
+    {
+      title: "Burger Cheddar",
+      category: "personal",
+      views: 2300,
+      date: "2026-10-08",
+      thumb: "/Assets/Projects/covers/BurgerCheddar.jpg",
+      video: "/Assets/Projects/previews/BurgerCheddar.mp4",
+      href: "",
+    },
   ],
 };

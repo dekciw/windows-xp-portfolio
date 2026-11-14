@@ -80,7 +80,8 @@
   box-shadow: rgb(14, 96, 203) 0px -1px 1px inset;
 }
 
-.StartMenuHeader img {
+.StartMenuHeader img,
+.StartMenuHeader video {
   width: 42px;
   height: 42px;
   margin-right: 5px;

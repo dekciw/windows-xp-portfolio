@@ -119,9 +119,10 @@
   height: auto;
 }
 
-/* В SVG значок и надпись — одна картинка. Граница 1/3 проходит в зазоре между ними. */
+/* В SVG значок и надпись — одна картинка. Граница 31.25% проходит в зазоре между ними
+   (значок кончается на x=645, «M» начинается на x=712 из 2172). */
 .mp-page[data-theme="light"] .mp-logo-image {
-  clip-path: inset(0 66.6667% 0 0);
+  clip-path: inset(0 68.75% 0 0);
 }
 
 .mp-page[data-theme="light"] .mp-logo::after {
@@ -130,7 +131,7 @@
   inset: 0;
   background: url("/Assets/Images/My%20Projects/logo.svg") center / contain no-repeat;
   filter: brightness(0);
-  clip-path: inset(0 0 0 33.3333%);
+  clip-path: inset(0 0 0 31.25%);
   pointer-events: none;
 }
 
@@ -368,6 +369,51 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Видео-превью: видео под обложкой; на .is-playing обложка гаснет, видна красная дорожка. */
+.mp-thumb > .mp-thumb-video,
+.mp-thumb > .mp-thumb-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mp-thumb > .mp-thumb-cover {
+  transition: opacity 0.15s;
+}
+
+/* Ролики — слайды презентации с тёмными полями по бокам (до 56px из 1280).
+   Увеличиваем на 10% по центру, чтобы поля ушли за край (.mp-thumb обрезает overflow). */
+.mp-thumb > .mp-thumb-video {
+  transform: scale(1.1);
+  transform-origin: center;
+}
+
+.mp-thumb.is-playing > .mp-thumb-cover {
+  opacity: 0;
+}
+
+.mp-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mp-thumb.is-playing > .mp-progress {
+  opacity: 1;
+}
+
+.mp-progress-bar {
+  width: 0;
+  height: 100%;
+  background: #ff0000;
 }
 
 /* Заглушка, пока нет картинки: цветной градиент и значок папки. */
