@@ -174,9 +174,13 @@
     });
   }
 
+  // Карточка со slug открывает страницу проекта в этом окне; без slug — ссылка href
+  // в новой вкладке или заглушка «скоро».
   function card(p) {
-    const c = el(p.href ? "a" : "div", "mp-card");
-    if (p.href) {
+    const link = p.href && !p.slug;
+    const c = el(link ? "a" : "div", "mp-card");
+    if (p.slug) c.dataset.mpSlug = p.slug;
+    if (link) {
       c.href = p.href;
       c.target = "_blank";
       c.rel = "noreferrer";
@@ -283,22 +287,138 @@
     card.addEventListener("blur", () => {
       if (!card.matches(":hover")) stop();
     });
+    // Сетка прячется (открыта страница проекта) — превью встаёт.
+    card.addEventListener("mp-preview-stop", stop);
   }
 
   function slug(category) {
     return category && category !== "all" ? "/" + category : "";
   }
 
-  // Показ карточек по категории и строке поиска.
+  function findProject(projectSlug) {
+    return (data().projects || []).find((p) => p.slug && p.slug === projectSlug) || null;
+  }
+
+  // ---------- история: сетка ↔ страница проекта, как в браузере ----------
+  // Запись истории: { view: "grid", category, query } | { view: "project", slug }.
+
+  function current(win) {
+    const st = win._mp;
+    return st.history[st.index];
+  }
+
+  function push(win, entry) {
+    const st = win._mp;
+    st.history = st.history.slice(0, st.index + 1);
+    st.history.push(entry);
+    st.index = st.history.length - 1;
+  }
+
+  // Переход к сетке с категорией и поиском. В сетке — правка текущей записи (без лишних шагов
+  // в истории на каждую букву поиска), со страницы проекта — новая запись. Как в браузере,
+  // новый переход обрезает «вперёд».
+  function showGrid(win, category, query) {
+    const st = win._mp;
+    const entry = current(win);
+    if (entry.view === "grid") {
+      if (entry.category === category && entry.query === query) return apply(win);
+      entry.category = category;
+      entry.query = query;
+      st.history = st.history.slice(0, st.index + 1);
+    } else {
+      push(win, { view: "grid", category, query });
+    }
+    apply(win);
+  }
+
+  function openProject(win, projectSlug) {
+    if (!findProject(projectSlug)) return;
+    const entry = current(win);
+    if (entry.view === "project" && entry.slug === projectSlug) return;
+    push(win, { view: "project", slug: projectSlug });
+    apply(win);
+  }
+
+  function goBack(win) {
+    if (win._mp.index <= 0) return;
+    const from = current(win);
+    win._mp.index--;
+    apply(win);
+    focusCardOf(win, from);
+  }
+
+  function goForward(win) {
+    if (win._mp.index >= win._mp.history.length - 1) return;
+    const from = current(win);
+    win._mp.index++;
+    apply(win);
+    focusCardOf(win, from);
+  }
+
+  // Со страницы проекта вернулись в сетку — фокус на карточку этого проекта (если она видна).
+  function focusCardOf(win, from) {
+    if (!from || from.view !== "project" || current(win).view === "project") return;
+    const c = [...win.querySelectorAll(".mp-grid .mp-card")].find((n) => n.dataset.mpSlug === from.slug);
+    if (c) c.focus();
+  }
+
+  function setToolEnabled(win, name, on) {
+    const b = win.querySelector(`[data-mp-tool="${name}"]`);
+    if (!b) return;
+    b.classList.toggle("function_bar_button", on);
+    b.classList.toggle("function_bar_button--disable", !on);
+  }
+
+  // Превью карточек в спрятанной сетке не должны играть.
+  function stopPreviews(win) {
+    win.querySelectorAll(".mp-grid .mp-card").forEach((c) => c.dispatchEvent(new Event("mp-preview-stop")));
+  }
+
+  // Рисует окно по текущей записи истории.
   function apply(win) {
     const st = win._mp;
+    const entry = current(win);
+    const project = entry.view === "project" ? findProject(entry.slug) : null;
+    const grid = win.querySelector(".mp-grid");
+    const section = win.querySelector(".mp-project");
+
+    setToolEnabled(win, "back", st.index > 0);
+    setToolEnabled(win, "forward", st.index < st.history.length - 1);
+
+    if (project) {
+      stopPreviews(win);
+      grid.hidden = true;
+      win.querySelector(".mp-empty").hidden = true;
+      section.hidden = false;
+      if (window.MyProjectsPage) window.MyProjectsPage.render(win, project);
+      win.querySelectorAll(".mp-nav").forEach((b) => b.setAttribute("aria-current", "false"));
+      win.querySelector(".mp-address").textContent = HOST + "/" + project.slug;
+      win.querySelector(".mp-page").scrollTop = 0;
+      // Фокус — на название открытой страницы (tabIndex −1), без прокрутки.
+      const title = section.querySelector(".mp-ptitle");
+      if (title) title.focus({ preventScroll: true });
+      return;
+    }
+
+    if (!section.hidden || section.firstChild) {
+      if (window.MyProjectsPage) window.MyProjectsPage.destroy(win);
+      section.replaceChildren();
+      section.hidden = true;
+    }
+    grid.hidden = false;
+
+    // Запись сетки (или запись проекта, которого больше нет в данных) — сетка.
+    st.category = entry.category || "all";
+    st.query = entry.query || "";
+    const input = win.querySelector(".mp-search-input");
+    if (input.value !== st.query) input.value = st.query;
+
     const q = st.query.trim().toLowerCase();
     const list = (data().projects || []).filter((p) => {
       if (st.category !== "all" && p.category !== st.category) return false;
       if (!q) return true;
       return [p.title, p.meta, metaLine(p)].filter(Boolean).join(" ").toLowerCase().includes(q);
     });
-    const grid = win.querySelector(".mp-grid");
     grid.replaceChildren(...list.map(card));
     win.querySelector(".mp-empty").hidden = list.length > 0;
 
@@ -311,8 +431,7 @@
   }
 
   function setCategory(win, category) {
-    win._mp.category = category;
-    apply(win);
+    showGrid(win, category, win._mp.query);
   }
 
   function setTheme(win, theme) {
@@ -321,12 +440,14 @@
     saveTheme(theme);
   }
 
-  function setStatus(win, text) {
-    win.querySelector(".mp-status-text").textContent = text || "Готово";
-  }
-
   function init(win) {
-    win._mp = { category: "all", query: "", theme: readTheme() };
+    win._mp = {
+      category: "all",
+      query: "",
+      theme: readTheme(),
+      history: [{ view: "grid", category: "all", query: "" }],
+      index: 0,
+    };
     placeWindow(win);
     const root = win.querySelector(".mp-root");
     const input = win.querySelector(".mp-search-input");
@@ -348,33 +469,30 @@
     setTheme(win, win._mp.theme);
     apply(win);
 
+    // Поиск всегда ведёт к сетке (со страницы проекта — новым шагом истории).
     win.querySelector(".mp-search").addEventListener("submit", (e) => {
       e.preventDefault();
-      win._mp.query = input.value;
-      apply(win);
+      showGrid(win, win._mp.category, input.value);
     });
-    input.addEventListener("input", () => {
-      win._mp.query = input.value;
-      apply(win);
-    });
+    input.addEventListener("input", () => showGrid(win, win._mp.category, input.value));
     input.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && input.value) {
         e.stopPropagation();
-        input.value = "";
-        win._mp.query = "";
-        apply(win);
+        showGrid(win, win._mp.category, "");
       }
     });
 
+    const tools = { back: goBack, forward: goForward };
     win.addEventListener("click", (e) => {
+      const tool = e.target.closest("[data-mp-tool]");
+      if (tool && tools[tool.dataset.mpTool]) return tools[tool.dataset.mpTool](win);
+
       const nav = e.target.closest(".mp-nav");
       if (nav) return setCategory(win, nav.dataset.mpCategory);
 
       if (e.target.closest('[data-mp-action="home"]')) {
         e.preventDefault();
-        input.value = "";
-        win._mp.query = "";
-        return setCategory(win, "all");
+        return showGrid(win, "all", "");
       }
       if (e.target.closest('[data-mp-action="theme"]')) {
         return setTheme(win, win._mp.theme === "dark" ? "light" : "dark");
@@ -384,7 +502,8 @@
       if (themeItem) return setTheme(win, themeItem.dataset.mpTheme);
 
       const c = e.target.closest(".mp-card");
-      if (c && c.tagName !== "A") setStatus(win, "Проект скоро появится");
+      if (!c || c.tagName === "A") return;
+      if (c.dataset.mpSlug) openProject(win, c.dataset.mpSlug);
     });
 
     win.querySelector(".mp-grid").addEventListener("keydown", (e) => {
@@ -394,15 +513,18 @@
         c.click();
       }
     });
-
-    // Строка состояния, как в IE: адрес карточки под курсором.
-    const grid = win.querySelector(".mp-grid");
-    grid.addEventListener("mouseover", (e) => {
-      const c = e.target.closest(".mp-card");
-      if (c) setStatus(win, c.tagName === "A" ? c.href : "Проект скоро появится");
-    });
-    grid.addEventListener("mouseleave", () => setStatus(win));
   }
 
-  window.MyProjects = { init, setCategory, setTheme, viewsLabel, timeAgo };
+  window.MyProjects = {
+    init,
+    setCategory,
+    setTheme,
+    openProject,
+    goBack,
+    goForward,
+    viewsLabel,
+    plural,
+    timeAgo,
+    metaLine,
+  };
 })();

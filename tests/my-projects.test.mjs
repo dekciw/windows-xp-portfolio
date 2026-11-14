@@ -81,8 +81,8 @@ test("двойной клик: окно «Мои проекты» по цент�
   assert.equal(await text(".window-header-title"), "Мои проекты");
   assert.equal(await page.$eval('[id="taskbar-My Projects"] span', (e) => e.textContent.trim()), "Мои проекты");
   assert.equal(await text(".mp-address"), "https://www.myprojects.com");
-  assert.equal(await text(".mp-status-text"), "Готово");
-  assert.equal(await text(".mp-status-zone"), "Мои проекты");
+  // Строки состояния («Готово» | «Мои проекты») больше нет.
+  assert.equal(await page.$(`${PROJECTS} .mp-status`), null);
   const fits = await page.$eval(PROJECTS, (w) => {
     const d = document.getElementById("desktop").getBoundingClientRect();
     const r = w.getBoundingClientRect();
@@ -412,13 +412,14 @@ test("соцсети в шапке берутся из «Обо мне» и от
   assert.deepEqual(links, expected.map((href) => [href, "_blank", "noreferrer"]));
 });
 
-test("карточка-заглушка без ссылки: щелчок пишет в строке состояния, а не открывает вкладку", async () => {
-  await fresh();
+// У Burger Cheddar есть slug — щелчок открывает страницу проекта (tests/my-project-page.test.mjs);
+// заглушку проверяем на карточке без slug и без ссылки.
+test("карточка-заглушка без ссылки: щелчок не открывает ни вкладку, ни страницу проекта", () => withSampleProjects(async () => {
   await page.evaluate(() => (window.__followed = null));
   await page.click(`${PROJECTS} .mp-card`);
-  assert.equal(await text(".mp-status-text"), "Проект скоро появится");
   assert.equal(await page.evaluate(() => window.__followed), null);
-});
+  assert.equal(await page.$eval(`${PROJECTS} .mp-project`, (s) => s.hidden), true, "страница проекта не открылась");
+}));
 
 test("карточка со ссылкой и картинкой — это ссылка в новой вкладке с превью", async () => {
   if (await page.$(PROJECTS)) await closeProjects(page);

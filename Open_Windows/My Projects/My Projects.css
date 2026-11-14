@@ -2,6 +2,8 @@
 @import url("/Open_Windows/My Computer/My Computer.css");
 /* Шрифт страницы — Roboto, как в макете (локальные файлы, работает без интернета). */
 @import url("/Assets/Fonts/Roboto/roboto.css");
+/* Страница проекта (щелчок по карточке) — отдельный файл. */
+@import "my-project-page.css";
 
 /* ---------- XP-обвязка ---------- */
 /* Меню, панель кнопок и адресная строка — целиком из «Мой компьютер» (импорт выше),
@@ -12,34 +14,6 @@
 .options_OCD .drop_down_label.mp-disabled:hover {
   color: rgb(161, 161, 146);
   background-color: transparent;
-}
-
-/* Строка состояния: «Готово» | «Мои проекты». */
-.mp-status {
-  flex-shrink: 0;
-  display: flex;
-  gap: 1px;
-  height: 23px;
-  padding: 2px 1px;
-  box-sizing: border-box;
-  font-size: 11px;
-  background-color: #ece9d8;
-  border-top: 1px solid #fff;
-}
-
-.mp-status-field {
-  display: flex;
-  align-items: center;
-  padding: 0 6px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  box-shadow: inset 1px 1px #a0a0a0, inset -1px -1px #fff;
-}
-
-.mp-status-text {
-  flex: 1 1 0%;
-  min-width: 0;
 }
 
 /* ---------- страница внутри окна ---------- */

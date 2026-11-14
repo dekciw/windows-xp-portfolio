@@ -17,7 +17,27 @@ async function fresh() {
   await page.waitForSelector(`${ABOUT} .am-title`, { timeout: 5000 });
   // closeWindow() удаляет CSS окна, openWindow() подключает заново — ждём, пока стили загрузятся,
   // иначе тесты раскладки/шрифтов меряют неоформленную страницу (Times New Roman, отступ 0).
-  await page.waitForFunction(() => !!document.getElementById("css-window-About Me")?.sheet, { timeout: 5000 });
+  await windowCss("About Me");
+}
+// Стиль окна вместе с вложенными @import и загрузка шрифтов: одной link.sheet мало —
+// без шрифтов и импортов замеры иногда видят «Times New Roman».
+async function windowCss(app) {
+  await page.waitForFunction(
+    (app) => {
+      const sheet = document.getElementById(`css-window-${app}`)?.sheet;
+      if (!sheet) return false;
+      const loaded = (s) =>
+        [...s.cssRules].every((r) => !r.href || (r.styleSheet && r.styleSheet.cssRules.length > 0 && loaded(r.styleSheet)));
+      try {
+        return sheet.cssRules.length > 0 && loaded(sheet);
+      } catch (e) {
+        return false;
+      }
+    },
+    { timeout: 5000 },
+    app
+  );
+  await page.evaluate(() => document.fonts.ready);
 }
 const clickIn = (sel) => page.click(`${ABOUT} ${sel}`);
 const text = (sel) => page.$eval(`${ABOUT} ${sel}`, (e) => e.textContent.trim());
@@ -509,6 +529,7 @@ test("карточки слева выглядят как в «Мой компь
   await fresh();
   await page.evaluate(() => openWindow("My Computer"));
   await page.waitForSelector('[id="window-My Computer"] .content_left_card_text');
+  await windowCss("My Computer");
   const styles = await page.evaluate(() => {
     const pick = (el, props) => {
       const cs = getComputedStyle(el);

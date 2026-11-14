@@ -1,0 +1,1145 @@
+/* Страница проекта в окне «Мои проекты» (подключается из My Projects.css).
+   Размеры и цвета — из макета Figma 725:8293 / 733:9938 и референса (спека 2026-11-15-project-page). */
+
+.mp-page {
+  --mp-panel: #1e1e1e; /* фон описания, серые метки */
+  --mp-panel-line: #333; /* рамка описания и меток, разделители строк */
+  --mp-dot: #aaa; /* рамка неактивной точки */
+  --mp-csend-off-bg: #272727; /* «Отправить» без текста */
+  --mp-csend-off-text: #717171;
+  --mp-csend-on-bg: #f00; /* «Отправить» с текстом */
+  --mp-csend-hover-bg: #c00; /* …и при наведении */
+  --mp-csend-on-text: #fff;
+  --mp-menu-bg: #282828; /* меню сортировки */
+  --mp-menu-hover: #3e3e3e;
+  --mp-dot-hover: #fff;
+  --mp-dot-hover-border: #aaa; /* обводка кружка при наведении */
+}
+
+.mp-page[data-theme="light"] {
+  --mp-menu-bg: #fff;
+  --mp-menu-hover: #f2f2f2;
+  --mp-dot-hover: #606060;
+  --mp-dot-hover-border: #0f0f0f;
+  --mp-panel: #f2f2f2;
+  --mp-panel-line: #e5e5e5;
+  --mp-dot: #909090;
+  --mp-csend-off-bg: #f2f2f2;
+  --mp-csend-off-text: #909090;
+}
+
+/* Атрибут hidden сильнее display из правил ниже и из сетки. */
+.mp-grid[hidden],
+.mp-project[hidden],
+.mp-desc-toggle[hidden] {
+  display: none;
+}
+
+/* Одна колонка во всю ширину .mp-main (отступы 17/16px уже у .mp-main). */
+.mp-project {
+  container: mp-project / inline-size;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Плеер-карусель шире 16:9, как в макете (727.33×314.53 → 2.3125): медиа по центру с чёрными
+   полями. В развёрнутом окне высота ограничена видимой высотой страницы минус шапка, отступ и
+   строка названия (не меньше 126px) — --mp-player-max ставит my-projects-page.js; не ниже 200px.
+   100cqw — ширина .mp-project. Белая рамка 1px — поверх медиа (::after). */
+.mp-project .mp-player {
+  position: relative;
+  height: max(200px, min(calc(100cqw / 2.3125), var(--mp-player-max, 100vh)));
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: #000;
+}
+
+.mp-project .mp-player::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  box-sizing: border-box;
+  border: 1px solid #fff;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Фокус ставится в плеер щелчком (для клавиш); своей рамки у плеера нет —
+   рамки :focus-visible у кнопок внутри остаются. */
+.mp-project .mp-player:focus {
+  outline: none;
+}
+
+.mp-project .mp-player:fullscreen {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.mp-project .mp-player:fullscreen::after {
+  display: none;
+}
+
+.mp-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.mp-slide {
+  position: relative;
+  flex: 0 0 100%;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  background-color: #000;
+}
+
+.mp-slide-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+/* Слайд-картинка: при наведении на плеер — градиент снизу и кнопка полного экрана. */
+.mp-slide[data-type="image"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 88px;
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.78));
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+.mp-slide-fs {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 28px;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.mp-player:hover .mp-slide[data-type="image"]::after,
+.mp-player:hover .mp-slide-fs,
+.mp-player:has(.mp-slide-fs:focus-visible) .mp-slide[data-type="image"]::after,
+.mp-slide-fs:focus-visible {
+  opacity: 1;
+}
+
+.mp-slide-fs:focus-visible,
+.mp-arrow:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.mp-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  width: 88px;
+  height: 44px;
+  margin-top: -22px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+  filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.35)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));
+}
+
+.mp-arrow--prev {
+  left: 0;
+  justify-content: flex-start;
+  padding-left: 8px;
+}
+
+.mp-arrow--next {
+  right: 0;
+  justify-content: flex-end;
+  padding-right: 8px;
+}
+
+.mp-arrow:hover,
+.mp-arrow:focus-visible {
+  opacity: 1;
+}
+
+/* Во время проигрывания без движения мыши стрелки прячутся вместе с управлением. */
+.mp-player:has(.mp-slide.is-current.is-idle) .mp-arrow {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Компактный шеврон: в покое серый (opacity 0.4), при наведении — чуть крупнее и ярко-белый. */
+.mp-arrow svg {
+  width: 30px;
+  height: 30px;
+  transition: transform 0.2s;
+}
+
+.mp-arrow:hover svg,
+.mp-arrow:focus-visible svg {
+  transform: scale(1.08);
+}
+
+/* ---------- блок под плеером ---------- */
+
+/* .mp-info — то же имя, что у подписи карточки: правила выше по специфичности. */
+.mp-project .mp-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 0 28px;
+}
+
+/* Аватар | название и статистика | точки. Между аватаром и текстом 12px,
+   до точек 28px, как в макете. */
+.mp-meta-row {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  column-gap: 12px; /* до точек — 28px (12 + отступ 16) */
+  align-items: start;
+}
+
+.mp-avatar-lg {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #fff;
+}
+
+/* Фокус на названии ставится программно при открытии страницы (tabIndex −1) — без рамки. */
+.mp-ptitle:focus {
+  outline: none;
+}
+
+.mp-ptitle {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  margin: 0;
+  font-family: Roboto, "Segoe UI", Arial, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 29.9px;
+  letter-spacing: -0.5px;
+  color: var(--mp-text);
+  overflow-wrap: anywhere;
+}
+
+.mp-pstats {
+  grid-column: 2;
+  grid-row: 2;
+  margin: 0;
+  font-size: 14px;
+  line-height: 16.8px;
+  color: var(--mp-muted);
+}
+
+.mp-dots {
+  grid-column: -2;
+  margin-left: 16px;
+  grid-row: 1;
+  align-self: center;
+  display: flex;
+  gap: 8px;
+}
+
+.mp-dots:empty {
+  display: none;
+}
+
+.mp-dot {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  box-sizing: border-box;
+  padding: 0;
+  border: 2px solid var(--mp-dot);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Наведение на неактивный кружок — заливка белым (референс). */
+.mp-dot:not(.is-active):hover {
+  background-color: var(--mp-dot-hover);
+  border-color: var(--mp-dot-hover-border);
+}
+
+.mp-dot.is-active {
+  border-color: var(--mp-accent);
+  background-color: var(--mp-accent);
+}
+
+.mp-dot:focus-visible {
+  outline: 2px solid var(--mp-text);
+  outline-offset: 2px;
+}
+
+/* ---------- описание ---------- */
+
+.mp-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 11.67px;
+  background-color: var(--mp-panel);
+  border: 1px solid var(--mp-panel-line);
+  border-radius: 12px;
+}
+
+.mp-desc-row {
+  display: flex;
+  gap: 0;
+  padding-bottom: 16px;
+  border-bottom: 0.667px solid var(--mp-panel-line);
+}
+
+/* у последней строки разделителя нет (кнопка «Ещё» — не строка) */
+.mp-desc-row:last-of-type {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.mp-desc-label {
+  flex: 0 0 108px;
+  width: 108px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: var(--mp-muted);
+}
+
+.mp-desc-text {
+  flex: 1 1 0%;
+  min-width: 0;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--mp-text);
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.mp-desc.is-collapsed .mp-desc-row[data-key="desc"] .mp-desc-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+.mp-desc-toggle {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--mp-muted);
+  cursor: pointer;
+}
+
+.mp-desc-toggle:hover {
+  color: var(--mp-text);
+}
+
+/* ---------- видеослайд (референс ref-1-player) ---------- */
+
+.mp-pvideo {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background-color: #000;
+}
+
+/* Постер, затемнение сверху, название и большая ▶. Виден до запуска, на паузе (без картинки
+   постера — поверх кадра) и снова целиком после конца видео. */
+.mp-vposter {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  cursor: pointer;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+.mp-vposter .mp-slide-img {
+  position: absolute;
+  inset: 0;
+}
+
+.mp-vposter::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  height: 96px;
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
+  pointer-events: none;
+}
+
+.mp-slide.is-started .mp-vposter .mp-slide-img {
+  visibility: hidden;
+}
+
+.mp-slide.is-playing .mp-vposter {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.mp-vtitle {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  right: 24px;
+  z-index: 1;
+  overflow: hidden;
+  font-family: Roboto, "Segoe UI", Arial, sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 28px;
+  color: #fff;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.mp-bigplay {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 48px;
+  margin: -24px 0 0 -34px;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background-color: #f00;
+  color: #fff;
+  cursor: pointer;
+}
+
+.mp-bigplay:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Управление: видно на паузе и при наведении; во время проигрывания прячется через 2.5 с
+   без движения мыши (.is-idle) и когда мышь ушла с плеера. */
+.mp-vcontrols {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px 16px 12px;
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.45));
+  font-family: Roboto, "Segoe UI", Arial, sans-serif;
+  color: #fff;
+  opacity: 1;
+  transition: opacity 0.25s;
+}
+
+/* Спрятанное управление не ловит щелчки (они достаются видео). */
+.mp-slide.is-playing .mp-vcontrols {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mp-player:hover .mp-slide.is-playing:not(.is-idle) .mp-vcontrols,
+.mp-slide.is-playing:not(.is-idle):focus-within .mp-vcontrols {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mp-slide.is-idle,
+.mp-slide.is-idle * {
+  cursor: none;
+}
+
+/* Дорожка: отступ 16px от краёв ряда; зона щелчка 16px, линия 3px. */
+.mp-seek {
+  position: relative;
+  height: 16px;
+  margin: 0 16px;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.mp-seek::before,
+.mp-seek-buffer,
+.mp-seek-played {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 3px;
+  margin-top: -1.5px;
+}
+
+.mp-seek::before {
+  content: "";
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.mp-seek-buffer {
+  width: 0;
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.mp-seek-played {
+  width: 0;
+  background-color: #f00;
+}
+
+.mp-seek-knob {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 13px;
+  height: 13px;
+  margin: -6.5px 0 0 -6.5px;
+  border-radius: 50%;
+  background-color: #f00;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.mp-seek:hover .mp-seek-knob,
+.mp-seek.is-dragging .mp-seek-knob,
+.mp-seek:focus-visible .mp-seek-knob {
+  opacity: 1;
+}
+
+/* При наведении дорожка толще (3 → 5px) и показывает время под курсором — как на референсе. */
+.mp-seek:hover::before,
+.mp-seek:hover .mp-seek-buffer,
+.mp-seek:hover .mp-seek-played,
+.mp-seek.is-dragging::before,
+.mp-seek.is-dragging .mp-seek-buffer,
+.mp-seek.is-dragging .mp-seek-played {
+  height: 5px;
+  margin-top: -2.5px;
+}
+
+.mp-seek-tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: rgba(28, 28, 28, 0.9);
+  font-size: 14px;
+  line-height: 18px;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.mp-seek:hover .mp-seek-tip:not(:empty) {
+  opacity: 1;
+}
+
+.mp-seek:focus {
+  outline: none;
+}
+
+.mp-seek:focus-visible::before {
+  outline: 1px dotted #fff;
+  outline-offset: 4px;
+}
+
+.mp-vrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* Play/Pause — круг 56px; пунктирная обводка только при фокусе с клавиатуры. */
+.mp-vplay {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  cursor: pointer;
+}
+
+.mp-vplay:focus {
+  outline: none;
+}
+
+.mp-vplay:focus-visible {
+  outline: 1px dotted #fff;
+  outline-offset: -1px;
+}
+
+.mp-vplay .mp-vplay-pause,
+.mp-slide.is-playing .mp-vplay .mp-vplay-play {
+  display: none;
+}
+
+.mp-slide.is-playing .mp-vplay .mp-vplay-pause {
+  display: block;
+}
+
+/* Громкость (макет 771:7276): «таблетка» 40px, кнопка 40×40 и ползунок 64px (линия 2px, ручка 12px). */
+.mp-vvol {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding-right: 16px;
+  border-radius: 28px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.mp-vmute {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.mp-vmute svg {
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.6));
+}
+
+.mp-vmute[data-state="on"] svg[data-icon="muted"],
+.mp-vmute[data-state="off"] svg[data-icon="volume"] {
+  display: none;
+}
+
+.mp-vslider {
+  position: relative;
+  width: 64px;
+  height: 40px;
+  margin-left: 4px;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.mp-vslider::before,
+.mp-vslider-fill {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 2px;
+  margin-top: -1px;
+}
+
+.mp-vslider::before {
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.mp-vslider-fill {
+  width: 100%;
+  background-color: #fff;
+}
+
+.mp-vslider-knob {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background-color: #fff;
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.8));
+}
+
+.mp-vmute:focus-visible,
+.mp-vslider:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.mp-vslider:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.mp-vtime {
+  flex: 0 0 auto;
+  padding: 0 16px;
+  font-size: 16px;
+  line-height: 40px;
+  color: #fff;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.mp-vsite {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin-left: auto;
+  padding: 0 16px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 40px;
+  color: #fff;
+  white-space: nowrap;
+  text-decoration: none;
+  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.mp-vsite svg {
+  flex: 0 0 auto;
+}
+
+.mp-vsite:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* При наведении «Открыть сайт» и полный экран загораются красным (иконки — currentColor). */
+.mp-vsite,
+.mp-vfs {
+  transition: color 0.15s;
+}
+
+.mp-vsite:hover,
+.mp-vfs:hover,
+.mp-vplay:hover,
+.mp-slide-fs:hover {
+  color: var(--mp-accent);
+}
+
+.mp-vplay {
+  transition: color 0.15s;
+}
+
+.mp-vfs {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Сайта нет — кнопка полного экрана всё равно справа. */
+.mp-vtime + .mp-vfs {
+  margin-left: auto;
+}
+
+.mp-vsite:focus-visible,
+.mp-vfs:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* ---------- комментарии (референс ref-3, ref-4) ---------- */
+
+.mp-project .mp-comments {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0 16px 16px;
+  min-width: 0;
+}
+
+.mp-chead {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.mp-ccount {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: var(--mp-text);
+}
+
+.mp-csort {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--mp-muted);
+  cursor: pointer;
+}
+
+.mp-csort:hover {
+  color: var(--mp-text);
+}
+
+/* Меню сортировки (референс): тёмная панель со скруглением 12px, выбранный пункт красный. */
+.mp-csort-wrap {
+  position: relative;
+}
+
+.mp-csort-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  min-width: 130px;
+  padding: 0; /* полоса наведения доходит до краёв меню */
+  overflow: hidden; /* …и обрезается по скруглению */
+  border: 1px solid var(--mp-panel-line);
+  border-radius: 12px;
+  background-color: var(--mp-menu-bg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.mp-csort-menu[hidden] {
+  display: none;
+}
+
+.mp-csort-item {
+  display: block;
+  width: 100%;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 32px;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--mp-text);
+  cursor: pointer;
+}
+
+.mp-csort-item[aria-checked="true"] {
+  color: var(--mp-accent);
+}
+
+/* Наведённый пункт подсвечен полосой (референс); фокус при открытии мышью полосу не даёт. */
+.mp-csort-item:hover {
+  background-color: var(--mp-menu-hover);
+}
+
+.mp-csort-item:focus {
+  outline: 0;
+}
+
+.mp-csort-item:focus-visible {
+  text-decoration: underline;
+}
+
+/* «⋯» своего комментария и меню «Удалить» (референс). */
+.mp-comment {
+  position: relative;
+}
+
+.mp-cmore-wrap {
+  position: relative;
+  flex: 0 0 auto;
+  margin-left: auto;
+  align-self: flex-start;
+}
+
+.mp-cmore {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  color: var(--mp-text);
+  cursor: pointer;
+}
+
+.mp-cmore:hover,
+.mp-cmore[aria-expanded="true"] {
+  background-color: var(--mp-csend-off-bg);
+}
+
+.mp-cmore:focus-visible {
+  outline: 2px solid var(--mp-text);
+  outline-offset: 2px;
+}
+
+.mp-cmore-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 5;
+  min-width: 90px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--mp-panel-line);
+  border-radius: 8px;
+  background-color: var(--mp-menu-bg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.mp-cmore-menu[hidden] {
+  display: none;
+}
+
+.mp-cdelete {
+  display: block;
+  width: 100%;
+  padding: 0 14px;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 30px;
+  text-align: left;
+  color: var(--mp-text);
+  cursor: pointer;
+}
+
+.mp-cdelete:hover {
+  color: var(--mp-accent);
+}
+
+.mp-cdelete:focus {
+  outline: 0;
+}
+
+.mp-cdelete:focus-visible {
+  text-decoration: underline;
+}
+
+.mp-cadd {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.mp-cavatar {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  color: var(--mp-text);
+}
+
+.mp-cavatar svg {
+  display: block;
+}
+
+.mp-cinput {
+  flex: 1 1 0%;
+  min-width: 0;
+  box-sizing: border-box;
+  height: 32px;
+  min-height: 32px;
+  max-height: 120px;
+  padding: 4px 0 5px;
+  border: 0;
+  border-bottom: 0.667px solid var(--mp-panel-line);
+  border-radius: 0;
+  outline: 0;
+  resize: none;
+  overflow: hidden;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--mp-text);
+}
+
+.mp-cinput::placeholder {
+  color: var(--mp-muted);
+  opacity: 1;
+}
+
+/* Поле в фокусе — линия снизу красная. */
+.mp-cinput:focus {
+  border-bottom-color: var(--mp-accent);
+}
+
+.mp-csend {
+  flex: 0 0 auto;
+  height: 32px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--mp-csend-on-text);
+  background-color: var(--mp-csend-on-bg);
+  cursor: pointer;
+}
+
+/* «Отправить» с текстом: при наведении чуть темнее (референс). */
+.mp-csend:not(:disabled):hover {
+  background-color: var(--mp-csend-hover-bg);
+}
+
+.mp-csend:disabled {
+  color: var(--mp-csend-off-text);
+  background-color: var(--mp-csend-off-bg);
+  cursor: default;
+}
+
+.mp-csend:focus-visible,
+.mp-csort:focus-visible,
+.mp-like:focus-visible,
+.mp-dislike:focus-visible {
+  outline: 2px solid var(--mp-text);
+  outline-offset: 2px;
+}
+
+.mp-clist {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 12px;
+}
+
+.mp-comment {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.mp-cbody {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+.mp-cline {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  line-height: 18px;
+}
+
+.mp-cuser {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--mp-text);
+}
+
+.mp-ctime {
+  font-size: 12px;
+  color: var(--mp-muted);
+}
+
+.mp-ctime::before {
+  content: "\2022\00a0";
+}
+
+.mp-ctext {
+  margin-top: 2px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--mp-text);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.mp-cactions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.mp-like,
+.mp-dislike {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--mp-text);
+  cursor: pointer;
+}
+
+.mp-like svg.is-flip,
+.mp-dislike svg.is-flip {
+  transform: scaleY(-1);
+}
+
+.mp-like.is-on svg path,
+.mp-dislike.is-on svg path {
+  fill: currentColor;
+}

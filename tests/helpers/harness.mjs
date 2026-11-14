@@ -25,7 +25,29 @@ export function startServer(root = ROOT) {
       if (!file.startsWith(root)) throw new Error("outside root");
       if ((await stat(file)).isDirectory()) file = path.join(file, "index.html");
       const body = await readFile(file);
-      res.writeHead(200, { "Content-Type": TYPES[path.extname(file).toLowerCase()] || "application/octet-stream" });
+      const type = TYPES[path.extname(file).toLowerCase()] || "application/octet-stream";
+      // HTTP Range (206) — как у GitHub Pages / Vercel: без него видео не перематывается.
+      const m = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || "");
+      if (m && (m[1] || m[2])) {
+        const size = body.length;
+        let start = m[1] ? Number(m[1]) : size - Number(m[2]);
+        let end = m[1] && m[2] ? Math.min(Number(m[2]), size - 1) : size - 1;
+        if (start < 0) start = 0;
+        if (start >= size || start > end) {
+          res.writeHead(416, { "Content-Range": `bytes */${size}` });
+          res.end();
+          return;
+        }
+        res.writeHead(206, {
+          "Content-Type": type,
+          "Accept-Ranges": "bytes",
+          "Content-Range": `bytes ${start}-${end}/${size}`,
+          "Content-Length": end - start + 1,
+        });
+        res.end(req.method === "HEAD" ? undefined : body.subarray(start, end + 1));
+        return;
+      }
+      res.writeHead(200, { "Content-Type": type, "Accept-Ranges": "bytes", "Content-Length": body.length });
       res.end(req.method === "HEAD" ? undefined : body);
     } catch {
       res.writeHead(404);

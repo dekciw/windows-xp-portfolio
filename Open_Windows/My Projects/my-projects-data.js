@@ -18,6 +18,19 @@
 //   color     — цвет заглушки, пока нет картинки
 //   href      — ссылка на проект (GitHub, сайт, файл); пусто — карточка «скоро»
 //
+//   Страница проекта (щелчок по карточке открывает её в этом же окне, как видео на YouTube):
+//   slug      — адрес страницы латиницей: "burger-cheddar" → https://www.myprojects.com/burger-cheddar;
+//               без slug карточка ведёт себя по-старому (href или «Проект скоро появится»)
+//   media     — слайды плеера по порядку (точки под плеером — по их числу):
+//               { type: "video", src: "…/presentation.mp4", poster: "…/presentation-poster.jpg" }
+//               { type: "image", src: "…/hero.jpg", alt: "что на картинке" }
+//   site      — ссылка «Открыть сайт» в плеере (открывается в новой вкладке)
+//   brief     — строка «Задача:» в описании
+//   role      — строка «Роль:» в описании
+//   desc      — строка «Описание:» (свёрнута до 3 строк, кнопка «Ещё»)
+//   comments  — комментарии: [{ user: "@имя", date: "ГГГГ-ММ-ДД", text, likes, dislikes }];
+//               только настоящие отзывы, пока их нет — []
+//
 // avatar — круглое фото 36×36 в каждой карточке. Положите своё фото, например,
 //   в "/Assets/Images/My Projects/avatar.jpg" и укажите путь здесь.
 //
@@ -43,6 +56,56 @@ window.MY_PROJECTS_DATA = {
       thumb: "/Assets/Projects/covers/BurgerCheddar.jpg",
       video: "/Assets/Projects/previews/BurgerCheddar.mp4",
       href: "",
+      slug: "burger-cheddar",
+      media: [
+        {
+          type: "video",
+          src: "/Assets/Projects/media/burger-cheddar/presentation.mp4",
+          poster: "/Assets/Projects/media/burger-cheddar/presentation-poster.jpg",
+        },
+        { type: "image", src: "/Assets/Projects/media/burger-cheddar/hero.jpg", alt: "Главный экран: бургер чеддер на тёмном фоне с огнём" },
+        { type: "image", src: "/Assets/Projects/media/burger-cheddar/menu.jpg", alt: "Меню: бургеры с составом, весом и ценой" },
+        { type: "image", src: "/Assets/Projects/media/burger-cheddar/order.jpg", alt: "Форма оформления заказа" },
+        { type: "image", src: "/Assets/Projects/media/burger-cheddar/why.jpg", alt: "Раздел «Почему нас выбирают?»" },
+      ],
+      site: "https://dekciw.github.io/BurgerCheddar/",
+      // Учебный проект.
+      brief: "Сделать лендинг бургерной, где гость быстро выбирает бургер, видит цену в своей валюте и оформляет заказ",
+      role: "Дизайн и разработка",
+      // Переносы строк (\n) в описании сохраняются на странице.
+      desc:
+        "Лендинг бургерной «Бургер чеддер»: тёмный первый экран с огнём, меню из 12 бургеров с составом, весом " +
+        "и ценой, смена валюты в шапке ($, ₽, BYN, € и ¥) и форма заказа с проверкой полей.\n" +
+        "HTML5 - одна страница с семантической разметкой (header, nav, section), без сборщика и шаблонизаторов.\n" +
+        "CSS3 - один файл стилей: раскладка на Flexbox и CSS Grid, свои шрифты Gilroy и Merriweather через " +
+        "@font-face, графика в SVG и PNG.\n" +
+        "JavaScript (ES6) без фреймворков и библиотек: плавная прокрутка к разделам через scrollIntoView, " +
+        "пересчёт цен по data-атрибутам с базовой ценой при смене валюты, проверка полей формы с подсветкой пустых.\n" +
+        "Хостинг - GitHub Pages.",
+      // Комментарии, опубликованные на странице всегда (свои посетитель добавляет у себя в браузере).
+      comments: [
+        {
+          user: "@marina.k",
+          date: "2026-11-12",
+          text: "Залипла на переключении валют - цены пересчитываются мгновенно. Огонь на первом экране смотрится круто.",
+          likes: 13,
+          dislikes: 0,
+        },
+        {
+          user: "@dmitry_v",
+          date: "2026-11-09",
+          text: "Аккуратная вёрстка и ничего лишнего: состав, вес и цена видны сразу. Пока листал меню, захотелось бургер.",
+          likes: 7,
+          dislikes: 0,
+        },
+        {
+          user: "@alex.dev",
+          date: "2026-11-03",
+          text: "Приятно, что форма заказа подсвечивает пустые поля - мелочь, а без неё такие формы бесят.",
+          likes: 4,
+          dislikes: 0,
+        },
+      ],
     },
   ],
 };
