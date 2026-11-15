@@ -108,7 +108,7 @@ test("Назад → сетка, Вперёд → снова проект; кн�
   // Новый переход обрезает «вперёд»: проект → Назад → категория → «Вперёд» неактивна.
   await page.evaluate(() => MyProjects.goBack(document.getElementById("window-My Projects")));
   await expectGrid();
-  await page.click(`${PROJECTS} .mp-nav[data-mp-category="personal"]`);
+  await page.click(`${PROJECTS} .mp-nav[data-mp-category="media"]`);
   assert.deepEqual(await toolState("forward"), OFF);
 });
 
@@ -139,7 +139,7 @@ test("Домой / логотип / пункт меню / поиск возвр�
   const ways = {
     home: () => page.click(`${PROJECTS} [data-mp-tool="home"]`),
     logo: () => page.click(`${PROJECTS} .mp-logo`),
-    nav: () => page.click(`${PROJECTS} .mp-nav[data-mp-category="personal"]`),
+    nav: () => page.click(`${PROJECTS} .mp-nav[data-mp-category="media"]`),
     search: async () => {
       await page.click(`${PROJECTS} .mp-search-input`);
       await page.keyboard.type("burger");
@@ -1537,4 +1537,14 @@ test("комментарии: аватар — SVG-силуэт 32px (в пол�
   assert.equal(r.length, 2);
   for (const a of r) assert.deepEqual(a, { svg: true, w: 32, h: 32, img: false });
   assert.equal(await page.$$eval(`${COMMENTS} .mp-cavatar svg [stroke="currentColor"], ${COMMENTS} .mp-cavatar svg [fill="currentColor"]`, (l) => l.length > 0), true);
+});
+
+test("проект без сайта (KabanesBot): страница открывается, ссылки «Открыть сайт» нет", async () => {
+  await fresh();
+  await page.click(`${CARD}[data-mp-slug="kabanes-bot"]`);
+  await page.waitForFunction((sel) => !document.querySelector(`${sel} .mp-project`).hidden, {}, PROJECTS);
+  assert.equal(await text(".mp-ptitle"), "Утренний Хрюк (KabanesBot)");
+  assert.equal(await page.$(`${PROJECTS} .mp-vsite`), null);
+  const media = await page.evaluate(() => window.MY_PROJECTS_DATA.projects.find((p) => p.slug === "kabanes-bot").media.length);
+  assert.equal(await page.$$eval(`${PROJECTS} .mp-dots button`, (l) => l.length), media);
 });
