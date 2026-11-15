@@ -40,6 +40,7 @@ async function fresh() {
 
 const SLUG = "burger-cheddar";
 const CARD = `${PROJECTS} .mp-card`;
+const BURGER = `${CARD}[data-mp-slug="${SLUG}"]`;
 const text = (sel) => page.$eval(`${PROJECTS} ${sel}`, (e) => e.textContent.trim());
 const isHidden = (sel) =>
   page.$eval(`${PROJECTS} ${sel}`, (e) => e.hidden || getComputedStyle(e).display === "none");
@@ -54,7 +55,7 @@ const OFF = { on: false, off: true };
 
 async function openBurger() {
   await fresh();
-  await page.click(CARD);
+  await page.click(BURGER);
   await page.waitForFunction((sel) => !document.querySelector(`${sel} .mp-project`).hidden, {}, PROJECTS);
 }
 
@@ -78,7 +79,7 @@ test("щелчок по карточке открывает страницу п�
 
 test("Enter на карточке тоже открывает", async () => {
   await fresh();
-  await page.$eval(CARD, (c) => c.focus());
+  await page.$eval(BURGER, (c) => c.focus());
   await page.keyboard.press("Enter");
   await page.waitForFunction((sel) => !document.querySelector(`${sel} .mp-project`).hidden, { timeout: 3000 }, PROJECTS);
   await expectProject();
@@ -88,7 +89,7 @@ test("Назад → сетка, Вперёд → снова проект; кн�
   await fresh();
   assert.deepEqual(await toolState("back"), OFF);
   assert.deepEqual(await toolState("forward"), OFF);
-  await page.click(CARD);
+  await page.click(BURGER);
   await expectProject();
   assert.deepEqual(await toolState("back"), ON);
   assert.deepEqual(await toolState("forward"), OFF);
@@ -219,7 +220,7 @@ test("инфо: аватар 40px, название Roboto Bold 26px −0.5px, �
 });
 
 test("данные Burger Cheddar: slug, медиа, сайт, описание (меток нет)", async () => {
-  const d = await page.evaluate(() => window.MY_PROJECTS_DATA.projects[0]);
+  const d = await page.evaluate(() => window.MY_PROJECTS_DATA.projects.find((x) => x.slug === "burger-cheddar"));
   assert.equal(d.slug, SLUG);
   assert.equal(d.tags, undefined);
   assert.equal(d.site, "https://dekciw.github.io/BurgerCheddar/");
@@ -313,7 +314,7 @@ test("описание: фон #1e1e1e, рамка #333, скругление 12
 test("короткое описание помещается в 3 строки — кнопки «Ещё» нет", async () => {
   if (await page.$(PROJECTS)) await closeProjects(page);
   const saved = await page.evaluate(() => JSON.stringify(window.MY_PROJECTS_DATA.projects));
-  await page.evaluate(() => (window.MY_PROJECTS_DATA.projects[0].desc = "Коротко."));
+  await page.evaluate(() => (window.MY_PROJECTS_DATA.projects.find((x) => x.slug === "burger-cheddar").desc = "Коротко."));
   try {
     await openBurger();
     await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
@@ -328,7 +329,7 @@ test("текст из данных попадает в страницу как �
   if (await page.$(PROJECTS)) await closeProjects(page);
   const saved = await page.evaluate(() => JSON.stringify(window.MY_PROJECTS_DATA.projects));
   await page.evaluate(() => {
-    const p = window.MY_PROJECTS_DATA.projects[0];
+    const p = window.MY_PROJECTS_DATA.projects.find((x) => x.slug === "burger-cheddar");
     p.title = "<b>Бургер</b>";
     p.desc = "<img src=x onerror=window.__xss=1>";
     p.role = "<i>т</i>";
@@ -593,12 +594,12 @@ test("один слайд — стрелок нет", async () => {
   if (await page.$(PROJECTS)) await closeProjects(page);
   const saved = await page.evaluate(() => JSON.stringify(window.MY_PROJECTS_DATA.projects));
   await page.evaluate(() => {
-    const p = window.MY_PROJECTS_DATA.projects[0];
+    const p = window.MY_PROJECTS_DATA.projects.find((x) => x.slug === "burger-cheddar");
     p.media = [p.media[1]];
   });
   try {
     await fresh();
-    await page.click(CARD);
+    await page.click(BURGER);
     await page.waitForFunction((sel) => !document.querySelector(`${sel} .mp-project`).hidden, {}, PROJECTS);
     assert.equal(await page.$$eval(`${PLAYER} .mp-arrow`, (l) => l.filter((a) => getComputedStyle(a).display !== "none").length), 0);
   } finally {
@@ -686,7 +687,7 @@ test("видео перематывается: сервер отдаёт кус�
 test("видео: <video> появляется только на странице проекта, preload=metadata, без autoplay, со звуком", async () => {
   await fresh();
   assert.equal(await page.$$eval(`${PROJECTS} video`, (l) => l.filter((v) => /presentation\.mp4/.test(v.src)).length), 0);
-  await page.click(CARD);
+  await page.click(BURGER);
   await page.waitForSelector(VIDEO, { timeout: 3000 });
   const d = await projectData();
   const v = await page.$eval(VIDEO, (v) => ({

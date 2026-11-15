@@ -111,18 +111,18 @@ test("карточек столько же, сколько проектов в �
   assert.equal(await page.$$eval(`${PROJECTS} .mp-thumb`, (l) => l.filter((t) => /элемент/.test(t.textContent)).length), 0);
 });
 
-// Пока в данных одна карточка (доводим её до ума, потом масштабируем).
-test("в данных пока одна карточка — «Burger Cheddar»", async () => {
+// Полный список проектов проверяет tests/projects-data.test.mjs.
+test("Burger Cheddar есть в данных и в сетке", async () => {
   await fresh();
   const d = await projectsData();
-  assert.deepEqual(d.projects.map((p) => p.title), ["Burger Cheddar"]);
-  assert.deepEqual(await titles(), ["Burger Cheddar"]);
+  assert.ok(d.projects.some((p) => p.title === "Burger Cheddar"));
+  assert.ok((await titles()).includes("Burger Cheddar"));
 });
 
 // ---- Видео-превью карточки: обложка в покое, видео по кругу при наведении, красная дорожка ----
 const COVER = "/Assets/Projects/covers/BurgerCheddar.jpg";
 const VIDEO = "/Assets/Projects/previews/BurgerCheddar.mp4";
-const CARD = `${PROJECTS} .mp-card`;
+const CARD = `${PROJECTS} .mp-card[data-mp-slug="burger-cheddar"]`;
 const previewState = () =>
   page.$eval(CARD, (c) => {
     const t = c.querySelector(".mp-thumb");
