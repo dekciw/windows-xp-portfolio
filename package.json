@@ -4,9 +4,11 @@
   "type": "module",
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/",
-    "resume": "node scripts/build-resume.mjs"
+    "resume": "node scripts/build-resume.mjs",
+    "project-media": "node scripts/build-project-media.mjs"
   },
   "devDependencies": {
+    "ffmpeg-static": "^5.3.0",
     "pdfjs-dist": "^4.10.38",
     "puppeteer-core": "^23.11.1"
   }
