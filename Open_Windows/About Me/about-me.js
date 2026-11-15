@@ -221,7 +221,7 @@
       );
       win
         .querySelector('[data-am-action="projects"]')
-        .addEventListener("click", () => navigate(win, "projects"));
+        .addEventListener("click", () => bringWindowToFront("My Projects"));
       win
         .querySelector('[data-am-action="resume"]')
         .addEventListener("click", () => bringWindowToFront("Resume"));

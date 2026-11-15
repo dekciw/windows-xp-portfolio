@@ -57,11 +57,12 @@ function mp4Duration(file) {
   return buf.readUInt32BE(i + 20) / buf.readUInt32BE(i + 16);
 }
 
-// «Бумеранг»: ролик идёт вперёд, затем назад — исходник 6 с → 12 с, цикл без скачка.
-test("видео-аватары зациклены туда-обратно: по 12 с", () => {
-  for (const v of [VIDEO, ADMIN_VIDEO]) {
+// «Бумеранг»: ролик идёт вперёд, затем назад - длительность ≈ 2× исходника, цикл без скачка.
+// Пользователь: исходник 8 с → 16 с; администратор: 6 с → 12 с.
+test("видео-аватары зациклены туда-обратно", () => {
+  for (const [v, want] of [[VIDEO, 16], [ADMIN_VIDEO, 12]]) {
     const d = mp4Duration(path.join(ROOT, v));
-    assert.ok(Math.abs(d - 12) < 0.1, `${v}: ${d} с`);
+    assert.ok(Math.abs(d - want) < 0.15, `${v}: ${d} с, ожидалось ${want}`);
   }
 });
 

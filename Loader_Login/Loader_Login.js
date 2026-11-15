@@ -85,7 +85,7 @@ function loginAsGuest() {
   if (guestRole) guestRole.remove();
   guestSpan.insertAdjacentHTML(
     "afterend",
-    `<p>Загрузка личных настроек...</p>`
+    `<p class="user-status">Загрузка личных настроек...</p>`
   );
 
   userList.classList.add("is-padding-anim");

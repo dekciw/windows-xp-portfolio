@@ -108,9 +108,9 @@
 .xp-notification__close::before {
   content: '';
   position: absolute;
-  left: 5px;
-  top: 2px;
-  transform: rotate(45deg);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
   height: 8px;
   width: 2px;
   background-color: rgba(170, 170, 170);
@@ -119,9 +119,9 @@
 .xp-notification__close::after {
   content: '';
   position: absolute;
-  left: 5px;
-  top: 2px;
-  transform: rotate(-45deg);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
   height: 8px;
   width: 2px;
   background-color: rgba(170, 170, 170);

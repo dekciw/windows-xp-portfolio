@@ -96,12 +96,26 @@ test("двойной клик по иконке открывает «Обо мн
   assert.deepEqual(r, { onTop: true, hitInside: true });
 });
 
+// Внутренняя страница проектов (кнопкой больше не открывается - кнопка ведёт в окно «Мои проекты»).
+const showProjectsPage = () =>
+  page.evaluate((root) => AboutMe.show(document.querySelector(root), "projects"), ABOUT);
+
 test("повторный двойной клик не создаёт второе окно и не сбрасывает страницу", async () => {
   await fresh();
-  await clickIn('[data-am-action="projects"]');
+  await showProjectsPage();
   await openAboutMe(page);
   assert.equal(await page.$$eval(ABOUT, (l) => l.length), 1);
   assert.equal(await text(".address_bar_content_text"), "Обо мне › Мои проекты");
+});
+
+test("ссылка «Мои проекты» в приветственном уведомлении открывает окно «Мои проекты»", async () => {
+  const link = await page.waitForFunction(
+    () => [...document.querySelectorAll(".xp-notification a")].find((a) => a.textContent.trim() === "Мои проекты"),
+    { timeout: 10000 }
+  );
+  // Не кликаем: клик закрыл бы уведомление, нужное следующему тесту. Общий обработчик
+  // ссылок data-open-window проверяет тест «Обо мне» ниже.
+  assert.equal(await link.evaluate((a) => a.dataset.openWindow), "My Projects");
 });
 
 test("ссылка «Обо мне» в приветственном уведомлении открывает окно и закрывает уведомление", async () => {
@@ -258,7 +272,20 @@ test("панель: Назад/Вперёд неактивны, есть «Мо�
   assert.equal(await text('[data-am-action="resume"]'), "Моё резюме");
 });
 
-test("«Мои проекты» и навигация Назад / Вперёд / папка", async () => {
+test("«Мои проекты» открывает окно «Мои проекты», «Обо мне» остаётся на профиле", async () => {
+  await fresh();
+  await clickIn('[data-am-action="projects"]');
+  await page.waitForSelector('[id="window-My Projects"]', { timeout: 5000 });
+  assert.equal(await text(".address_bar_content_text"), "Обо мне");
+  const onTop = await page.evaluate(() => {
+    const z = (id) => parseInt(getComputedStyle(document.getElementById(id)).zIndex) || 0;
+    return z("window-My Projects") > z("window-About Me");
+  });
+  assert.equal(onTop, true, "окно проектов должно быть поверх «Обо мне»");
+  await page.evaluate(() => closeWindow("My Projects"));
+});
+
+test("внутренняя страница проектов и навигация Назад / Вперёд / папка", async () => {
   await fresh();
   const st = () =>
     page.evaluate((root) => {
@@ -270,7 +297,7 @@ test("«Мои проекты» и навигация Назад / Вперёд 
         address: w.querySelector(".address_bar_content_text").textContent.trim(),
       };
     }, ABOUT);
-  await clickIn('[data-am-action="projects"]');
+  await showProjectsPage();
   assert.deepEqual(await st(), { profile: false, projects: true, address: "Обо мне › Мои проекты" });
   assert.ok((await page.$$(`${ABOUT} .am-projects .am-item`)).length >= 1);
   await clickIn('[data-am-nav="back"]');
@@ -629,7 +656,7 @@ test("«Моё резюме» открывает окно резюме, новы
 
 test("закрыть и открыть снова — профиль, «Назад» неактивна", async () => {
   await fresh();
-  await clickIn('[data-am-action="projects"]');
+  await showProjectsPage();
   await fresh();
   assert.equal(await text(".address_bar_content_text"), "Обо мне");
   assert.equal(
