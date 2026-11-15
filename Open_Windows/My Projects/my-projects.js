@@ -414,7 +414,7 @@
     if (input.value !== st.query) input.value = st.query;
 
     const q = st.query.trim().toLowerCase();
-    const list = (data().projects || []).filter((p) => {
+    const list = ordered(win).filter((p) => {
       if (st.category !== "all" && p.category !== st.category) return false;
       if (!q) return true;
       return [p.title, p.meta, metaLine(p)].filter(Boolean).join(" ").toLowerCase().includes(q);
@@ -428,6 +428,37 @@
     const query = q ? "?q=" + encodeURIComponent(st.query.trim()) : "";
     win.querySelector(".mp-address").textContent = HOST + slug(st.category) + query;
     win.querySelector(".mp-page").scrollTop = 0;
+  }
+
+  // ---------- случайный порядок карточек ----------
+  // Перемешивается при открытии окна и по «дому» («Домой», логотип, «Все»);
+  // раздел, поиск и история показывают карточки в уже перемешанном порядке.
+
+  const keyOf = (p) => p.slug || p.title;
+
+  function reshuffle(win) {
+    const keys = (data().projects || []).map(keyOf);
+    for (let i = keys.length - 1; i > 0; i--) {
+      const j = Math.floor(window.MyProjects.random() * (i + 1));
+      [keys[i], keys[j]] = [keys[j], keys[i]];
+    }
+    win._mp.order = keys;
+  }
+
+  // Проекты в текущем порядке; новых (нет в order) - в конце, в порядке данных.
+  function ordered(win) {
+    const projects = data().projects || [];
+    const rank = new Map((win._mp.order || []).map((k, i) => [k, i]));
+    const last = rank.size;
+    return projects
+      .map((p, i) => ({ p, r: rank.has(keyOf(p)) ? rank.get(keyOf(p)) : last + i }))
+      .sort((a, b) => a.r - b.r)
+      .map((x) => x.p);
+  }
+
+  function goHome(win) {
+    reshuffle(win);
+    showGrid(win, "all", "");
   }
 
   function setCategory(win, category) {
@@ -467,6 +498,7 @@
     renderSocial(win);
     renderSidebar(win);
     setTheme(win, win._mp.theme);
+    reshuffle(win);
     apply(win);
 
     // Поиск всегда ведёт к сетке (со страницы проекта — новым шагом истории).
@@ -488,11 +520,14 @@
       if (tool && tools[tool.dataset.mpTool]) return tools[tool.dataset.mpTool](win);
 
       const nav = e.target.closest(".mp-nav");
-      if (nav) return setCategory(win, nav.dataset.mpCategory);
+      if (nav) {
+        if (nav.dataset.mpCategory === "all") return goHome(win);
+        return setCategory(win, nav.dataset.mpCategory);
+      }
 
       if (e.target.closest('[data-mp-action="home"]')) {
         e.preventDefault();
-        return showGrid(win, "all", "");
+        return goHome(win);
       }
       if (e.target.closest('[data-mp-action="theme"]')) {
         return setTheme(win, win._mp.theme === "dark" ? "light" : "dark");
@@ -526,5 +561,6 @@
     plural,
     timeAgo,
     metaLine,
+    random: Math.random,
   };
 })();

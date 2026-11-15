@@ -361,6 +361,81 @@ test("поиск фильтрует по названию, «Ничего не �
   assert.ok(await page.$(PROJECTS), "Esc в поиске не должен закрывать окно");
 }));
 
+// ---- Случайный порядок: перемешивание при открытии окна и по «дому» ----
+// seed - число: детерминированный генератор (LCG); null - генератор «исходный порядок» (как в стенде).
+const setRandom = (seed) =>
+  page.evaluate((s) => {
+    if (s === null) return (window.MyProjects.random = () => 0.999999);
+    let x = s;
+    window.MyProjects.random = () => ((x = (x * 1103515245 + 12345) % 2147483648) / 2147483648);
+  }, seed);
+const sampleTitles = SAMPLE_PROJECTS.map((p) => p.title);
+const sorted = (a) => [...a].sort();
+
+test("случайный порядок: при открытии окна карточки перемешаны", () => withSampleProjects(async () => {
+  try {
+    await closeProjects(page);
+    await setRandom(0);
+    await fresh();
+    const t = await titles();
+    assert.deepEqual(sorted(t), sorted(sampleTitles), "тот же набор карточек");
+    assert.notDeepEqual(t, sampleTitles, "порядок не перемешан");
+  } finally {
+    await setRandom(null);
+  }
+}));
+
+test("случайный порядок: «Домой», логотип и «Все» перемешивают заново", () => withSampleProjects(async () => {
+  try {
+    let prev = await titles();
+    const ways = {
+      home: `${PROJECTS} [data-mp-tool="home"]`,
+      logo: `${PROJECTS} .mp-logo`,
+      all: `${PROJECTS} .mp-nav[data-mp-category="all"]`,
+    };
+    let seed = 7;
+    for (const [name, sel] of Object.entries(ways)) {
+      await setRandom(seed++);
+      await page.click(sel);
+      const t = await titles();
+      assert.deepEqual(sorted(t), sorted(sampleTitles), name);
+      assert.notDeepEqual(t, prev, `${name}: порядок не изменился`);
+      prev = t;
+    }
+  } finally {
+    await setRandom(null);
+  }
+}));
+
+test("случайный порядок: поиск, «Назад» и раздел порядок не меняют", () => withSampleProjects(async () => {
+  try {
+    await closeProjects(page);
+    // slug - чтобы карточка открывала страницу проекта и было куда возвращаться «Назад».
+    await page.evaluate(() => window.MY_PROJECTS_DATA.projects.forEach((p, i) => (p.slug = "sample-" + i)));
+    await setRandom(3);
+    await fresh();
+    const order = await titles();
+    await setRandom(11); // если что-то перемешает ещё раз - порядок поменяется
+
+    await page.type(`${PROJECTS} .mp-search-input`, "ло");
+    assert.deepEqual(await titles(), order.filter((t) => t.toLowerCase().includes("ло")), "поиск - в текущем порядке");
+    await page.focus(`${PROJECTS} .mp-search-input`);
+    await page.keyboard.press("Escape");
+    assert.deepEqual(await titles(), order, "очистка поиска - тот же порядок");
+
+    await page.click(`${PROJECTS} .mp-card`);
+    await page.waitForFunction((sel) => !document.querySelector(`${sel} .mp-project`).hidden, {}, PROJECTS);
+    await page.click(`${PROJECTS} [data-mp-tool="back"]`);
+    assert.deepEqual(await titles(), order, "«Назад» со страницы проекта - тот же порядок");
+
+    await page.click(`${PROJECTS} .mp-nav[data-mp-category="client"]`);
+    const client = SAMPLE_PROJECTS.filter((p) => p.category === "client").map((p) => p.title);
+    assert.deepEqual(await titles(), order.filter((t) => client.includes(t)), "раздел - в текущем порядке");
+  } finally {
+    await setRandom(null);
+  }
+}));
+
 test("Светлая/Тёмная: по умолчанию тёмная, кнопка переключает, выбор запоминается", async () => {
   await fresh();
   const theme = () => page.$eval(`${PROJECTS} .mp-page`, (p) => p.dataset.theme);

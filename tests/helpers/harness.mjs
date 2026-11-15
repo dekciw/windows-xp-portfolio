@@ -108,6 +108,11 @@ export async function startHarness() {
   await page.waitForFunction(() => typeof openWindow === "function");
   // Base window template is fetched asynchronously by Bureau.js.
   await page.waitForFunction(() => typeof openWindowHTML === "string" && openWindowHTML.length > 0);
+  // «Мои проекты» перемешивают карточки через MyProjects.random. С таким генератором
+  // тасование оставляет исходный порядок - тесты, проверяющие порядок, детерминированы.
+  await page.evaluate(() => {
+    if (window.MyProjects) window.MyProjects.random = () => 0.999999;
+  });
   return {
     page,
     browser,
