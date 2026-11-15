@@ -159,6 +159,11 @@
     b.classList.toggle("function_bar_button--disable", !on);
   }
 
+  // Переход на другую страницу - «загрузка» в адресной строке (Bureau/address-loading.js).
+  function pageLoading(win) {
+    if (window.playAddressLoading) window.playAddressLoading("About Me", win, { navigation: true });
+  }
+
   function navigate(win, page) {
     const st = win._am;
     if (st.history[st.index] === page) return;
@@ -166,6 +171,7 @@
     st.history.push(page);
     st.index = st.history.length - 1;
     render(win);
+    pageLoading(win);
   }
 
   function show(win, page) {
@@ -176,6 +182,7 @@
     if (win._am.index > 0) {
       win._am.index--;
       render(win);
+      pageLoading(win);
     }
   }
 
@@ -183,6 +190,7 @@
     if (win._am.index < win._am.history.length - 1) {
       win._am.index++;
       render(win);
+      pageLoading(win);
     }
   }
 

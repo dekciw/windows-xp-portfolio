@@ -84,7 +84,12 @@ function installGithubMock(user, repos, readme, contrib) {
   };
 }
 
-export async function startHarness() {
+// options.addressLoading — показывать «загрузку страницы» при открытии окон
+// (Bureau/address-loading.js). По умолчанию выключена: остальные тесты работают
+// с содержимым окна сразу, не дожидаясь, пока оно проявится.
+// options.windowAnimation — анимация сворачивания/разворачивания (Bureau/window-minimize.js).
+// По умолчанию выключена: окно скрывается сразу, а не в конце полёта в панель задач.
+export async function startHarness(options = {}) {
   const { GH_USER, GH_REPOS, GH_README, GH_CONTRIB } = await import("../fixtures/github.mjs");
   const server = await startServer();
   const base = `http://127.0.0.1:${server.address().port}`;
@@ -104,6 +109,16 @@ export async function startHarness() {
     };
   });
   await page.evaluateOnNewDocument(installGithubMock, GH_USER, GH_REPOS, GH_README, GH_CONTRIB);
+  if (!options.addressLoading) {
+    await page.evaluateOnNewDocument(() => {
+      window.__noAddressLoading = true;
+    });
+  }
+  if (!options.windowAnimation) {
+    await page.evaluateOnNewDocument(() => {
+      window.__noWindowAnimation = true;
+    });
+  }
   await page.goto(`${base}/Bureau/Bureau.html`, { waitUntil: "domcontentloaded" });
   await page.waitForFunction(() => typeof openWindow === "function");
   // Base window template is fetched asynchronously by Bureau.js.
@@ -131,6 +146,8 @@ export async function openAboutMe(page) {
   if (!icon) throw new Error('desktop icon .icon[data-app="About Me"] not found');
   await icon.click({ count: 2 });
   await page.waitForSelector(`${ABOUT} .am-root`, { timeout: 5000 });
+  // Окно показывается, когда загрузились его стили (revealWindow в Bureau.js).
+  await page.waitForSelector(ABOUT, { visible: true, timeout: 5000 });
 }
 
 export async function closeAboutMe(page) {
@@ -145,6 +162,8 @@ export async function openResume(page) {
   if (!icon) throw new Error('desktop icon .icon[data-app="Resume"] not found');
   await icon.click({ count: 2 });
   await page.waitForSelector(`${RESUME} .rs-page img`, { timeout: 5000 });
+  // Окно показывается, когда загрузились его стили (revealWindow в Bureau.js).
+  await page.waitForSelector(RESUME, { visible: true, timeout: 5000 });
 }
 
 export async function closeResume(page) {
@@ -159,6 +178,8 @@ export async function openProjects(page) {
   if (!icon) throw new Error('desktop icon .icon[data-app="My Projects"] not found');
   await icon.click({ count: 2 });
   await page.waitForSelector(`${PROJECTS} .mp-card`, { timeout: 5000 });
+  // Окно показывается, когда загрузились его стили (revealWindow в Bureau.js).
+  await page.waitForSelector(PROJECTS, { visible: true, timeout: 5000 });
 }
 
 export async function closeProjects(page) {

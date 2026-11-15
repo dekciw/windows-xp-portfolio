@@ -69,6 +69,8 @@ class DesktopSelection {
   }
 
   handleMouseDown(e) {
+    // Рамку выделения рисует только левая кнопка (правая открывает контекстное меню).
+    if (e.button !== 0) return;
     // Игнорируем если клик на footer или кнопки
     if (e.target.closest('.footer_original, .footer, button, a')) return;
 
@@ -78,6 +80,14 @@ class DesktopSelection {
     // Разрешаем выделение только при клике на пустое место
     const isEmptySpace = e.target === this.mainContent || e.target === this.desktop;
     if (!isEmptySpace) return;
+
+    // Иначе браузер параллельно с рамкой включает своё выделение текста и подсвечивает синим
+    // значки, лежащие в разметке между началом и концом протяжки (а не те, что в рамке).
+    e.preventDefault();
+    const nativeSelection = window.getSelection && window.getSelection();
+    if (nativeSelection) nativeSelection.removeAllRanges();
+    // preventDefault отменяет и снятие фокуса - снимаем вручную (поле поиска в окне и т. п.).
+    if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
 
     this.isSelecting = true;
     this.startPos = {
@@ -90,6 +100,7 @@ class DesktopSelection {
     this.clearSelection();
 
     // Обновляем координаты иконок
+    this.updateIconsList(); // значки могли добавиться или удалиться (ярлыки)
     this.updateIconsRect();
 
     // Показываем рамку
@@ -237,48 +248,50 @@ class DesktopSelection {
     });
   }
 
+  // Выделен ли значок - решает класс .selected на нём (а не только наш список): его же ставит
+  // правый щелчок (контекстное меню). Иначе значок, выделенный не нами, не снимался никогда.
   selectIcon(iconElement) {
-    if (!this.selectedIcons.has(iconElement)) {
-      iconElement.classList.add('selected');
+    iconElement.classList.add('selected');
 
-      // Оборачиваем текст в inline элемент для точного фона
-      const span = iconElement.querySelector('span');
-      if (span && !span.querySelector('.selection-text')) {
-        const text = span.textContent;
-        span.innerHTML = `<span class="selection-text">${text}</span>`;
-      }
-
-      this.selectedIcons.add(iconElement);
+    // Оборачиваем текст в inline элемент для точного фона
+    const span = iconElement.querySelector('span');
+    if (span && !span.querySelector('.selection-text')) {
+      const text = span.textContent;
+      span.textContent = '';
+      const inner = document.createElement('span');
+      inner.className = 'selection-text';
+      inner.textContent = text;
+      span.appendChild(inner);
     }
+
+    this.selectedIcons.add(iconElement);
   }
 
   deselectIcon(iconElement) {
-    if (this.selectedIcons.has(iconElement)) {
-      iconElement.classList.remove('selected');
+    if (!iconElement.classList.contains('selected') && !this.selectedIcons.has(iconElement)) return;
+    iconElement.classList.remove('selected');
 
-      // Возвращаем оригинальный текст
-      const span = iconElement.querySelector('span');
-      const innerSpan = span?.querySelector('.selection-text');
-      if (innerSpan) {
-        span.textContent = innerSpan.textContent;
-      }
-
-      this.selectedIcons.delete(iconElement);
+    // Возвращаем оригинальный текст
+    const span = iconElement.querySelector('span');
+    const innerSpan = span?.querySelector('.selection-text');
+    if (innerSpan) {
+      span.textContent = innerSpan.textContent;
     }
+
+    this.selectedIcons.delete(iconElement);
   }
 
+  // Снять выделение со всех значков - и из нашего списка, и выделенных иначе (правым щелчком).
   clearSelection() {
-    this.selectedIcons.forEach(icon => {
-      icon.classList.remove('selected');
-
-      // Возвращаем оригинальный текст
-      const span = icon.querySelector('span');
-      const innerSpan = span?.querySelector('.selection-text');
-      if (innerSpan) {
-        span.textContent = innerSpan.textContent;
-      }
-    });
+    const all = new Set([...this.selectedIcons, ...this.desktop.querySelectorAll('.icon.selected')]);
+    all.forEach(icon => this.deselectIcon(icon));
     this.selectedIcons.clear();
+  }
+
+  // Выделить только этот значок (null - снять всё). Для контекстного меню значка.
+  selectOnly(iconElement) {
+    this.clearSelection();
+    if (iconElement) this.selectIcon(iconElement);
   }
 
   destroy() {
@@ -298,6 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Небольшая задержка чтобы убедиться что desktop готов
   setTimeout(() => {
     desktopSelection = new DesktopSelection();
+    window.desktopSelection = desktopSelection; // для контекстного меню (selectOnly)
     console.log('✅ DesktopSelection initialized');
   }, 100);
 });

@@ -1,0 +1,95 @@
+/* Диалог «Открыть ссылку» в стиле Windows XP (см. external-link.js).
+   Шапка - общие классы окон из Open_Window.css (window-header-background, window-header,
+   header-button--close); здесь - рамка, тело и кнопки. */
+
+.xp-link-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200000; /* выше окон, меню «Пуск» и уведомлений */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Лёгкое затемнение всего экрана под диалогом, проявляется плавно. */
+  background: rgba(0, 0, 0, 0.3);
+  animation: xp-link-dim 0.15s ease-out;
+}
+@keyframes xp-link-dim {
+  from {
+    background: rgba(0, 0, 0, 0);
+  }
+}
+
+.xp-link-dialog {
+  position: relative;
+  min-width: 300px;
+  max-width: min(460px, calc(100vw - 32px));
+  padding: 3px;
+  background-color: rgb(8, 49, 217);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.45);
+  font: 11px Tahoma, "Noto Sans", sans-serif;
+  color: #000;
+}
+.xp-link-dialog .window-header-background {
+  left: 0;
+  right: 0;
+  top: 0;
+}
+.xp-link-dialog__header {
+  top: 3px;
+}
+.xp-link-dialog__header .window-header-title {
+  flex: 1 1 auto;
+  padding-left: 3px;
+}
+
+.xp-link-dialog__body {
+  position: relative;
+  margin-top: 25px;
+  padding: 14px 12px 12px;
+  background: #ece9d8;
+}
+
+.xp-link-dialog__text {
+  margin: 0 0 18px;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.xp-link-dialog__buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Кнопка Windows XP (Luna): светлый градиент, синяя рамка, скругление 3px. */
+.xp-button {
+  min-width: 75px;
+  height: 23px;
+  padding: 0 10px;
+  border: 1px solid #003c74;
+  border-radius: 3px;
+  background: linear-gradient(#fff 0%, #f6f5f0 45%, #ecebe6 70%, #d6d0c5 100%);
+  font: 11px Tahoma, "Noto Sans", sans-serif;
+  color: #000;
+  white-space: nowrap;
+}
+/* Наведение - оранжевая подсветка по краю, как в XP. */
+.xp-button:hover {
+  box-shadow: inset 0 1px #fff0cf, inset 1px 0 #fbd88b, inset -1px 0 #fbd88b, inset 0 -2px #e5a01a;
+}
+/* Кнопка по умолчанию и фокус - синяя внутренняя рамка. */
+.xp-button:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 1px #cee7ff, inset 0 0 0 2px #98b8ea;
+}
+.xp-button:focus-visible {
+  outline: 1px dotted #000;
+  outline-offset: -4px;
+}
+.xp-button:active {
+  background: linear-gradient(#e5e4dd 0%, #e2e1da 70%, #f2f1ec 100%);
+  box-shadow: none;
+}

@@ -100,7 +100,9 @@ body, * {
   text-align: right;
   color: white;
   padding-right: 2%;
-  padding-top: 14%;
+  /* Центр логотипа с подписью - на уровне середины между плашками пользователей.
+     У #user-list отступ 13% (той же ширины), остальное - разница высот колонок в px. */
+  padding-top: calc(13% - 37px);
 }
 
 #left-panel p {
@@ -110,8 +112,9 @@ body, * {
   white-space: nowrap;
 }
 
+/* Крупнее, чтобы подпись «Full Stack Developer» в логотипе была чёткой, а не рваной. */
 #xp-logo {
-  width: 200px;
+  width: 300px;
   margin-bottom: 20px;
 }
 
@@ -369,7 +372,7 @@ body, * {
 }
 
 #Transi_log_off img {
-  width: 250px;
+  width: 320px;
 }
 
 #Transi_log_off p {

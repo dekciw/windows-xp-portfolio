@@ -708,3 +708,29 @@ test("логотип — персональный, пропорции 3:1, гр�
   assert.equal(left, 100 - right, "две половины должны стыковаться");
   assert.ok(cut > 645 / 2172 && cut < 712 / 2172, `граница ${cut} не в просвете`);
 });
+
+test("на панели после «Светлая/Тёмная» есть «Обо мне» и «Моё резюме»; кнопки открывают окна", async () => {
+  if (await page.$(PROJECTS)) await closeProjects(page);
+  await openProjects(page);
+  const labels = await page.$$eval(`${PROJECTS} .function_bar > .function_bar_button, ${PROJECTS} .function_bar > .function_bar_button--disable`, (els) =>
+    els.map((e) => e.querySelector(".function_bar_text").textContent.trim())
+  );
+  assert.deepEqual(labels.slice(-3), ["Светлая/Тёмная", "Обо мне", "Моё резюме"]);
+  const icons = await page.$$eval(`${PROJECTS} [data-mp-action="about"] img, ${PROJECTS} [data-mp-action="resume"] img`, (imgs) =>
+    imgs.map((i) => i.complete && i.naturalWidth > 0)
+  );
+  assert.deepEqual(icons, [true, true]);
+
+  await page.evaluate(() => ["About Me", "Resume"].forEach((a) => document.getElementById(`window-${a}`) && closeWindow(a)));
+  await page.click(`${PROJECTS} [data-mp-action="about"]`);
+  await page.waitForSelector('[id="window-About Me"]');
+  await page.click(`${PROJECTS} [data-mp-action="resume"]`);
+  await page.waitForSelector('[id="window-Resume"]');
+  // Новое окно - сверху.
+  const top = await page.evaluate(() => {
+    const wins = [...document.querySelectorAll(".window")].filter((w) => w.style.display !== "none");
+    return wins.reduce((a, b) => ((parseInt(b.style.zIndex) || 0) > (parseInt(a.style.zIndex) || 0) ? b : a)).id;
+  });
+  assert.equal(top, "window-Resume");
+  await page.evaluate(() => ["About Me", "Resume"].forEach((a) => closeWindow(a)));
+});

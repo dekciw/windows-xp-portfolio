@@ -1,0 +1,27 @@
+/* Полоска «загрузки вкладки» в адресной строке окон (см. address-loading.js).
+   Поле адреса становится отдельным слоем (isolation), а заливка лежит в нём на z-index -1:
+   над белым фоном поля, но под иконкой и текстом адреса - соседей трогать не нужно. */
+.addr-loading {
+  isolation: isolate;
+}
+
+.addr-progress {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  /* голубой XP-выделения, как в адресной строке IE */
+  background: #c3d5f2;
+  transform: scaleX(0);
+  transform-origin: left center;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Пока «страница грузится», под адресной строкой виден только фон страницы:
+   её содержимое скрыто и не кликается. */
+.addr-page-hidden {
+  pointer-events: none;
+}
+.addr-page-hidden > * {
+  opacity: 0;
+}

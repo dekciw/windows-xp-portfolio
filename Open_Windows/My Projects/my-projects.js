@@ -331,12 +331,21 @@
     apply(win);
   }
 
+  // Переход на другую страницу сайта - «загрузка» в адресной строке (Bureau/address-loading.js):
+  // шапка и боковая панель остаются, пустеет только середина, пока идёт полоска.
+  function pageLoading(win) {
+    if (window.playAddressLoading) {
+      window.playAddressLoading("My Projects", win, { navigation: true, page: win.querySelector(".mp-main") });
+    }
+  }
+
   function openProject(win, projectSlug) {
     if (!findProject(projectSlug)) return;
     const entry = current(win);
     if (entry.view === "project" && entry.slug === projectSlug) return;
     push(win, { view: "project", slug: projectSlug });
     apply(win);
+    pageLoading(win);
   }
 
   function goBack(win) {
@@ -345,6 +354,7 @@
     win._mp.index--;
     apply(win);
     focusCardOf(win, from);
+    pageLoading(win);
   }
 
   function goForward(win) {
@@ -353,6 +363,7 @@
     win._mp.index++;
     apply(win);
     focusCardOf(win, from);
+    pageLoading(win);
   }
 
   // Со страницы проекта вернулись в сетку — фокус на карточку этого проекта (если она видна).
@@ -459,10 +470,12 @@
   function goHome(win) {
     reshuffle(win);
     showGrid(win, "all", "");
+    pageLoading(win);
   }
 
   function setCategory(win, category) {
     showGrid(win, category, win._mp.query);
+    pageLoading(win);
   }
 
   function setTheme(win, theme) {
@@ -532,6 +545,8 @@
       if (e.target.closest('[data-mp-action="theme"]')) {
         return setTheme(win, win._mp.theme === "dark" ? "light" : "dark");
       }
+      if (e.target.closest('[data-mp-action="about"]')) return bringWindowToFront("About Me");
+      if (e.target.closest('[data-mp-action="resume"]')) return bringWindowToFront("Resume");
       // Пункты меню «Вид» вставляются Bureau.js при каждом открытии меню.
       const themeItem = e.target.closest("[data-mp-theme]");
       if (themeItem) return setTheme(win, themeItem.dataset.mpTheme);

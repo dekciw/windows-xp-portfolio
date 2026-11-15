@@ -235,6 +235,8 @@
       a.href = p.site;
       a.target = "_blank";
       a.rel = "noopener noreferrer";
+      // Имя для диалога «Открыть ссылку» (Bureau/external-link.js): название проекта, а не «Открыть сайт».
+      a.dataset.linkName = p.title;
       a.appendChild(svgIcon(20, ICON_EXTERNAL));
       a.appendChild(el("span", null, "Открыть сайт"));
       row.appendChild(a);

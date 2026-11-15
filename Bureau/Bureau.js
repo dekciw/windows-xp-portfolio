@@ -120,8 +120,9 @@ document.addEventListener("DOMContentLoaded", () => {
   updateTaskbarVisibility();
 
   function updateClock() {
-    let now = new Date().toLocaleTimeString([], {
-      hour12: true,
+    // Как в России: 24 часа без AM/PM - 09:04, 18:53, 23:59.
+    let now = new Date().toLocaleTimeString("ru-RU", {
+      hour12: false,
       hour: "2-digit",
       minute: "2-digit",
     });
@@ -166,6 +167,7 @@ document.addEventListener("click", function (event) {
 });
 
 // options.silent — открыть без звука (автооткрытие при загрузке, восстановление окон).
+// options.restore — окно восстанавливается после перезагрузки: позицию не менять (см. scatterWindow).
 function openWindow(appName, options = {}) {
   let windowTooltipContainer = null;
   let windowCurrentLabel = null;
@@ -210,7 +212,7 @@ function openWindow(appName, options = {}) {
   );
   windowElement.innerHTML = personalizedHTML;
 
-  if (appName === "Minesweeper") {
+  if (appName === "Minesweeper" || appName === "Calculator") {
     const maximazeButton = windowElement.querySelector(
       ".header-button--maximaze"
     );
@@ -234,6 +236,10 @@ function openWindow(appName, options = {}) {
     // Cache la fenêtre au départ
     windowElement.style.visibility = "hidden";
     windowElement.style.opacity = "0";
+  } else {
+    // Окно невидимо, пока не пришли его HTML и стили и оно не встало на своё место:
+    // иначе на долю секунды мелькает пустая синяя рамка, которая потом прыгает (revealWindow).
+    windowElement.style.visibility = "hidden";
   }
 
   fetch(`/Open_Windows/${appName}/${appName}.html`)
@@ -259,6 +265,10 @@ function openWindow(appName, options = {}) {
       }
       if (appName === "Resume" && window.ResumeWindow) window.ResumeWindow.init(windowElement);
       if (appName === "My Projects" && window.MyProjects) window.MyProjects.init(windowElement);
+      if (appName === "Calculator" && window.XPCalculator) window.XPCalculator.init(windowElement);
+      // Новое окно - на своё место, а не поверх предыдущих (восстановленные окна не трогаем).
+      if (!options.restore) scatterWindow(windowElement);
+      revealWindow(appName, windowElement);
 
       const labelDivs = windowElement.querySelectorAll(
         ".drop_down_label, .Minesweeper_drop_down_label"
@@ -374,6 +384,7 @@ function openWindow(appName, options = {}) {
     })
     .catch((error) => {
       console.error("Erreur de chargement :", error);
+      revealWindow(appName, windowElement);
     });
 
   document.body.appendChild(windowElement);
@@ -390,7 +401,11 @@ function openWindow(appName, options = {}) {
     taskbarItem.classList.add("taskbar-item");
     const displayName = appDisplayNames[appName] || appName;
     taskbarItem.innerHTML = `<img src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/${appName}.png" width="16"> <span>${displayName}</span>`;
-    taskbarItem.onmousedown = () => toggleWindow(appName);
+    // Только левая кнопка: правая открывает меню окна (desktop-context-menu.js), как в XP.
+    taskbarItem.onmousedown = (e) => {
+      if (e && e.button !== 0) return;
+      toggleWindow(appName);
+    };
     taskbar.appendChild(taskbarItem);
   }
 
@@ -409,6 +424,59 @@ function openWindow(appName, options = {}) {
       windowCurrentLabel = null;
     }
   });
+}
+
+// Куда ставить новое окно. Первое - по центру рабочего стола, следующие - по «слотам»
+// в разных частях свободного места (доли от запаса по ширине и высоте), пропуская
+// занятые. Если места нет (окно почти во весь экран) - лесенкой от последнего окна.
+const WINDOW_SLOTS = [
+  [0.5, 0.5], [0.06, 0.06], [0.94, 0.18], [0.28, 0.78], [0.78, 0.92],
+  [0.12, 0.45], [0.88, 0.58], [0.55, 0.08], [0.04, 0.94], [0.46, 0.96],
+];
+function scatterWindow(win) {
+  const desk = document.getElementById("desktop");
+  if (!desk || !win.isConnected) return;
+  const d = desk.getBoundingClientRect();
+  const w = win.offsetWidth;
+  const h = win.offsetHeight;
+  const roomX = Math.max(0, d.width - w);
+  const roomY = Math.max(0, d.height - h);
+  const others = Array.from(document.querySelectorAll(".window")).filter(
+    (o) => o !== win && o.style.display !== "none" && o.dataset.maximized !== "true"
+  );
+  const pos = (o) => [parseFloat(o.style.left) || 0, parseFloat(o.style.top) || 0];
+  const taken = (x, y) =>
+    others.some((o) => {
+      const [ox, oy] = pos(o);
+      return Math.abs(ox - x) < 48 && Math.abs(oy - y) < 48;
+    });
+
+  let left = null;
+  let top = null;
+  const start = others.length % WINDOW_SLOTS.length;
+  for (let i = 0; i < WINDOW_SLOTS.length; i++) {
+    const [fx, fy] = WINDOW_SLOTS[(start + i) % WINDOW_SLOTS.length];
+    const x = d.left + window.scrollX + Math.round(roomX * fx);
+    const y = d.top + window.scrollY + Math.round(roomY * fy);
+    if (!taken(x, y)) {
+      left = x;
+      top = y;
+      break;
+    }
+  }
+  if (left === null) {
+    // Лесенка: на 30px правее и ниже самого верхнего окна, но заголовок остаётся на экране.
+    const topWin = others.reduce((a, b) =>
+      (parseInt(b.style.zIndex, 10) || 0) > (parseInt(a.style.zIndex, 10) || 0) ? b : a
+    );
+    const [tx, ty] = pos(topWin);
+    left = tx + 30;
+    top = ty + 30;
+    if (left > d.right - 200) left = d.left + 10;
+    if (top > d.bottom - 100) top = d.top + 10;
+  }
+  win.style.left = left + "px";
+  win.style.top = top + "px";
 }
 
 function observeSecondaryTooltipRows(appName) {
@@ -714,7 +782,11 @@ function openRawWinamp() {
     if (minimizeBtn) {
       minimizeBtn.addEventListener("click", () => {
         const win = document.getElementById("webamp");
-        if (win) win.style.display = "none";
+        if (win) {
+          window.XPWindowMinimize.minimize(win, document.getElementById("taskbar-Winamp"), {
+            onHidden: updateTaskbarHighlight,
+          });
+        }
         updateTaskbarHighlight();
       });
     }
@@ -729,26 +801,28 @@ function openRawWinamp() {
     taskbarItem.id = `taskbar-Winamp`;
     taskbarItem.classList.add("taskbar-item");
     taskbarItem.innerHTML = `<img src="/Assets/Images/Logos/winamp-logo.png" width="16"> <span>Winamp</span>`;
-    taskbarItem.onmousedown = () => {
+    taskbarItem.onmousedown = (e) => {
+      if (e && e.button !== 0) return; // правая кнопка не сворачивает/разворачивает
       const winampWindow = document.getElementById("webamp");
       if (!winampWindow) return;
 
+      window.XPWindowMinimize.settle(winampWindow);
       const winampZ = parseInt(winampWindow.style.zIndex || "0", 10);
 
       if (
         winampWindow.style.display === "none" ||
         getComputedStyle(winampWindow).display === "none"
       ) {
-        winampWindow.style.display = "block";
         zIndexCounter++;
         winampWindow.style.zIndex = zIndexCounter;
+        window.XPWindowMinimize.restore(winampWindow, taskbarItem, { display: "block" });
         updateTaskbarHighlight();
       } else if (winampZ < zIndexCounter) {
         zIndexCounter++;
         winampWindow.style.zIndex = zIndexCounter;
         updateTaskbarHighlight();
       } else if (winampZ >= zIndexCounter) {
-        winampWindow.style.display = "none";
+        window.XPWindowMinimize.minimize(winampWindow, taskbarItem, { onHidden: updateTaskbarHighlight });
         updateTaskbarHighlight();
       }
     };
@@ -1125,7 +1199,11 @@ function bringWindowToFront(appName) {
   openWindow(appName);
   const win = document.getElementById(`window-${appName}`);
   if (!win) return;
-  win.style.removeProperty("display");
+  window.XPWindowMinimize.settle(win);
+  if (win.style.display === "none") {
+    // Было свёрнуто - разворачиваем со звуком и анимацией из кнопки панели задач.
+    window.XPWindowMinimize.restore(win, document.getElementById(`taskbar-${appName}`));
+  }
   win.classList.remove("window-inactive");
   zIndexCounter++;
   win.style.zIndex = zIndexCounter;
@@ -1138,6 +1216,9 @@ function toggleWindow(appName) {
 
   if (!windowElement || !taskbarItem) return;
 
+  // Клик во время анимации сворачивания/разворачивания - сначала доводим её до конца.
+  window.XPWindowMinimize.settle(windowElement);
+
   const isHidden = windowElement.style.display === "none";
   const isInactive = windowElement.classList.contains("window-inactive");
 
@@ -1148,16 +1229,20 @@ function toggleWindow(appName) {
   const isOnTop = parseInt(windowElement.style.zIndex) === zIndexCounter;
 
   if (isHidden) {
-    windowElement.style.removeProperty("display");
     windowElement.classList.remove("window-inactive");
     zIndexCounter++;
     windowElement.style.zIndex = zIndexCounter;
+    // Звук «Restore» и вылет окна из кнопки панели задач (Bureau/window-minimize.js).
+    window.XPWindowMinimize.restore(windowElement, taskbarItem);
 
     updateTaskbarHighlight(appName, true);
   } else {
     if (isOnTop) {
-      windowElement.style.display = "none";
       windowElement.classList.add("window-inactive");
+      // Звук «Minimize» и полёт окна в кнопку панели задач; скрывается в конце анимации.
+      window.XPWindowMinimize.minimize(windowElement, taskbarItem, {
+        onHidden: () => updateTaskbarHighlight(appName, false),
+      });
 
       updateTaskbarHighlight(appName, false);
     } else {
@@ -1187,8 +1272,10 @@ function maximazeWindow(appName) {
   );
 
   if (!isMaximized) {
-    windowElement.dataset.originalWidth = windowElement.offsetWidth;
-    windowElement.dataset.originalHeight = windowElement.offsetHeight;
+    // Запоминаем размер как он задан (style), а не offsetWidth: тот включает рамку окна
+    // (padding 3px), и после «Восстановить» окно росло на 6px при каждом развороте.
+    windowElement.dataset.originalWidth = windowElement.style.width;
+    windowElement.dataset.originalHeight = windowElement.style.height;
     windowElement.dataset.originalLeft = windowElement.style.left;
     windowElement.dataset.originalTop = windowElement.style.top;
 
@@ -1208,8 +1295,8 @@ function maximazeWindow(appName) {
 
     updateTaskbarHighlight(appName, true);
   } else {
-    windowElement.style.width = `${windowElement.dataset.originalWidth}px`;
-    windowElement.style.height = `${windowElement.dataset.originalHeight}px`;
+    windowElement.style.width = windowElement.dataset.originalWidth || "";
+    windowElement.style.height = windowElement.dataset.originalHeight || "";
     windowElement.style.left = windowElement.dataset.originalLeft;
     windowElement.style.top = windowElement.dataset.originalTop;
 
@@ -1287,27 +1374,46 @@ function makeResizable(windowElement) {
     startLeft,
     resizeDir = "";
   let iframe;
+  let frameW = 0,
+    frameH = 0;
+  // Зона захвата края: синяя рамка окна = 3px padding, берём с запасом.
+  const borderSize = 4;
+
+  // Какой край под курсором: "", "n", "s", "e", "w", "ne", "nw", "se", "sw".
+  function edgeAt(e) {
+    const rect = windowElement.getBoundingClientRect();
+    const x = e.clientX;
+    const y = e.clientY;
+    let dir = "";
+    if (y >= rect.top && y <= rect.top + borderSize) dir += "n";
+    if (y >= rect.bottom - borderSize && y <= rect.bottom) dir += "s";
+    if (x >= rect.right - borderSize && x <= rect.right) dir += "e";
+    if (x >= rect.left && x <= rect.left + borderSize) dir += "w";
+    return dir;
+  }
+
+  // Направление -> XP-курсор (см. data-xp-resize в Bureau.css).
+  function cursorKind(dir) {
+    if (dir === "ne" || dir === "sw") return "nesw";
+    if (dir === "nw" || dir === "se") return "nwse";
+    if (dir === "e" || dir === "w") return "ew";
+    if (dir === "n" || dir === "s") return "ns";
+    return "";
+  }
+
+  function setCursor(el, kind) {
+    if (kind) el.dataset.xpResize = kind;
+    else delete el.dataset.xpResize;
+  }
 
   windowElement.addEventListener("mousedown", (e) => {
+    if (windowElement.dataset.maximized === "true") return;
     const rect = windowElement.getBoundingClientRect();
-    const borderSize = 2;
-
-    const mouseX = e.clientX;
-    const mouseY = e.clientY;
-
-    const onLeft = mouseX >= rect.left && mouseX <= rect.left + borderSize;
-    const onRight = mouseX >= rect.right - borderSize && mouseX <= rect.right;
-    const onTop = mouseY >= rect.top && mouseY <= rect.top + borderSize;
-    const onBottom =
-      mouseY >= rect.bottom - borderSize && mouseY <= rect.bottom;
-
-    resizeDir = "";
-    if (onRight) resizeDir += "e";
-    if (onLeft) resizeDir += "w";
-    if (onTop) resizeDir += "n";
-    if (onBottom) resizeDir += "s";
+    resizeDir = edgeAt(e);
 
     if (resizeDir !== "") {
+      // Курсор держится на всей странице, пока тянем, даже если мышь ушла с рамки.
+      setCursor(document.documentElement, cursorKind(resizeDir));
       isResizing = true;
       isResizingGlobal = true;
       startX = e.clientX;
@@ -1316,6 +1422,11 @@ function makeResizable(windowElement) {
       startHeight = rect.height;
       startTop = rect.top;
       startLeft = rect.left;
+      // style.width/height задают content-box, а rect - вместе с рамкой (padding).
+      // Без поправки окно прыгало на 6px при каждом захвате края.
+      const cs = getComputedStyle(windowElement);
+      frameW = rect.width - parseFloat(cs.width);
+      frameH = rect.height - parseFloat(cs.height);
 
       iframe = windowElement.querySelector("iframe");
       if (iframe) iframe.style.pointerEvents = "none";
@@ -1327,46 +1438,15 @@ function makeResizable(windowElement) {
   });
 
   windowElement.addEventListener("mousemove", (e) => {
-    if (isResizing) {
-      if (resizeDir.includes("n") && resizeDir.includes("e")) {
-        windowElement.style.cursor = "nesw-resize";
-      } else if (resizeDir.includes("s") && resizeDir.includes("w")) {
-        windowElement.style.cursor = "nesw-resize";
-      } else if (resizeDir.includes("n") && resizeDir.includes("w")) {
-        windowElement.style.cursor = "nwse-resize";
-      } else if (resizeDir.includes("s") && resizeDir.includes("e")) {
-        windowElement.style.cursor = "nwse-resize";
-      } else if (resizeDir.includes("e") || resizeDir.includes("w")) {
-        windowElement.style.cursor = "ew-resize";
-      } else if (resizeDir.includes("n") || resizeDir.includes("s")) {
-        windowElement.style.cursor = "ns-resize";
-      }
-      return;
-    }
+    if (isResizing) return;
+    const kind = windowElement.dataset.maximized === "true"
+      ? ""
+      : cursorKind(edgeAt(e));
+    setCursor(windowElement, kind);
+  });
 
-    const rect = windowElement.getBoundingClientRect();
-    const borderSize = 2;
-
-    const mouseX = e.clientX;
-    const mouseY = e.clientY;
-
-    const onLeft = mouseX >= rect.left && mouseX <= rect.left + borderSize;
-    const onRight = mouseX >= rect.right - borderSize && mouseX <= rect.right;
-    const onTop = mouseY >= rect.top && mouseY <= rect.top + borderSize;
-    const onBottom =
-      mouseY >= rect.bottom - borderSize && mouseY <= rect.bottom;
-
-    if ((onLeft && onTop) || (onRight && onBottom)) {
-      windowElement.style.cursor = "nwse-resize";
-    } else if ((onRight && onTop) || (onLeft && onBottom)) {
-      windowElement.style.cursor = "nesw-resize";
-    } else if (onLeft || onRight) {
-      windowElement.style.cursor = "ew-resize";
-    } else if (onTop || onBottom) {
-      windowElement.style.cursor = "ns-resize";
-    } else {
-      windowElement.style.cursor = "default";
-    }
+  windowElement.addEventListener("mouseleave", () => {
+    if (!isResizing) setCursor(windowElement, "");
   });
 
   function onMouseMove(e) {
@@ -1380,7 +1460,7 @@ function makeResizable(windowElement) {
       if (newWidth < minWidth) {
         newWidth = minWidth;
       }
-      windowElement.style.width = newWidth + "px";
+      windowElement.style.width = newWidth - frameW + "px";
     }
 
     if (resizeDir.includes("s")) {
@@ -1388,7 +1468,7 @@ function makeResizable(windowElement) {
       if (newHeight < minHeight) {
         newHeight = minHeight;
       }
-      windowElement.style.height = newHeight + "px";
+      windowElement.style.height = newHeight - frameH + "px";
     }
 
     if (resizeDir.includes("w")) {
@@ -1400,7 +1480,7 @@ function makeResizable(windowElement) {
         newWidth = minWidth;
       }
 
-      windowElement.style.width = newWidth + "px";
+      windowElement.style.width = newWidth - frameW + "px";
       windowElement.style.left = newLeft + "px";
     }
 
@@ -1413,7 +1493,7 @@ function makeResizable(windowElement) {
         newHeight = minHeight;
       }
 
-      windowElement.style.height = newHeight + "px";
+      windowElement.style.height = newHeight - frameH + "px";
       windowElement.style.top = newTop + "px";
     }
   }
@@ -1421,6 +1501,8 @@ function makeResizable(windowElement) {
   function onMouseUp() {
     isResizing = false;
     isResizingGlobal = false;
+    setCursor(document.documentElement, "");
+    setCursor(windowElement, "");
     if (iframe) iframe.style.pointerEvents = "auto";
     document.removeEventListener("mousemove", onMouseMove);
     document.removeEventListener("mouseup", onMouseUp);
@@ -1428,14 +1510,16 @@ function makeResizable(windowElement) {
 }
 
 function updateTaskbarHighlight() {
+  // Сворачиваемое окно (летит в кнопку, window-minimize.js) уже не считается открытым.
   const windows = Array.from(document.querySelectorAll(".window")).filter(
-    (win) => win.style.display !== "none"
+    (win) => win.style.display !== "none" && !win.dataset.minimizing
   );
 
   const webampDiv = document.getElementById("webamp");
   if (
     webampDiv &&
     webampDiv.style.display !== "none" &&
+    !webampDiv.dataset.minimizing &&
     !windows.includes(webampDiv)
   ) {
     windows.push(webampDiv);
@@ -1925,8 +2009,35 @@ function injectStyle(id, href) {
     link.id = cssId;
     link.rel = "stylesheet";
     link.href = href;
+    // Отметка «стили пришли» (с @import внутри - тоже): её ждёт whenStyleReady.
+    const done = () => (link.dataset.ready = "1");
+    link.addEventListener("load", done);
+    link.addEventListener("error", done);
     document.head.appendChild(link);
   }
+}
+
+// Промис: стили, подключённые injectStyle(id), загружены. Не дольше maxMs - окно
+// не должно остаться невидимым, если файл стилей завис.
+function whenStyleReady(id, maxMs = 1500) {
+  const link = document.getElementById(`css-${id}`);
+  if (!link || link.dataset.ready) return Promise.resolve();
+  return new Promise((resolve) => {
+    const done = () => resolve();
+    link.addEventListener("load", done, { once: true });
+    link.addEventListener("error", done, { once: true });
+    setTimeout(done, maxMs);
+  });
+}
+
+// Показать окно, когда в нём есть содержимое и его стили загружены, - сразу целиком и на
+// своём месте; с этого же момента в адресной строке идёт «загрузка страницы».
+function revealWindow(appName, windowElement) {
+  if (appName === "Space Cadet Pinball") return; // Pinball показывает себя сам (showWindow)
+  whenStyleReady(`window-${appName}`).then(() => {
+    windowElement.style.visibility = "";
+    if (window.playAddressLoading) window.playAddressLoading(appName, windowElement);
+  });
 }
 
 document.addEventListener("mousedown", function (event) {
@@ -1959,7 +2070,7 @@ setTimeout(() => {
   const windowStates = JSON.parse(localStorage.getItem("openWindows") || "[]");
   windowStates.forEach(
     ({ appName, left, top, width, height, display, zIndex }) => {
-      openWindow(appName, { silent: true }); // восстановление окон — без звука
+      openWindow(appName, { silent: true, restore: true }); // восстановление окон — без звука и на прежнем месте
 
       const win = document.getElementById(`window-${appName}`);
       if (win) {
@@ -1987,8 +2098,9 @@ function writeDateTime() {
   const dateOptions = { year: "numeric", month: "2-digit", day: "2-digit" };
   const timeOptions = { hour: "2-digit", minute: "2-digit" };
 
-  const dateStr = now.toLocaleDateString("en-US", dateOptions);
-  const timeStr = now.toLocaleTimeString("en-US", timeOptions);
+  // По-русски: 18:53 15.11.2026
+  const dateStr = now.toLocaleDateString("ru-RU", dateOptions);
+  const timeStr = now.toLocaleTimeString("ru-RU", { ...timeOptions, hour12: false });
 
   textarea.value += `${timeStr} ${dateStr} \n`;
 }
@@ -1997,190 +2109,4 @@ function openCalculator() {
   openWindow('Calculator');
 }
 
-// Логика калькулятора Windows XP
-let calculatorState = {
-  displayValue: '0',
-  previousValue: null,
-  operation: null,
-  waitingForOperand: false,
-  memory: 0
-};
-
-function updateCalculatorDisplay() {
-  const display = document.querySelector('#window-Calculator .calculator-display');
-  if (display) {
-    display.value = calculatorState.displayValue;
-  }
-}
-
-function handleCalculatorNumber(num) {
-  if (calculatorState.waitingForOperand) {
-    calculatorState.displayValue = String(num);
-    calculatorState.waitingForOperand = false;
-  } else {
-    calculatorState.displayValue = calculatorState.displayValue === '0'
-      ? String(num)
-      : calculatorState.displayValue + num;
-  }
-  updateCalculatorDisplay();
-}
-
-function handleCalculatorOperation(nextOperation) {
-  const inputValue = parseFloat(calculatorState.displayValue);
-
-  if (calculatorState.previousValue === null) {
-    calculatorState.previousValue = inputValue;
-  } else if (calculatorState.operation) {
-    const result = performCalculation();
-    calculatorState.displayValue = String(result);
-    calculatorState.previousValue = result;
-  }
-
-  calculatorState.waitingForOperand = true;
-  calculatorState.operation = nextOperation;
-  updateCalculatorDisplay();
-}
-
-function performCalculation() {
-  const prev = calculatorState.previousValue;
-  const current = parseFloat(calculatorState.displayValue);
-
-  switch (calculatorState.operation) {
-    case '+':
-      return prev + current;
-    case '-':
-      return prev - current;
-    case '*':
-      return prev * current;
-    case '/':
-      return current !== 0 ? prev / current : 0;
-    default:
-      return current;
-  }
-}
-
-function handleCalculatorEquals() {
-  if (calculatorState.operation && calculatorState.previousValue !== null) {
-    const result = performCalculation();
-    calculatorState.displayValue = String(result);
-    calculatorState.previousValue = null;
-    calculatorState.operation = null;
-    calculatorState.waitingForOperand = false;
-    updateCalculatorDisplay();
-  }
-}
-
-function handleCalculatorClear() {
-  calculatorState.displayValue = '0';
-  calculatorState.previousValue = null;
-  calculatorState.operation = null;
-  calculatorState.waitingForOperand = false;
-  updateCalculatorDisplay();
-}
-
-function handleCalculatorCE() {
-  calculatorState.displayValue = '0';
-  updateCalculatorDisplay();
-}
-
-function handleCalculatorBackspace() {
-  calculatorState.displayValue = calculatorState.displayValue.length > 1
-    ? calculatorState.displayValue.slice(0, -1)
-    : '0';
-  updateCalculatorDisplay();
-}
-
-function handleCalculatorDecimal() {
-  if (!calculatorState.displayValue.includes('.')) {
-    calculatorState.displayValue += '.';
-    updateCalculatorDisplay();
-  }
-}
-
-function handleCalculatorNegate() {
-  const value = parseFloat(calculatorState.displayValue);
-  calculatorState.displayValue = String(-value);
-  updateCalculatorDisplay();
-}
-
-function handleCalculatorPercent() {
-  const value = parseFloat(calculatorState.displayValue);
-  calculatorState.displayValue = String(value / 100);
-  updateCalculatorDisplay();
-}
-
-function handleCalculatorSqrt() {
-  const value = parseFloat(calculatorState.displayValue);
-  calculatorState.displayValue = String(Math.sqrt(value));
-  updateCalculatorDisplay();
-}
-
-function handleCalculatorReciprocal() {
-  const value = parseFloat(calculatorState.displayValue);
-  calculatorState.displayValue = value !== 0 ? String(1 / value) : '0';
-  updateCalculatorDisplay();
-}
-
-function handleCalculatorMemory(action) {
-  const value = parseFloat(calculatorState.displayValue);
-
-  switch(action) {
-    case 'MC':
-      calculatorState.memory = 0;
-      break;
-    case 'MR':
-      calculatorState.displayValue = String(calculatorState.memory);
-      updateCalculatorDisplay();
-      break;
-    case 'MS':
-      calculatorState.memory = value;
-      break;
-    case 'M+':
-      calculatorState.memory += value;
-      break;
-  }
-}
-
-// Event delegation для обработки кликов на кнопки калькулятора
-document.addEventListener('click', function(e) {
-  const calcWindow = document.getElementById('window-Calculator');
-  if (!calcWindow) return;
-
-  const button = e.target.closest('.calculator-button');
-  if (!button) return;
-
-  // Цифры
-  if (button.classList.contains('calculator-button-num-0')) handleCalculatorNumber(0);
-  else if (button.classList.contains('calculator-button-num-1')) handleCalculatorNumber(1);
-  else if (button.classList.contains('calculator-button-num-2')) handleCalculatorNumber(2);
-  else if (button.classList.contains('calculator-button-num-3')) handleCalculatorNumber(3);
-  else if (button.classList.contains('calculator-button-num-4')) handleCalculatorNumber(4);
-  else if (button.classList.contains('calculator-button-num-5')) handleCalculatorNumber(5);
-  else if (button.classList.contains('calculator-button-num-6')) handleCalculatorNumber(6);
-  else if (button.classList.contains('calculator-button-num-7')) handleCalculatorNumber(7);
-  else if (button.classList.contains('calculator-button-num-8')) handleCalculatorNumber(8);
-  else if (button.classList.contains('calculator-button-num-9')) handleCalculatorNumber(9);
-
-  // Операции
-  else if (button.classList.contains('calculator-button-plus')) handleCalculatorOperation('+');
-  else if (button.classList.contains('calculator-button-minus')) handleCalculatorOperation('-');
-  else if (button.classList.contains('calculator-button-multiply')) handleCalculatorOperation('*');
-  else if (button.classList.contains('calculator-button-divide')) handleCalculatorOperation('/');
-
-  // Специальные функции
-  else if (button.classList.contains('calculator-button-equals')) handleCalculatorEquals();
-  else if (button.classList.contains('calculator-button-c')) handleCalculatorClear();
-  else if (button.classList.contains('calculator-button-ce')) handleCalculatorCE();
-  else if (button.classList.contains('calculator-button-backspace')) handleCalculatorBackspace();
-  else if (button.classList.contains('calculator-button-decimal')) handleCalculatorDecimal();
-  else if (button.classList.contains('calculator-button-negate')) handleCalculatorNegate();
-  else if (button.classList.contains('calculator-button-percent')) handleCalculatorPercent();
-  else if (button.classList.contains('calculator-button-sqrt')) handleCalculatorSqrt();
-  else if (button.classList.contains('calculator-button-reciprocal')) handleCalculatorReciprocal();
-
-  // Память
-  else if (button.classList.contains('calculator-button-mc')) handleCalculatorMemory('MC');
-  else if (button.classList.contains('calculator-button-mr')) handleCalculatorMemory('MR');
-  else if (button.classList.contains('calculator-button-ms')) handleCalculatorMemory('MS');
-  else if (button.classList.contains('calculator-button-mplus')) handleCalculatorMemory('M+');
-});
+// Логика инженерного калькулятора - /Open_Windows/Calculator/Calculator.js (window.XPCalculator).

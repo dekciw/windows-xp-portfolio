@@ -1,0 +1,60 @@
+/* Трей панели задач как в Windows XP (см. tray.js). */
+
+/* Подсказка значков трея: кремовый фон, тонкая чёрная рамка, скруглённые углы. */
+.xp-tray-tip {
+  position: fixed;
+  z-index: 100000;
+  padding: 3px 8px 4px;
+  background: #ffffe1;
+  border: 1px solid #000;
+  border-radius: 6px;
+  color: #000;
+  font: 11px Tahoma, "Noto Sans", sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* Скрытые значки: стоят прямо перед треем на фоне панели задач и выезжают влево. */
+.tray-hidden {
+  margin-left: auto; /* прижаты к трею справа */
+  height: 30px;
+  width: 0;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.tray-hidden__inner {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: max-content;
+  /* место под левую половину стрелки, которая заходит на панель задач */
+  padding: 0 12px 0 6px;
+}
+.tray-hidden__inner .footer__icon {
+  margin: 0 3px;
+}
+
+/* Стрелка «‹ / ›» на левой границе трея: наполовину на панели задач, как в XP. */
+/* Картинки 19x19 - из макета Figma (chevron-left / chevron-right), центр кружка на границе трея. */
+.tray-chevron {
+  width: 19px;
+  height: 19px;
+  padding: 0;
+  margin: 0 6px 0 -20px;
+  border: 0;
+  background: none;
+  flex-shrink: 0;
+  position: relative;
+}
+.tray-chevron__img {
+  display: block;
+  width: 19px;
+  height: 19px;
+}
+.tray-chevron:hover .tray-chevron__img {
+  filter: brightness(1.1);
+}
+.tray-chevron:active .tray-chevron__img {
+  filter: brightness(0.9);
+}

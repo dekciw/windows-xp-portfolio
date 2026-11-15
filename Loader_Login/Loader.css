@@ -56,17 +56,19 @@ body::after {
   pointer-events: none;
 }
 
+/* Размеры экрана загрузки - по макету (скрин с ноутбука), в долях экрана,
+   чтобы пропорции совпадали на любом мониторе. SVG обрезан по рисунку,
+   поэтому центрируется без поправок. */
 #logo {
-  width: 20%;
-  /* % margin is relative to viewport width: ~16% of the logo's 20% width */
-  margin-bottom: 3.3%;
-  /* Optical centering: the "Atanov" word sits left in the image, so nudge right */
-  transform: translateX(6%);
+  width: min(26.3vw, 51vh); /* 51vh - чтобы на низком широком экране логотип не вылез */
+  height: auto;
+  margin-top: 2.3vh; /* вся группа чуть ниже центра, как на макете */
+  margin-bottom: 7.8vh;
 }
 
 #progress-bar {
-  width: 15%;
-  height: 3%;
+  width: 14.4vw;
+  height: 3.4vh;
   border: 2px solid #a5a5a5;
   display: flex;
   align-items: center;
@@ -125,19 +127,19 @@ body::after {
 
 #Copyright {
   position: absolute;
-  width: 9%;
-  bottom: 5%;
-  right: 3%;
+  width: 12.8vw;
+  bottom: 7.4vh;
+  right: 7.8vw;
 }
 
 #Microsoft {
   position: absolute;
-  bottom: 5%;
-  left: 3%;
+  bottom: 7.2vh;
+  left: 7.8vw;
   color: white;
   font-family: Tahoma, Verdana, sans-serif;
-  font-size: 14px;
-  line-height: 21px;
+  font-size: clamp(12px, 1.25vw, 24px);
+  line-height: 1.45;
   font-weight: normal;
   letter-spacing: 0.3px;
 }

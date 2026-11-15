@@ -10,11 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  const icons = desktop.querySelectorAll('.icon');
+  // Живой список: ярлыки можно добавлять и удалять (DesktopIcons.add / remove).
+  const icons = Array.from(desktop.querySelectorAll('.icon'));
+  const defaultIcons = icons.slice();
   console.log('Found icons:', icons.length);
 
   // Размер ячейки сетки (как в Windows XP)
-  const GRID_SIZE = 80;
+  // Шаг сетки: рамка подсветки иконки 80x80 + зазор 10px, чтобы рамки не наползали друг на друга.
+  const GRID_SIZE = 90;
 
   let draggedIcon = null;
   let selectedIcons = []; // Все выделенные иконки для группового перетаскивания
@@ -76,12 +79,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return { gridX: targetGridX, gridY: targetGridY };
   }
 
-  // Установить начальные позиции иконок
-  function setInitialIconPositions() {
+  // Расставить иконки по сетке в заданном порядке (по столбцам, сверху вниз).
+  function layoutIcons(order) {
     // Сколько иконок помещается в столбец; не поместившиеся переходят в следующий столбец (как в XP).
     // 70px — высота иконки с подписью.
     const rows = Math.max(1, Math.floor((desktop.clientHeight - 10 - 70) / GRID_SIZE) + 1);
-    icons.forEach((icon, index) => {
+    order.forEach((icon, index) => {
       // Все иконки сразу делаем absolute чтобы они не двигались при перетаскивании других
       const gridX = Math.floor(index / rows);
       const gridY = index % rows;
@@ -95,11 +98,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Инициализация drag для каждой иконки
-  icons.forEach(icon => {
+  function attachDrag(icon) {
     icon.style.cursor = 'default';
 
     icon.addEventListener('mousedown', (e) => {
       console.log('Icon mousedown:', icon);
+
+      // Закреплённый значок («Закрепить» в его меню) не перетаскивается.
+      if (icon.dataset.locked === 'true') return;
 
       // Игнорировать двойной клик (он открывает приложение)
       if (e.detail === 2) {
@@ -124,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
       offsetY = e.clientY - rect.top;
 
       // Проверяем есть ли выделенные иконки
-      selectedIcons = Array.from(desktop.querySelectorAll('.icon.selected'));
+      selectedIcons = Array.from(desktop.querySelectorAll('.icon.selected')).filter(i => i.dataset.locked !== 'true');
 
       // Если кликнутая иконка выделена - перетаскиваем всю группу
       if (selectedIcons.length > 0 && selectedIcons.includes(icon)) {
@@ -148,7 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // НЕ устанавливаем isDragging сразу - ждем movement threshold
       e.preventDefault();
     });
-  });
+  }
+  icons.forEach(attachDrag);
 
   // Перемещение иконки
   document.addEventListener('mousemove', (e) => {
@@ -275,7 +282,62 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Установить начальные позиции при загрузке страницы
-  setInitialIconPositions();
+  layoutIcons(Array.from(icons));
+
+  // Для контекстного меню рабочего стола: «Упорядочить значки» и «Сбросить рабочий стол».
+  function placeAt(icon, gridX, gridY) {
+    icon.style.position = 'absolute';
+    icon.style.left = (gridX * GRID_SIZE + 10) + 'px';
+    icon.style.top = (gridY * GRID_SIZE + 10) + 'px';
+    icon.setAttribute('data-grid-x', gridX);
+    icon.setAttribute('data-grid-y', gridY);
+  }
+
+  // Ближайшая свободная ячейка к точке экрана; без точки - первая свободная по столбцам.
+  function freeCell(clientX, clientY, excludeIcon) {
+    if (clientX !== undefined) {
+      const r = desktop.getBoundingClientRect();
+      const gx = Math.max(0, Math.round((clientX - r.left - 10 - 40) / GRID_SIZE));
+      const gy = Math.max(0, Math.round((clientY - r.top - 10 - 35) / GRID_SIZE));
+      return findNearestFreeCell(gx, gy, excludeIcon);
+    }
+    const rows = Math.max(1, Math.floor((desktop.clientHeight - 10 - 70) / GRID_SIZE) + 1);
+    for (let i = 0; i < 400; i++) {
+      const gridX = Math.floor(i / rows);
+      const gridY = i % rows;
+      if (!isCellOccupied(gridX, gridY, excludeIcon)) return { gridX, gridY };
+    }
+    return { gridX: 0, gridY: 0 };
+  }
+
+  window.DesktopIcons = {
+    list: () => icons.slice(),
+    arrange(compare) {
+      layoutIcons(icons.slice().sort(compare));
+    },
+    // Исходный рабочий стол: только встроенные значки, в исходном порядке.
+    reset() {
+      icons.filter((i) => !defaultIcons.includes(i)).forEach((i) => window.DesktopIcons.remove(i));
+      icons.forEach((i) => delete i.dataset.locked);
+      layoutIcons(icons.slice());
+    },
+    // Добавить значок (ярлык) в ближайшую к точке свободную ячейку.
+    add(icon, clientX, clientY) {
+      desktop.appendChild(icon);
+      icons.push(icon);
+      attachDrag(icon);
+      const { gridX, gridY } = freeCell(clientX, clientY, icon);
+      placeAt(icon, gridX, gridY);
+      return icon;
+    },
+    remove(icon) {
+      const i = icons.indexOf(icon);
+      if (i >= 0) icons.splice(i, 1);
+      icon.remove();
+    },
+    isDefault: (icon) => defaultIcons.includes(icon),
+  };
+  document.dispatchEvent(new Event('desktop-icons-ready'));
 
   console.log('✅ Desktop icons draggable with grid snap loaded');
 });

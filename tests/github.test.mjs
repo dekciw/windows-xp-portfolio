@@ -11,6 +11,8 @@ before(async () => {
   page = h.page;
   // окно открывается само при загрузке рабочего стола (после load)
   await page.waitForSelector(GH, { timeout: 10000 });
+  // Окно появляется сразу, а содержимое, размер и место - после загрузки его HTML.
+  await page.waitForFunction((sel) => document.querySelector(`${sel} .window-content`)?.children.length > 0, { timeout: 10000 }, GH);
 });
 after(async () => h && (await h.close()));
 

@@ -9,8 +9,34 @@ body {
   cursor: url('/Assets/Images/Cursors/windows-xp-arrow.cur'), auto !important;
 }
 
-a, button, [role="button"], .icon, [onclick], input[type="button"], input[type="submit"], .clickable, .user, .footer_item, .ItemMenu, .AllProgMenu {
+/* .icon * - картинка и подпись иконки рабочего стола: иначе их перебивает «* { стрелка }»
+   выше (и такие же правила в стилях окон), и палец виден только на краю иконки. */
+a, button, [role="button"], .icon, .icon *, [onclick], input[type="button"], input[type="submit"], .clickable, .user, .footer_item, .ItemMenu, .AllProgMenu {
   cursor: url('/Assets/Images/Cursors/windows-xp-link.cur'), pointer !important;
+}
+
+/* XP-курсоры растягивания окна. data-xp-resize ставит makeResizable() в Bureau.js:
+   на окне - когда мышь на рамке, на <html> - пока идёт растягивание.
+   :root повышает специфичность, чтобы перебить "* { cursor: ... !important }". */
+:root[data-xp-resize="ns"], :root[data-xp-resize="ns"] *,
+:root [data-xp-resize="ns"], :root [data-xp-resize="ns"] * {
+  cursor: url('/Assets/Images/Cursors/windows-xp-resize-ns.cur'), ns-resize !important;
+}
+:root[data-xp-resize="ew"], :root[data-xp-resize="ew"] *,
+:root [data-xp-resize="ew"], :root [data-xp-resize="ew"] * {
+  cursor: url('/Assets/Images/Cursors/windows-xp-resize-ew.cur'), ew-resize !important;
+}
+:root[data-xp-resize="nwse"], :root[data-xp-resize="nwse"] *,
+:root [data-xp-resize="nwse"], :root [data-xp-resize="nwse"] * {
+  cursor: url('/Assets/Images/Cursors/windows-xp-resize-nwse.cur'), nwse-resize !important;
+}
+:root[data-xp-resize="nesw"], :root[data-xp-resize="nesw"] *,
+:root [data-xp-resize="nesw"], :root [data-xp-resize="nesw"] * {
+  cursor: url('/Assets/Images/Cursors/windows-xp-resize-nesw.cur'), nesw-resize !important;
+}
+/* Пока тянем, iframe других окон не перехватывают мышь и курсор. */
+:root[data-xp-resize] iframe {
+  pointer-events: none !important;
 }
 
 #desktop {
@@ -36,16 +62,39 @@ a, button, [role="button"], .icon, [onclick], input[type="button"], input[type="
   flex-direction: column;
   align-items: center;
   width: 80px;
+  min-height: 80px;
+  box-sizing: border-box;
+  /* Рамка подсветки 80x80 (снято со скриншота): иконка 8px от верха, подпись 3px ниже.
+     Прозрачная граница есть всегда, чтобы при выделении ничего не сдвигалось. */
+  padding: 7px 0 5px;
+  border: 1px solid transparent;
+  border-radius: 2px;
   cursor: pointer;
   margin-bottom: 15px;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   text-align: center;
+}
+
+/* Наведение: лёгкая синяя подложка без рамки. */
+.icon:hover {
+  background-color: rgba(44, 100, 200, 0.2);
+}
+
+/* Выделение (1 клик): подложка плотнее + светлая рамка 1px.
+   Работает и при выделении рамкой мыши - класс ставит Selection.js. */
+.icon.selected,
+.icon.selected:hover {
+  background-color: rgba(48, 104, 201, 0.38);
+  /* Мягкая светлая граница: при 0.28 на тёмно-синем фоне читалась как белые полосы. */
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
 .icon img {
   width: 48px;
   height: 48px;
+  margin-bottom: 3px;
+  flex-shrink: 0;
 }
 
 .icon span {

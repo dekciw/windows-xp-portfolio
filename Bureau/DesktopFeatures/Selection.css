@@ -8,17 +8,13 @@
   z-index: 9999;
 }
 
-/* Стилизация выделенных иконок (аутентичные цвета Windows XP) */
+/* Выделенная иконка: подложка и рамка заданы в Bureau.css (.icon.selected).
+   Подпись остаётся белой с тенью, как в обычном состоянии - без отдельной плашки. */
 .icon.selected .selection-text {
-  background-color: #316AC5 !important;
-  color: white !important;
+  background: none;
+  color: inherit;
   display: inline;
   line-height: inherit;
-}
-
-/* Убираем стандартный text-shadow для выделенного текста */
-.icon.selected span {
-  text-shadow: none;
 }
 
 /* Предотвращаем смещение иконок */
@@ -26,8 +22,10 @@
   transform: translateZ(0);
 }
 
-.icon.selected img {
-  filter: brightness(1.05) drop-shadow(0 0 2px rgba(49, 106, 197, 0.6));
-  opacity: 1;
+/* Значки не выделяются как текст (синим выделением браузера) - ни протяжкой, ни двойным
+   щелчком по подписи; выделение значков - только своё (.icon.selected). */
+#desktop .icon,
+#desktop .icon * {
+  -webkit-user-select: none;
+  user-select: none;
 }
-

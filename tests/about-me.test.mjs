@@ -239,9 +239,11 @@ test("меню как у «Мой компьютер»; строки состо�
 });
 
 for (const [vw, vh] of [[1366, 768], [1024, 600], [1920, 1080]]) {
-  test(`окно открывается по центру рабочего стола и целиком на экране ${vw}×${vh}`, async () => {
+  test(`единственное окно открывается по центру рабочего стола и целиком на экране ${vw}×${vh}`, async () => {
     await page.setViewport({ width: vw, height: vh });
     try {
+      // По центру встаёт первое окно; следующие разбрасываются (см. window-scatter.test.mjs).
+      await page.evaluate(() => document.querySelectorAll('.window[id^="window-"]').forEach((w) => closeWindow(w.id.slice(7))));
       await fresh();
       const r = await page.evaluate((root) => {
         const w = document.querySelector(root).getBoundingClientRect();
@@ -557,6 +559,8 @@ test("карточки слева выглядят как в «Мой компь
   await page.evaluate(() => openWindow("My Computer"));
   await page.waitForSelector('[id="window-My Computer"] .content_left_card_text');
   await windowCss("My Computer");
+  // Курсор не должен висеть над карточкой (подсветка заголовка при наведении).
+  await page.mouse.move(2, (await page.evaluate(() => innerHeight)) - 2);
   const styles = await page.evaluate(() => {
     const pick = (el, props) => {
       const cs = getComputedStyle(el);

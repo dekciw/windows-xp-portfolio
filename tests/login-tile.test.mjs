@@ -148,12 +148,47 @@ test("«Смена пользователя»: подпись остаётся, 
   assert.equal(r.name, "26px");
 });
 
-test("надпись на заставке — Tahoma 14px/21px", async () => {
+test("надпись на заставке - Tahoma, размер растёт с экраном (1.25vw, межстрочный 1.45)", async () => {
   const s = await p.$eval("#Microsoft", (e) => {
     const c = getComputedStyle(e);
-    return [c.fontFamily.split(",")[0].trim(), c.fontSize, c.lineHeight];
+    return { font: c.fontFamily.split(",")[0].trim(), size: parseFloat(c.fontSize), lh: parseFloat(c.lineHeight), vw: innerWidth };
   });
-  assert.deepEqual(s, ["Tahoma", "14px", "21px"]);
+  const expected = Math.min(24, Math.max(12, s.vw * 0.0125));
+  assert.equal(s.font, "Tahoma");
+  assert.ok(Math.abs(s.size - expected) < 0.1, JSON.stringify(s));
+  assert.ok(Math.abs(s.lh / s.size - 1.45) < 0.02, JSON.stringify(s));
+});
+
+test("заставка по макету: логотип 26.3% ширины, полоса 14.4%, «Portfolio» и подпись в 7.8% от краёв", async () => {
+  // Своя страница: на общей заставка к этому моменту уже скрыта.
+  const q = await h.browser.newPage();
+  await q.setViewport({ width: 1280, height: 666, deviceScaleFactor: 1.5 }); // ноутбук 1920×1080 при масштабе 150%
+  await q.goto(`${h.base}/index.html`, { waitUntil: "load" });
+  const m = await q.evaluate(() => {
+    const r = (sel) => document.querySelector(sel).getBoundingClientRect();
+    const logo = r("#logo");
+    const bar = r("#progress-bar");
+    const port = r("#Copyright");
+    const text = r("#Microsoft");
+    const vw = innerWidth;
+    return {
+      logoW: logo.width / vw,
+      logoCenter: (logo.left + logo.right) / 2 / vw,
+      logoSrc: document.getElementById("logo").getAttribute("src"),
+      barW: bar.width / vw,
+      barCenter: (bar.left + bar.right) / 2 / vw,
+      portRight: (vw - port.right) / vw,
+      portW: port.width / vw,
+      textLeft: text.left / vw,
+      barBelowLogo: bar.top > logo.bottom,
+    };
+  });
+  const near = (a, b, eps = 0.004) => Math.abs(a - b) < eps;
+  assert.match(m.logoSrc, /^\/Assets\/Images\/Logos\/atanov-xp-logo\.svg(\?v=\d+)?$/);
+  assert.ok(near(m.logoW, 0.263) && near(m.logoCenter, 0.5), JSON.stringify(m));
+  assert.ok(near(m.barW, 0.144) && near(m.barCenter, 0.5) && m.barBelowLogo, JSON.stringify(m));
+  assert.ok(near(m.portRight, 0.078) && near(m.portW, 0.128) && near(m.textLeft, 0.078), JSON.stringify(m));
+  await q.close();
 });
 
 test("Администратор с формой пароля: плашка растягивается под форму", async () => {
@@ -171,4 +206,23 @@ test("Администратор с формой пароля: плашка ра
   });
   assert.ok(r.w >= 312);
   assert.ok(r.fRight <= r.right && r.fBottom <= r.bottom, JSON.stringify(r));
+});
+
+test("экран входа: логотип с подписью по центру между плашками пользователей (по вертикали)", async () => {
+  for (const [w, hgt] of [[1024, 600], [1366, 768], [1920, 1080]]) {
+    const q = await h.browser.newPage();
+    await q.setViewport({ width: w, height: hgt });
+    await q.goto(`${h.base}/Loader_Login/Loader_Login.html`, { waitUntil: "load" });
+    const m = await q.evaluate(() => {
+      document.getElementById("login-screen").classList.remove("hidden");
+      const r = (s) => document.querySelector(s).getBoundingClientRect();
+      const logo = r("#xp-logo");
+      const text = r("#left-panel p");
+      const g = r("#guest-user");
+      const a = r("#admin-user");
+      return { left: (logo.top + text.bottom) / 2, users: (g.top + a.bottom) / 2 };
+    });
+    assert.ok(Math.abs(m.left - m.users) <= 3, `${w}×${hgt}: ${JSON.stringify(m)}`);
+    await q.close();
+  }
 });

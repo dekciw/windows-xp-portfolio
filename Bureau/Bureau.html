@@ -55,26 +55,39 @@
       onload="this.onload=null;this.rel='stylesheet';"
     />
 
-    <link rel="stylesheet" href="/Bureau/Bureau.css?v=2" />
+    <link rel="stylesheet" href="/Bureau/Bureau.css?v=6" />
     <link rel="stylesheet" href="/Bureau/xp-scrollbar.css?v=1" />
     <link rel="stylesheet" href="/Bureau/Notification/notification.css?v=14" />
-    <link rel="stylesheet" href="/Bureau/DesktopFeatures/Selection.css?v=2" />
+    <link rel="stylesheet" href="/Bureau/DesktopFeatures/Selection.css?v=4" />
+    <link rel="stylesheet" href="/Bureau/DesktopFeatures/desktop-context-menu.css?v=3" />
     <link rel="stylesheet" href="/Bureau/wow-launcher.css?v=1" />
+    <link rel="stylesheet" href="/Bureau/address-loading.css?v=3" />
+    <link rel="stylesheet" href="/Bureau/tray.css?v=2" />
+    <link rel="stylesheet" href="/Bureau/external-link.css?v=2" />
 
-    <script src="/Bureau/Bureau.js?v=11"></script>
+    <script src="/Bureau/DesktopFeatures/volume.js?v=3"></script>
+    <script src="/Bureau/window-minimize.js?v=1"></script>
+    <script src="/Bureau/Bureau.js?v=20"></script>
+    <script src="/Bureau/address-loading.js?v=8"></script>
+    <script src="/Bureau/quick-start.js?v=2"></script>
+    <script src="/Bureau/tray.js?v=2"></script>
+    <script src="/Bureau/external-link.js?v=1"></script>
     <script src="/Bureau/wow-launcher.js?v=2"></script>
     <script src="/Open_Windows/About Me/about-me-data.js?v=12"></script>
-    <script src="/Open_Windows/About Me/about-me.js?v=11"></script>
+    <script src="/Open_Windows/About Me/about-me.js?v=12"></script>
     <script src="/Open_Windows/Resume/resume.js?v=3"></script>
     <script src="/Open_Windows/My Projects/my-projects-data.js?v=12"></script>
-    <script src="/Open_Windows/My Projects/my-projects.js?v=14"></script>
-    <script src="/Open_Windows/My Projects/my-projects-page.js?v=12"></script>
+    <script src="/Open_Windows/My Projects/my-projects.js?v=16"></script>
+    <script src="/Open_Windows/My Projects/my-projects-page.js?v=13"></script>
 
     <script src="/Open_Windows/GitHub/github.js?v=7"></script>
+    <script src="/Open_Windows/Calculator/Calculator.js?v=1"></script>
     <script src="/Open_Windows/Minesweeper/Minesweeper.js"></script>
     <script src="/Bureau/Notification/notification.js?v=13"></script>
-    <script src="/Bureau/DesktopFeatures/Selection.js?v=2"></script>
-    <script src="/Bureau/DesktopFeatures/desktop-icons-draggable.js?v=3"></script>
+    <script src="/Bureau/DesktopFeatures/Selection.js?v=6"></script>
+    <script src="/Bureau/DesktopFeatures/desktop-icons-draggable.js?v=6"></script>
+    <script src="/Bureau/DesktopFeatures/desktop-context-menu.js?v=10"></script>
+    <script src="/Bureau/DesktopFeatures/crt-filter.js?v=4"></script>
     <script>
       // Глобальная переменная для отслеживания текущего уведомления
       let currentNotification = null;
@@ -239,21 +252,54 @@
             />
           </div>
         </div>
+        <!-- Скрытые значки трея: выезжают левее стрелки по щелчку на неё (tray.js), как в XP -->
+        <div class="tray-hidden" id="tray-hidden" aria-hidden="true">
+          <div class="tray-hidden__inner">
+            <img
+              id="crt-toggle"
+              class="footer__icon"
+              src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Security - Ok.png"
+              alt="CRT-эффект"
+            />
+            <img
+              id="volume-toggle"
+              class="footer__icon"
+              src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Volume.png"
+              alt="Громкость"
+            />
+          </div>
+        </div>
         <div class="footer__items right">
+          <button
+            type="button"
+            id="tray-chevron"
+            class="tray-chevron"
+            aria-expanded="false"
+            aria-controls="tray-hidden"
+            data-xp-tip="Показать скрытые значки"
+          >
+            <!-- Кружок из макета Figma 775:7347; при раскрытии tray.js меняет на chevron-right.png -->
+            <img class="tray-chevron__img" src="/Assets/Images/Tray/chevron-left.png" width="19" height="19" alt="" />
+          </button>
           <img
             class="footer__icon"
-            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Volume.png"
-            alt=""
+            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Windows Messenger.png"
+            alt="Windows Messenger"
+            data-xp-tip="Windows Messenger"
           />
-          <img
-            class="footer__icon"
-            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Safely Remove Hardware.png"
-            alt=""
-          />
+          <!-- «i» - на него указывает хвостик приветственного уведомления (notification.css) -->
           <img
             class="footer__icon"
             src="/Assets/Images/Security/info-icon.png"
             alt=""
+          />
+          <!-- Quick Start: открывает «Обо мне», «Мои проекты», «Моё резюме» и GitHub (quick-start.js) -->
+          <img
+            id="quick-start-toggle"
+            class="footer__icon clickable"
+            src="/Assets/Windows XP High Resolution Icon Pack avec MAOSX/Windows XP High Resolution Icon Pack/Windows XP Icons/Firewall.png"
+            alt="Quick Start"
+            data-xp-tip="Quick Start"
           />
           <div class="footer__time" id="footer-time"></div>
         </div>

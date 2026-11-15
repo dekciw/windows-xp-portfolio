@@ -1,8 +1,13 @@
 * { cursor: url('/Assets/Images/Cursors/windows-xp-arrow.cur'), auto !important; }
-/* Размер окна калькулятора */
+
+/* Инженерный калькулятор Windows XP.
+   Окно фиксированного размера (как в XP): ширина по содержимому, без растягивания.
+   На маленьких экранах Calculator.js уменьшает окно целиком (transform: scale),
+   поэтому вся раскладка задана в пикселях и не «плывёт» на разных мониторах. */
 #window-Calculator {
-  width: 254px !important;
+  width: auto !important;
   height: auto !important;
+  transform-origin: top left;
 }
 
 #window-Calculator .window-content {
@@ -11,23 +16,29 @@
   height: auto !important;
 }
 
-/* Отключаем кнопку развернуть */
 #window-Calculator .header-button--maximaze {
   opacity: 0.5;
   pointer-events: none;
   cursor: default;
 }
 
-/* Все стили калькулятора */
-#window-Calculator .notepad_body {
-  width: 254px;
+#window-Calculator .calc {
+  --calc-btn-w: 34px;
+  --calc-btn-h: 27px;
+  --calc-gap: 5px;
+  width: max-content;
   background: #ECE9D8;
   display: flex;
   flex-direction: column;
-  padding-bottom: 10px;
+  padding-bottom: 9px;
+  font-family: Tahoma, "Segoe UI", Verdana, sans-serif;
+  font-size: 11px;
+  color: #000;
+  user-select: none;
   overflow: visible !important;
 }
 
+/* --- Меню --- */
 #window-Calculator .toolbar {
   position: relative;
   height: 21px;
@@ -63,163 +74,190 @@
   padding-top: 2px;
 }
 
-#window-Calculator .calculator-input-container {
-  margin-top: 3px;
-  margin-left: 8px;
-  margin-right: 8px;
-  margin-bottom: 15px;
+/* --- Сетка: 14 колонок.
+   1 Sta | зазор | 3 функции | зазор | память | зазор | 6 цифровых колонок --- */
+#window-Calculator .calc-grid {
+  display: grid;
+  grid-template-columns:
+    var(--calc-btn-w) 4px repeat(3, var(--calc-btn-w)) 4px var(--calc-btn-w) 4px repeat(6, var(--calc-btn-w));
+  grid-auto-rows: var(--calc-btn-h);
+  gap: var(--calc-gap);
+  padding: 6px 9px 0;
 }
 
-#window-Calculator .calculator-display {
-  width: 237px;
-  height: 21px;
+#window-Calculator .calc-display {
+  grid-column: 1 / -1;
+  height: 23px;
+  margin-bottom: 4px;
+  align-self: start;
   border: 1px solid #7F9DB9;
   background: #FFF;
-  padding: 0 4px;
-  font-family: 'Courier New', monospace;
-  font-size: 14px;
+  padding: 0 6px;
+  font-family: Tahoma, "Segoe UI", Verdana, sans-serif;
+  font-size: 12px;
   text-align: right;
   outline: none;
   box-sizing: border-box;
+  width: 100%;
+  color: #000;
 }
 
-#window-Calculator .calculator-row-1 {
+#window-Calculator .calc-display.is-error {
+  font-size: 11px;
+}
+
+/* --- Рамки групп (Hex/Dec..., Градусы..., Inv/Hyp) --- */
+#window-Calculator .calc-group {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  justify-content: space-around;
+  border: 1px solid #D0D0BF;
+  border-radius: 3px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  height: 100%;
 }
 
-#window-Calculator .calculator-square {
-  width: 27px;
-  height: 26px;
-  background: #ECE9D8;
-  box-shadow: -1px -1px 1px 0 #FFF inset, 1px 1px 1px 0 rgba(0, 0, 0, 0.50) inset;
-  margin-left: 12px;
-  margin-right: 17px;
-}
+#window-Calculator .calc-group--base { grid-column: 1 / 8; }
+#window-Calculator .calc-group--angle { grid-column: 8 / -1; }
+#window-Calculator .calc-group--mods { grid-column: 1 / 5; justify-content: space-between; padding: 0 8px; margin-top: 4px; height: auto; align-self: stretch; }
 
-#window-Calculator .calculator-buttons-group {
-  display: flex;
-  gap: 7px;
-}
+#window-Calculator .calc-indicator--paren,
+#window-Calculator .calc-indicator--mem,
+#window-Calculator .calc-clear { margin-top: 4px; }
 
-#window-Calculator .calculator-buttons-group > * {
-  margin: 0 !important;
-}
-
-#window-Calculator .calculator-button {
-  height: 25px;
-  cursor: pointer;
+#window-Calculator .calc-indicator {
+  box-shadow: -1px -1px 0 0 #FFF inset, 1px 1px 0 0 #ACA899 inset;
+  border: 1px solid #ECE9D8;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  margin: 0;
-  border: none;
-  background: none;
-  box-sizing: border-box;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
 }
+#window-Calculator .calc-indicator--paren { grid-column: 5; }
+#window-Calculator .calc-indicator--mem { grid-column: 7; }
 
-#window-Calculator .calculator-button:hover {
-  filter: brightness(105%);
-}
-
-#window-Calculator .calculator-button:active {
-  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.4), inset -1px -1px 1px rgba(0,0,0,0.2);
-  transform: translateY(1px);
-}
-
-#window-Calculator .calculator-button-backspace {
-  width: 59px;
-  border-radius: 2.5px;
-  border: 1px solid #003C74;
-  background: linear-gradient(180deg, #FFF 0%, #F0F0EA 100%), #F5F5F1;
-  box-shadow: 1px 1px 0 0 rgba(255, 255, 255, 0.75), -1px -1px 0 0 rgba(0, 0, 0, 0.05), -1px -2px 2px 0 rgba(0, 0, 0, 0.20) inset;
-}
-
-#window-Calculator .calculator-button-backspace svg {
-  width: 53px;
-  height: 13px;
-  display: block;
-}
-
-#window-Calculator .calculator-button-ce {
-  width: 58px;
-  border-radius: 2.5px;
-  border: 1px solid #003C74;
-  background: linear-gradient(180deg, #FFF 0%, #F0F0EA 100%), #F5F5F1;
-  box-shadow: 1px 1px 0 0 rgba(255, 255, 255, 0.75), -1px -1px 0 0 rgba(0, 0, 0, 0.05), -1px -2px 2px 0 rgba(0, 0, 0, 0.20) inset;
-}
-
-#window-Calculator .calculator-button-ce svg {
-  width: 53px;
-  height: 13px;
-  display: block;
-}
-
-#window-Calculator .calculator-button-c {
-  width: 58px;
-  border-radius: 2.5px;
-  border: 1px solid #003C74;
-  background: linear-gradient(180deg, #FFF 0%, #F0F0EA 100%), #F5F5F1;
-  box-shadow: 1px 1px 0 0 rgba(255, 255, 255, 0.75), -1px -1px 0 0 rgba(0, 0, 0, 0.05), -1px -2px 2px 0 rgba(0, 0, 0, 0.20) inset;
-}
-
-#window-Calculator .calculator-button-c svg {
-  width: 53px;
-  height: 13px;
-  display: block;
-}
-
-#window-Calculator .calculator-row-2 {
+#window-Calculator .calc-clear {
+  grid-column: 9 / -1;
   display: flex;
-  align-items: center;
-  margin-top: 8px;
-}
-
-#window-Calculator .calculator-button-mc {
-  margin-left: 10px;
-  margin-right: 14px;
-}
-
-#window-Calculator .calculator-nums-group {
-  display: flex;
+  justify-content: flex-end;
   gap: 7px;
 }
 
-#window-Calculator .calculator-button-num {
-  width: 32px;
-  height: 25px;
-  border-radius: 2.5px;
-  border: 1px solid #003C74;
-  background: linear-gradient(180deg, #FFF 0%, #F0F0EA 100%), #F5F5F1;
-  box-shadow: 1px 1px 0 0 rgba(255, 255, 255, 0.75), -1px -1px 0 0 rgba(0, 0, 0, 0.05), -1px -2px 2px 0 rgba(0, 0, 0, 0.20) inset;
+/* --- Радиокнопки и флажки в стиле XP --- */
+#window-Calculator .calc-radio,
+#window-Calculator .calc-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
 }
 
-#window-Calculator .calculator-button-num svg {
-  width: 16px;
+#window-Calculator .calc-radio input,
+#window-Calculator .calc-check input {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  width: 13px;
   height: 13px;
-  display: block;
+  flex-shrink: 0;
+  border: 1px solid #1C5180;
+  background: linear-gradient(135deg, #DCDCD7 0%, #FFF 85%);
+  box-sizing: border-box;
+  position: relative;
 }
 
-#window-Calculator .calculator-row-3 {
-  display: flex;
-  align-items: center;
-  margin-top: 8px;
+#window-Calculator .calc-radio input { border-radius: 50%; }
+
+#window-Calculator .calc-radio input:checked::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #55D451 0%, #21A121 60%, #1A8B1A 100%);
 }
 
-#window-Calculator .calculator-row-4 {
-  display: flex;
-  align-items: center;
-  margin-top: 8px;
+#window-Calculator .calc-check input:checked::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0;
+  width: 3px;
+  height: 7px;
+  border: solid #21A121;
+  border-width: 0 2px 2px 0;
+  transform: rotate(40deg);
 }
 
-#window-Calculator .calculator-row-5 {
+#window-Calculator .calc-radio:hover input:not(:disabled),
+#window-Calculator .calc-check:hover input:not(:disabled) {
+  box-shadow: inset 0 0 0 1px #F8B636;
+}
+
+#window-Calculator .calc-radio input:disabled,
+#window-Calculator .calc-radio input:disabled + span {
+  border-color: #CAC8BB;
+  color: #ACA899;
+}
+
+#window-Calculator .calc-radio input:disabled:checked::after { background: #CAC8BB; }
+
+/* --- Кнопки --- */
+#window-Calculator .calc-btn {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  border-radius: 3px;
+  border: 1px solid #003C74;
+  background: linear-gradient(180deg, #FFF 0%, #F0F0EA 100%);
+  box-shadow: -1px -2px 2px 0 rgba(0, 0, 0, 0.2) inset;
+  font: inherit;
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
-  margin-top: 8px;
+  justify-content: center;
+}
+
+#window-Calculator .calc-btn--wide { width: 62px; flex-shrink: 0; }
+
+#window-Calculator .calc-blue { color: #0000FF; }
+#window-Calculator .calc-red { color: #FF0000; }
+#window-Calculator .calc-fn { color: #C000C0; }
+
+#window-Calculator .calc-btn:hover:not(:disabled) {
+  box-shadow: inset 0 0 0 1px #F8B636, inset 0 -2px 0 1px #F0C050;
+}
+
+#window-Calculator .calc-btn:active:not(:disabled),
+#window-Calculator .calc-btn.is-pressed {
+  background: linear-gradient(180deg, #E5E4DE 0%, #E3E2DA 100%);
+  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.25) inset;
+}
+
+#window-Calculator .calc-btn.is-on {
+  background: linear-gradient(180deg, #E5E4DE 0%, #F5F4EF 100%);
+  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.3) inset;
+}
+
+#window-Calculator .calc-btn:disabled {
+  color: #ACA899;
+  border-color: #C9C7BA;
+  background: #F5F4EA;
+  box-shadow: none;
+}
+
+#window-Calculator .calc-btn:focus-visible {
+  outline: 1px dotted #000;
+  outline-offset: -4px;
 }
 
 a, button, [role="button"], .icon, [onclick], input[type="button"], input[type="submit"], .clickable {
   cursor: url('/Assets/Images/Cursors/windows-xp-link.cur'), pointer !important;
 }
+#window-Calculator .calc-btn:disabled { cursor: url('/Assets/Images/Cursors/windows-xp-arrow.cur'), default !important; }
